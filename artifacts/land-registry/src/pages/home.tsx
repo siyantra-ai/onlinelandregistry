@@ -103,7 +103,7 @@ export default function Home() {
                       </div>
                       <div className="text-right">
                         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">From</span>
-                        <div className="font-bold text-2xl font-heading text-primary">£{(service.basePrice / 100).toFixed(2)}</div>
+                        <div className="font-bold text-2xl font-heading text-primary">£{service.basePrice.toFixed(2)}</div>
                       </div>
                     </div>
                     <CardTitle className="text-xl font-heading text-primary">{service.name}</CardTitle>

@@ -258,7 +258,7 @@ export default function OrderWizard() {
                       </SelectTrigger>
                       <SelectContent>
                         {services?.map(s => (
-                          <SelectItem key={s.id} value={s.id.toString()}>{s.name} — from £{(s.basePrice/100).toFixed(2)}</SelectItem>
+                          <SelectItem key={s.id} value={s.id.toString()}>{s.name} — from £{s.basePrice.toFixed(2)}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
