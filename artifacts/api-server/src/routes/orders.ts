@@ -1,11 +1,12 @@
 import { Router, type IRouter } from "express";
-import { db, ordersTable, activityLogsTable, servicesTable } from "@workspace/db";
+import { db, ordersTable, activityLogsTable, servicesTable, hasDb } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import {
   CreateOrderBody,
   GetOrderResponse,
 } from "@workspace/api-zod";
 import { calculatePrice } from "../lib/pricing";
+import { MOCK_SERVICES } from "./services";
 
 const router: IRouter = Router();
 
@@ -39,7 +40,10 @@ router.post("/orders", async (req, res): Promise<void> => {
   const data = parsed.data;
 
   // Get service to compute prices server-side
-  const [service] = await db.select().from(servicesTable).where(eq(servicesTable.id, data.serviceId));
+  const service = hasDb
+    ? (await db.select().from(servicesTable).where(eq(servicesTable.id, data.serviceId)))[0]
+    : MOCK_SERVICES.find(s => s.id === data.serviceId);
+
   if (!service) {
     res.status(400).json({ error: "Service not found" });
     return;
@@ -57,39 +61,77 @@ router.post("/orders", async (req, res): Promise<void> => {
 
   const orderNumber = generateOrderNumber();
 
-  const [order] = await db.insert(ordersTable).values({
-    orderNumber,
-    serviceId: data.serviceId,
-    serviceName: service.name,
-    customerTitle: data.customerTitle ?? null,
-    customerName: data.customerName,
-    customerEmail: data.customerEmail,
-    customerPhone: data.customerPhone ?? null,
-    customerAddress: data.customerAddress ?? null,
-    propertyCount: data.propertyCount ?? 1,
-    country: (data.country ?? "england_wales") as "england_wales" | "scotland",
-    tenure: data.tenure ?? null,
-    titleNumber: data.titleNumber ?? null,
-    postcode: data.postcode ?? null,
-    propertyAddress: data.propertyAddress ?? null,
-    lat: data.lat?.toString() ?? null,
-    lng: data.lng?.toString() ?? null,
-    addons: (data.addons as string[]) ?? [],
-    trackingType: (data.trackingType ?? "standard") as "standard" | "fast_track" | "super_fast_track",
-    deliveryType: (data.deliveryType ?? "pdf_only") as "pdf_only" | "pdf_printed",
-    notificationType: (data.notificationType ?? "email") as "email" | "sms" | "both",
-    documentFee: pricing.documentFee.toString(),
-    serviceFee: pricing.serviceFee.toString(),
-    vatAmount: pricing.vatAmount.toString(),
-    totalAmount: pricing.totalAmount.toString(),
-    agreedToWaiveCancel: data.agreedToWaiveCancel ?? false,
-  }).returning();
+  let order: any;
+  if (hasDb) {
+    const [insertedOrder] = await db.insert(ordersTable).values({
+      orderNumber,
+      serviceId: data.serviceId,
+      serviceName: service.name,
+      customerTitle: data.customerTitle ?? null,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone ?? null,
+      customerAddress: data.customerAddress ?? null,
+      propertyCount: data.propertyCount ?? 1,
+      country: (data.country ?? "england_wales") as "england_wales" | "scotland",
+      tenure: data.tenure ?? null,
+      titleNumber: data.titleNumber ?? null,
+      postcode: data.postcode ?? null,
+      propertyAddress: data.propertyAddress ?? null,
+      lat: data.lat?.toString() ?? null,
+      lng: data.lng?.toString() ?? null,
+      addons: (data.addons as string[]) ?? [],
+      trackingType: (data.trackingType ?? "standard") as "standard" | "fast_track" | "super_fast_track",
+      deliveryType: (data.deliveryType ?? "pdf_only") as "pdf_only" | "pdf_printed",
+      notificationType: (data.notificationType ?? "email") as "email" | "sms" | "both",
+      documentFee: pricing.documentFee.toString(),
+      serviceFee: pricing.serviceFee.toString(),
+      vatAmount: pricing.vatAmount.toString(),
+      totalAmount: pricing.totalAmount.toString(),
+      agreedToWaiveCancel: data.agreedToWaiveCancel ?? false,
+    }).returning();
+    order = insertedOrder;
 
-  await db.insert(activityLogsTable).values({
-    orderId: order.id,
-    action: "order_created",
-    detail: `Order ${orderNumber} created for ${data.customerName}`,
-  });
+    await db.insert(activityLogsTable).values({
+      orderId: order.id,
+      action: "order_created",
+      detail: `Order ${orderNumber} created for ${data.customerName}`,
+    });
+  } else {
+    // Database-free/mock mode: construct order in memory
+    order = {
+      id: Math.floor(Math.random() * 100000) + 1,
+      orderNumber,
+      serviceId: data.serviceId,
+      serviceName: service.name,
+      customerTitle: data.customerTitle ?? null,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone ?? null,
+      customerAddress: data.customerAddress ?? null,
+      propertyCount: data.propertyCount ?? 1,
+      country: (data.country ?? "england_wales") as "england_wales" | "scotland",
+      tenure: data.tenure ?? null,
+      titleNumber: data.titleNumber ?? null,
+      postcode: data.postcode ?? null,
+      propertyAddress: data.propertyAddress ?? null,
+      lat: data.lat?.toString() ?? null,
+      lng: data.lng?.toString() ?? null,
+      addons: (data.addons as string[]) ?? [],
+      trackingType: (data.trackingType ?? "standard") as "standard" | "fast_track" | "super_fast_track",
+      deliveryType: (data.deliveryType ?? "pdf_only") as "pdf_only" | "pdf_printed",
+      notificationType: (data.notificationType ?? "email") as "email" | "sms" | "both",
+      documentFee: pricing.documentFee.toString(),
+      serviceFee: pricing.serviceFee.toString(),
+      vatAmount: pricing.vatAmount.toString(),
+      totalAmount: pricing.totalAmount.toString(),
+      agreedToWaiveCancel: data.agreedToWaiveCancel ?? false,
+      status: "pending",
+      paidAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
 
   res.status(201).json(GetOrderResponse.parse(formatOrder(order as unknown as Record<string, unknown>)));
 });

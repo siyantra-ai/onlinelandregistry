@@ -4,13 +4,20 @@ import * as schema from "./schema";
 
 const { Pool } = pg;
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+export const hasDb = Boolean(process.env.DATABASE_URL);
+
+if (!hasDb) {
+  console.warn("DATABASE_URL is not set. Database operations will run in mock/fallback mode.");
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(pool, { schema });
+export const pool = hasDb ? new Pool({ connectionString: process.env.DATABASE_URL }) : null;
+const realDb = hasDb ? drizzle(pool!, { schema }) : null;
+export const db = (hasDb ? realDb! : new Proxy({} as any, {
+      get(target, prop) {
+        return () => {
+          throw new Error(`Database query failed: DATABASE_URL is not set.`);
+        };
+      }
+    })) as NonNullable<typeof realDb>;
 
 export * from "./schema";

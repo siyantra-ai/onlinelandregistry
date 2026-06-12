@@ -1,10 +1,11 @@
 import { Router, type IRouter } from "express";
-import { db, ordersTable, servicesTable } from "@workspace/db";
+import { db, ordersTable, servicesTable, hasDb } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { CreateCheckoutSessionBody, CalculatePriceBody, LookupPostcodeQueryParams } from "@workspace/api-zod";
 import { calculatePrice } from "../lib/pricing";
 import { logger } from "../lib/logger";
 import Stripe from "stripe";
+import { MOCK_SERVICES } from "./services";
 
 const router: IRouter = Router();
 
@@ -18,6 +19,20 @@ router.post("/checkout/session", async (req, res): Promise<void> => {
   const parsed = CreateCheckoutSessionBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  // If no DB or no Stripe Key, return mock session
+  if (!hasDb || !process.env.STRIPE_SECRET_KEY) {
+    const protocol = req.headers["x-forwarded-proto"] || "https";
+    const host = req.headers["x-forwarded-host"] || req.headers.host || "localhost";
+    const baseUrl = `${protocol}://${host}`;
+    const mockSessionId = `mock_session_${Math.random().toString(36).substring(7)}`;
+    const mockOrderNumber = `OLR-${new Date().getFullYear()}-${Math.floor(Math.random()*90000)+10000}`;
+    res.json({
+      url: `${baseUrl}/order/success?session_id=${mockSessionId}&order_number=${mockOrderNumber}`,
+      sessionId: mockSessionId,
+    });
     return;
   }
 
@@ -79,7 +94,10 @@ router.post("/checkout/price", async (req, res): Promise<void> => {
     return;
   }
 
-  const [service] = await db.select().from(servicesTable).where(eq(servicesTable.id, parsed.data.serviceId));
+  const service = hasDb
+    ? (await db.select().from(servicesTable).where(eq(servicesTable.id, parsed.data.serviceId)))[0]
+    : MOCK_SERVICES.find(s => s.id === parsed.data.serviceId);
+
   if (!service) {
     res.status(400).json({ error: "Service not found" });
     return;
