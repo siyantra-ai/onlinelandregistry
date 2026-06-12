@@ -4,6 +4,8 @@ import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
+import path from "path";
+
 const app: Express = express();
 
 app.use(
@@ -35,8 +37,24 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-app.get("/", (req, res) => {
-  res.send("Onlinelandregistry.uk API Server");
+// Serve static files from the resolved public directory
+let publicPath = __dirname;
+import fs from "fs";
+if (!fs.existsSync(path.join(publicPath, "index.html"))) {
+  publicPath = path.resolve(__dirname, "../public");
+}
+if (!fs.existsSync(path.join(publicPath, "index.html"))) {
+  publicPath = path.resolve(__dirname, "public");
+}
+
+app.use(express.static(publicPath));
+
+// Fallback all non-API requests to index.html for client-side routing (wouter)
+app.get("*any", (req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return next();
+  }
+  res.sendFile(path.join(publicPath, "index.html"));
 });
 
 export default app;

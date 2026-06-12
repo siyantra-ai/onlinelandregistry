@@ -13,14 +13,30 @@ console.log(`Vercel build triggered. Current directory: ${process.cwd()} (repo r
 
 try {
   if (currentDir === 'api-server') {
-    console.log('Detected api-server project. Building api-server...');
+    console.log('Detected api-server project. Building both frontend and backend for unified deployment...');
+    
+    // 1. Build the land-registry frontend website
+    console.log('Building land-registry frontend...');
+    execSync('pnpm --filter @workspace/land-registry run build', { stdio: 'inherit', cwd: repoRoot });
+    
+    // 2. Build the api-server backend
+    console.log('Building api-server backend...');
     execSync('pnpm --filter @workspace/api-server run build', { stdio: 'inherit', cwd: repoRoot });
     
     console.log('Setting up public directory for Vercel deployment...');
     const destPublic = 'public';
     const srcDist = 'dist';
+    const srcFrontend = path.join(repoRoot, 'artifacts/land-registry/public');
     
+    // Clear the destination public directory
     fs.rmSync(destPublic, { recursive: true, force: true });
+    
+    // Copy compiled frontend static assets to public/
+    console.log('Copying frontend static assets to public...');
+    fs.cpSync(srcFrontend, destPublic, { recursive: true });
+    
+    // Copy compiled backend serverless files to public/
+    console.log('Copying backend serverless assets to public...');
     fs.cpSync(srcDist, destPublic, { recursive: true });
     
     // Rename app.mjs to index.mjs to serve as the serverless function entrypoint
@@ -29,7 +45,7 @@ try {
       fs.renameSync(path.join(destPublic, 'app.mjs.map'), path.join(destPublic, 'index.mjs.map'));
     }
     
-    console.log('api-server build completed!');
+    console.log('Unified api-server and frontend build completed!');
   } else {
     // Default to building the land-registry frontend
     console.log('Building land-registry...');
