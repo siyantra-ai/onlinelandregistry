@@ -1,21 +1,20 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
-import * as schema from "./schema";
+import { createClient } from "@supabase/supabase-js";
 
-const { Pool } = pg;
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  throw new Error("NEXT_PUBLIC_SUPABASE_URL environment variable is required.");
+}
 
-const hasDb = Boolean(process.env.DATABASE_URL);
+// Ensure the backend uses the service role key to bypass RLS policies where necessary
+// If only the publishable key is available, use that but warn.
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-export const pool = hasDb ? new Pool({ connectionString: process.env.DATABASE_URL }) : null;
-const realDb = hasDb ? drizzle(pool!, { schema }) : null;
-export const db = (hasDb
-  ? realDb!
-  : new Proxy({} as any, {
-      get(target, prop) {
-        return () => {
-          throw new Error("Database query failed: DATABASE_URL environment variable is required but was not provided.");
-        };
-      }
-    })) as NonNullable<typeof realDb>;
+if (!supabaseKey) {
+  throw new Error("Supabase Key environment variable is required.");
+}
 
-export * from "./schema";
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  supabaseKey
+);

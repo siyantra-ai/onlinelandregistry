@@ -1,6 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, ordersTable, servicesTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { supabase } from "@workspace/db";
 import { CreateCheckoutSessionBody, CalculatePriceBody, LookupPostcodeQueryParams } from "@workspace/api-zod";
 import { calculatePrice } from "../lib/pricing";
 import { logger } from "../lib/logger";
@@ -21,14 +20,14 @@ router.post("/checkout/session", async (req, res): Promise<void> => {
     return;
   }
 
-  const [order] = await db.select().from(ordersTable).where(eq(ordersTable.id, parsed.data.orderId));
-  if (!order) {
+  const { data: order, error } = await supabase.from('orders').select('*').eq('id', parsed.data.orderId).maybeSingle();
+  if (error || !order) {
     res.status(400).json({ error: "Order not found" });
     return;
   }
 
   const stripe = getStripe();
-  const totalInPence = Math.round(Number(order.totalAmount) * 100);
+  const totalInPence = Math.round(Number(order.total_amount) * 100);
 
   // Build base URL from the request
   const protocol = req.headers["x-forwarded-proto"] || "https";
@@ -43,31 +42,31 @@ router.post("/checkout/session", async (req, res): Promise<void> => {
         price_data: {
           currency: "gbp",
           product_data: {
-            name: order.serviceName,
-            description: `Order ${order.orderNumber} — ${order.propertyCount} propert${order.propertyCount === 1 ? "y" : "ies"} (${order.country === "england_wales" ? "England & Wales" : "Scotland"})`,
+            name: order.service_name,
+            description: `Order ${order.order_number} — ${order.property_count} propert${order.property_count === 1 ? "y" : "ies"} (${order.country === "england_wales" ? "England & Wales" : "Scotland"})`,
           },
           unit_amount: totalInPence,
         },
         quantity: 1,
       },
     ],
-    success_url: `${baseUrl}/order/success?session_id={CHECKOUT_SESSION_ID}&order_number=${order.orderNumber}`,
+    success_url: `${baseUrl}/order/success?session_id={CHECKOUT_SESSION_ID}&order_number=${order.order_number}`,
     cancel_url: `${baseUrl}/order?cancelled=true`,
-    customer_email: order.customerEmail,
+    customer_email: order.customer_email,
     metadata: {
       orderId: order.id.toString(),
-      orderNumber: order.orderNumber,
+      orderNumber: order.order_number,
     },
     payment_intent_data: {
       metadata: {
         orderId: order.id.toString(),
-        orderNumber: order.orderNumber,
+        orderNumber: order.order_number,
       },
     },
   });
 
   // Save session ID on order
-  await db.update(ordersTable).set({ stripeSessionId: session.id }).where(eq(ordersTable.id, order.id));
+  await supabase.from('orders').update({ stripe_session_id: session.id }).eq('id', order.id);
 
   res.json({ url: session.url ?? "", sessionId: session.id });
 });
@@ -79,22 +78,22 @@ router.post("/checkout/price", async (req, res): Promise<void> => {
     return;
   }
 
-  const [service] = await db.select().from(servicesTable).where(eq(servicesTable.id, parsed.data.serviceId));
+  const { data: service, error: serviceError } = await supabase.from('services').select('*').eq('id', parsed.data.serviceId).maybeSingle();
 
-  if (!service) {
+  if (serviceError || !service) {
     res.status(400).json({ error: "Service not found" });
     return;
   }
 
   const pricing = calculatePrice({
-    basePrice: Number(service.basePrice),
+    basePrice: Number(service.base_price),
     propertyCount: parsed.data.propertyCount,
     country: parsed.data.country,
     trackingType: parsed.data.trackingType,
     deliveryType: parsed.data.deliveryType,
     notificationType: parsed.data.notificationType,
     addons: parsed.data.addons as string[],
-  }, Number(service.basePrice));
+  }, Number(service.base_price));
 
   res.json(pricing);
 });

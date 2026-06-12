@@ -1,6 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, paymentsTable, ordersTable, activityLogsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { supabase } from "@workspace/db";
 import { logger } from "../lib/logger";
 import Stripe from "stripe";
 
@@ -15,10 +14,10 @@ function getStripe(): Stripe {
 function formatPayment(p: Record<string, unknown>) {
   return {
     ...p,
-    grossAmount: Number(p.grossAmount),
-    stripeFee: p.stripeFee != null ? Number(p.stripeFee) : null,
-    netAmount: p.netAmount != null ? Number(p.netAmount) : null,
-    createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : p.createdAt,
+    grossAmount: Number(p.gross_amount),
+    stripeFee: p.stripe_fee != null ? Number(p.stripe_fee) : null,
+    netAmount: p.net_amount != null ? Number(p.net_amount) : null,
+    createdAt: p.created_at ? new Date(p.created_at as string).toISOString() : null,
   };
 }
 
@@ -52,23 +51,23 @@ router.post("/webhooks/stripe", async (req, res): Promise<void> => {
     if (orderId) {
       const grossAmount = (session.amount_total ?? 0) / 100;
 
-      await db.update(ordersTable).set({
+      await supabase.from('orders').update({
         status: "in_progress",
-        paidAt: new Date(),
-      }).where(eq(ordersTable.id, orderId));
+        paid_at: new Date().toISOString(),
+      }).eq('id', orderId);
 
-      await db.insert(paymentsTable).values({
-        orderId,
-        stripePaymentId: session.payment_intent as string ?? session.id,
-        stripeSessionId: session.id,
-        grossAmount: grossAmount.toString(),
+      await supabase.from('payments').insert({
+        order_id: orderId,
+        stripe_payment_id: session.payment_intent as string ?? session.id,
+        stripe_session_id: session.id,
+        gross_amount: grossAmount.toString(),
         currency: session.currency ?? "gbp",
         method: "card",
         status: "paid",
       });
 
-      await db.insert(activityLogsTable).values({
-        orderId,
+      await supabase.from('activity_logs').insert({
+        order_id: orderId,
         action: "payment_received",
         detail: `Payment of £${grossAmount.toFixed(2)} received via Stripe`,
       });
@@ -82,12 +81,12 @@ router.post("/webhooks/stripe", async (req, res): Promise<void> => {
     const paymentIntentId = typeof charge.payment_intent === "string" ? charge.payment_intent : "";
 
     if (paymentIntentId) {
-      const [payment] = await db.select().from(paymentsTable).where(eq(paymentsTable.stripePaymentId, paymentIntentId));
+      const { data: payment } = await supabase.from('payments').select('*').eq('stripe_payment_id', paymentIntentId).maybeSingle();
       if (payment) {
-        await db.update(paymentsTable).set({ status: "refunded" }).where(eq(paymentsTable.id, payment.id));
-        await db.update(ordersTable).set({ status: "refunded" }).where(eq(ordersTable.id, payment.orderId));
-        await db.insert(activityLogsTable).values({
-          orderId: payment.orderId,
+        await supabase.from('payments').update({ status: "refunded" }).eq('id', payment.id);
+        await supabase.from('orders').update({ status: "refunded" }).eq('id', payment.order_id);
+        await supabase.from('activity_logs').insert({
+          order_id: payment.order_id,
           action: "refund_processed",
           detail: "Payment refunded via Stripe",
         });

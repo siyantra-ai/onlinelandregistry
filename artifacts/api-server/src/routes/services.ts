@@ -1,13 +1,16 @@
 import { Router, type IRouter } from "express";
-import { db, servicesTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { supabase } from "@workspace/db";
 import { ListServicesResponse, GetServiceParams, GetServiceResponse } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
 
 router.get("/services", async (req, res): Promise<void> => {
-  const services = await db.select().from(servicesTable).orderBy(servicesTable.id);
+  const { data: services, error } = await supabase.from('services').select('*').order('id');
+  if (error || !services) {
+    res.status(500).json({ error: error?.message || "Failed to fetch services" });
+    return;
+  }
   res.json(ListServicesResponse.parse(services.map(s => ({ ...s, basePrice: Number(s.basePrice) }))));
 });
 
@@ -18,7 +21,11 @@ router.get("/services/:id", async (req, res): Promise<void> => {
     return;
   }
 
-  const [service] = await db.select().from(servicesTable).where(eq(servicesTable.id, params.data.id));
+  const { data: service, error } = await supabase.from('services').select('*').eq('id', params.data.id).maybeSingle();
+  if (error) {
+    res.status(500).json({ error: error.message });
+    return;
+  }
   if (!service) {
     res.status(404).json({ error: "Service not found" });
     return;
