@@ -15,6 +15,12 @@ try {
   if (currentDir === 'api-server') {
     console.log('Detected api-server project. Building api-server...');
     execSync('pnpm --filter @workspace/api-server run build', { stdio: 'inherit', cwd: repoRoot });
+    
+    // Create a dummy public directory so Vercel does not throw "missing public directory" error
+    console.log('Creating a dummy public folder for Vercel deployment satisfaction...');
+    fs.mkdirSync('public', { recursive: true });
+    fs.writeFileSync('public/index.html', '<h1>Onlinelandregistry.uk API Server</h1>');
+    
     console.log('api-server build completed!');
   } else {
     // Default to building the land-registry frontend
