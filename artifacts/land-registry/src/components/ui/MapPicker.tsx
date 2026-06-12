@@ -299,7 +299,7 @@ export default function MapPicker({
       </div>
 
       {/* Map container */}
-      <div className="relative rounded-xl overflow-hidden border border-border/60 shadow-sm" style={{ height: 400 }}>
+      <div className="relative rounded-xl overflow-hidden border border-border/60 shadow-sm" style={{ height: "min(400px, 60vw)" }}>
         <div ref={mapRef} className="w-full h-full" />
 
         {/* Hint overlay — only before any pin is placed */}

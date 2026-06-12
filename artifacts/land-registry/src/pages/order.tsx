@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, ArrowRight, ArrowLeft, Check, Search, ShieldCheck, Map } from "lucide-react";
+import { Loader2, ArrowRight, ArrowLeft, Check, Search, ShieldCheck, Map, Bell } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const MapPicker = lazy(() => import("@/components/ui/MapPicker"));
@@ -101,13 +101,17 @@ export default function OrderWizard() {
         toast({ title: "Error", description: "Please select a service", variant: "destructive" });
         return;
       }
-      const isMapSearch = selectedService?.slug === "map-land-search";
       if (isMapSearch && (!state.lat || !state.lng)) {
         toast({ title: "Pin required", description: "Please click on the map or search an address to mark the land parcel location.", variant: "destructive" });
         return;
       }
-      if (!isMapSearch && !state.propertyAddress) {
+      if (!isAlertService && !isMapSearch && !state.propertyAddress) {
         toast({ title: "Error", description: "Please provide a property address", variant: "destructive" });
+        return;
+      }
+      // Property Alert: set a placeholder address if nothing provided
+      if (isAlertService && !state.propertyAddress && !state.titleNumber) {
+        toast({ title: "Error", description: "Please provide a title number or property address for monitoring.", variant: "destructive" });
         return;
       }
     }
@@ -203,27 +207,31 @@ export default function OrderWizard() {
 
   const selectedService = services?.find(s => s.id === state.serviceId);
 
+  // Service-specific flags
+  const isMapSearch     = selectedService?.slug === "map-land-search";
+  const isAlertService  = selectedService?.slug === "property-alert";
+  const hasTitlePlan    = ["title-plan", "ownership-bundle"].includes(selectedService?.slug ?? "");
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl min-h-[calc(100vh-200px)]">
+    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 max-w-3xl min-h-[calc(100vh-200px)]">
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between items-center relative">
-          <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-muted -z-10 rounded-full"></div>
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary -z-10 rounded-full transition-all duration-300" style={{ width: `${((step - 1) / 3) * 100}%` }}></div>
-          
+          <div className="absolute left-0 right-0 top-4 h-0.5 bg-muted -z-10 rounded-full"></div>
+          <div className="absolute left-0 top-4 h-0.5 bg-primary -z-10 rounded-full transition-all duration-300" style={{ width: `${((step - 1) / 3) * 100}%` }}></div>
           {[
             { num: 1, label: "Property" },
             { num: 2, label: "Details" },
-            { num: 3, label: "Finalise" },
+            { num: 3, label: "Options" },
             { num: 4, label: "Pay" }
           ].map((s) => (
-            <div key={s.num} className="flex flex-col items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors border-2 ${
-                step >= s.num ? "bg-primary border-primary text-primary-foreground" : "bg-background border-muted text-muted-foreground"
+            <div key={s.num} className="flex flex-col items-center gap-1.5">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all border-2 ${
+                step >= s.num ? "bg-primary border-primary text-primary-foreground shadow-sm" : "bg-background border-muted text-muted-foreground"
               }`}>
                 {step > s.num ? <Check className="w-4 h-4" /> : s.num}
               </div>
-              <span className={`text-xs font-medium ${step >= s.num ? "text-primary" : "text-muted-foreground"}`}>{s.label}</span>
+              <span className={`text-[0.7rem] font-semibold tracking-wide ${step >= s.num ? "text-primary" : "text-muted-foreground"}`}>{s.label}</span>
             </div>
           ))}
         </div>
@@ -232,21 +240,21 @@ export default function OrderWizard() {
       {/* Main Form Area */}
       <Card className="shadow-lg border-primary/10 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-1 bg-accent h-full"></div>
-        <CardHeader className="bg-primary/5 pb-4">
-          <CardTitle className="text-2xl font-heading text-primary">
-            {step === 1 && "Property Details"}
+        <CardHeader className="bg-primary/5 px-4 sm:px-6 pb-4">
+          <CardTitle className="text-xl sm:text-2xl font-heading text-primary">
+            {step === 1 && (isAlertService ? "Alert Setup" : "Property Details")}
             {step === 2 && "Your Details"}
             {step === 3 && "Processing & Delivery"}
             {step === 4 && "Review & Pay"}
           </CardTitle>
-          <CardDescription>
-            {step === 1 && "Tell us which property you need documents for."}
+          <CardDescription className="text-sm">
+            {step === 1 && (isAlertService ? "Tell us which titles you'd like to monitor for fraud." : isMapSearch ? "Pin the land parcel on the map below." : "Tell us which property you need documents for.")}
             {step === 2 && "Where should we send your documents?"}
             {step === 3 && "How fast do you need them?"}
             {step === 4 && "Secure your order and start processing."}
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="p-4 sm:p-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
@@ -265,7 +273,7 @@ export default function OrderWizard() {
                       </SelectTrigger>
                       <SelectContent>
                         {services?.map(s => (
-                          <SelectItem key={s.id} value={s.id.toString()}>{s.name} — from £{s.basePrice.toFixed(2)}</SelectItem>
+                          <SelectItem key={s.id} value={s.id.toString()}>{s.name} — from £{s.basePrice.toFixed(0)}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -301,8 +309,35 @@ export default function OrderWizard() {
 
                   <Separator />
 
-                  {/* ── Map / Land Search: interactive map picker ── */}
-                  {selectedService?.slug === "map-land-search" ? (
+                  {/* ── Property Alert: title-number based monitoring ── */}
+                  {isAlertService && (
+                    <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-4 space-y-3">
+                      <div className="flex items-start gap-2.5">
+                        <Bell className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                        <div>
+                          <p className="text-sm font-semibold text-amber-900">Fraud Monitoring Service</p>
+                          <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">
+                            We'll monitor up to 3 title numbers and alert you immediately if anyone attempts to alter or charge your deeds. Provide the title number(s) below, or leave blank if unknown — our team will locate them from your address.
+                          </p>
+                        </div>
+                      </div>
+                      <Input
+                        placeholder="Title number(s) e.g. NGL12345, SGL99001 (optional)"
+                        value={state.titleNumber}
+                        onChange={(e) => updateState({ titleNumber: e.target.value })}
+                        className="h-11 bg-white"
+                      />
+                      <Input
+                        placeholder="Property address (to help us locate your titles)"
+                        value={state.propertyAddress}
+                        onChange={(e) => updateState({ propertyAddress: e.target.value })}
+                        className="h-11 bg-white"
+                      />
+                    </div>
+                  )}
+
+                  {/* ── Map / Land Search or Standard address lookup ── */}
+                  {!isAlertService && (isMapSearch ? (
                     <div className="space-y-3">
                       <div className="flex items-center gap-2 mb-1">
                         <Map className="w-4 h-4 text-accent" />
@@ -366,28 +401,35 @@ export default function OrderWizard() {
                         />
                       </div>
                     </div>
+                  ))}
+
+                  {/* Title number — not shown for property-alert (already has its own input above) */}
+                  {!isAlertService && (
+                    <div className="space-y-3">
+                      <Label htmlFor="titleNumber">Title Number (Optional)</Label>
+                      <Input
+                        id="titleNumber"
+                        placeholder="e.g. NGL12345"
+                        value={state.titleNumber}
+                        onChange={(e) => updateState({ titleNumber: e.target.value })}
+                        className="h-12"
+                      />
+                      <p className="text-xs text-muted-foreground">If you know the official title number, it can speed up processing.</p>
+                    </div>
                   )}
 
-                  <div className="space-y-3">
-                    <Label htmlFor="titleNumber">Title Number (Optional)</Label>
-                    <Input 
-                      id="titleNumber"
-                      placeholder="e.g. NGL12345" 
-                      value={state.titleNumber}
-                      onChange={(e) => updateState({ titleNumber: e.target.value })}
-                      className="h-12"
-                    />
-                    <p className="text-xs text-muted-foreground">If you know the official title number, it can speed up processing.</p>
-                  </div>
+                  {/* Add-ons — not shown for property-alert or map-land-search */}
+                  {!isAlertService && !isMapSearch && (
+                  <div>
+                  <Separator className="mb-5" />
+                  <div className="space-y-4 bg-muted/30 p-4 rounded-xl border border-border">
+                    <Label className="text-base font-semibold">Recommended Add-ons</Label>
 
-                  <Separator />
-
-                  <div className="space-y-4 bg-muted/30 p-4 rounded-lg border border-border">
-                    <Label className="text-base">Recommended Add-ons</Label>
-                    
+                    {/* Title Plan add-on — hidden when service already includes a plan */}
+                    {!hasTitlePlan && (
                     <div className="flex items-start space-x-3">
-                      <Checkbox 
-                        id="addon-plan" 
+                      <Checkbox
+                        id="addon-plan"
                         checked={state.addons.includes("title_plan")}
                         onCheckedChange={(checked) => {
                           if (checked) {
@@ -398,17 +440,15 @@ export default function OrderWizard() {
                         }}
                       />
                       <div className="grid gap-1.5 leading-none">
-                        <label
-                          htmlFor="addon-plan"
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          Add Title Plan (+£36.00)
+                        <label htmlFor="addon-plan" className="text-sm font-medium leading-none cursor-pointer">
+                          Add Title Plan (+£36)
                         </label>
                         <p className="text-sm text-muted-foreground">
-                          Shows the official boundaries of the property. <a href="#" className="text-primary hover:underline">View sample</a>
+                          Shows the official boundaries of the property.
                         </p>
                       </div>
                     </div>
+                    )}
                     
                     <div className="flex items-start space-x-3">
                       <Checkbox 
@@ -423,10 +463,7 @@ export default function OrderWizard() {
                         }}
                       />
                       <div className="grid gap-1.5 leading-none">
-                        <label
-                          htmlFor="addon-flood"
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
+                        <label htmlFor="addon-flood" className="text-sm font-medium leading-none cursor-pointer">
                           Add Flood Risk Report (+£14.95)
                         </label>
                         <p className="text-sm text-muted-foreground">
@@ -435,6 +472,8 @@ export default function OrderWizard() {
                       </div>
                     </div>
                   </div>
+                  </div>
+                  )}
                 </div>
               )}
 
@@ -638,25 +677,37 @@ export default function OrderWizard() {
                     </div>
                   ) : (
                     <>
-                      <div className="bg-gray-50 rounded-lg p-6 border border-border">
+                      <div className="bg-gray-50 rounded-xl p-5 border border-border">
                         <h4 className="font-heading font-bold text-lg mb-4 text-primary">Order Summary</h4>
-                        
-                        <div className="space-y-3 mb-6">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground font-medium">Service</span>
-                            <span className="font-semibold text-foreground text-right">{selectedService?.name}</span>
+
+                        <div className="space-y-3 mb-5">
+                          <div className="flex justify-between gap-3">
+                            <span className="text-muted-foreground font-medium shrink-0">Service</span>
+                            <span className="font-semibold text-foreground text-right text-sm">{selectedService?.name}</span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground font-medium">Property</span>
-                            <span className="font-semibold text-foreground text-right max-w-[60%] truncate" title={state.propertyAddress}>{state.propertyAddress}</span>
+                          {isMapSearch && state.lat && state.lng ? (
+                            <div className="flex justify-between gap-3">
+                              <span className="text-muted-foreground font-medium shrink-0">Location</span>
+                              <span className="font-semibold text-foreground text-right text-sm font-mono">{state.lat.toFixed(5)}, {state.lng.toFixed(5)}</span>
+                            </div>
+                          ) : isAlertService ? (
+                            <div className="flex justify-between gap-3">
+                              <span className="text-muted-foreground font-medium shrink-0">Monitoring</span>
+                              <span className="font-semibold text-foreground text-right text-sm max-w-[55%] truncate">{state.titleNumber || state.propertyAddress || "—"}</span>
+                            </div>
+                          ) : (
+                            <div className="flex justify-between gap-3">
+                              <span className="text-muted-foreground font-medium shrink-0">Property</span>
+                              <span className="font-semibold text-foreground text-right text-sm max-w-[55%] truncate" title={state.propertyAddress}>{state.propertyAddress || "—"}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between gap-3">
+                            <span className="text-muted-foreground font-medium shrink-0">Delivery</span>
+                            <span className="font-semibold text-foreground text-right text-sm">{state.deliveryType === 'pdf_only' ? 'PDF Only' : 'PDF + Print'}</span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground font-medium">Delivery</span>
-                            <span className="font-semibold text-foreground text-right">{state.deliveryType === 'pdf_only' ? 'PDF Only' : 'PDF + Print'}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground font-medium">Tracking</span>
-                            <span className="font-semibold text-foreground text-right">{state.trackingType.replace(/_/g, ' ')}</span>
+                          <div className="flex justify-between gap-3">
+                            <span className="text-muted-foreground font-medium shrink-0">Speed</span>
+                            <span className="font-semibold text-foreground text-right text-sm capitalize">{state.trackingType.replace(/_/g, ' ')}</span>
                           </div>
                         </div>
 
@@ -725,16 +776,16 @@ export default function OrderWizard() {
             </motion.div>
           </AnimatePresence>
         </CardContent>
-        <CardFooter className="bg-muted/20 px-6 py-4 flex justify-between border-t border-border mt-4">
+        <CardFooter className="bg-muted/20 px-4 sm:px-6 py-4 flex justify-between border-t border-border mt-4">
           {step > 1 ? (
-            <Button variant="outline" onClick={handleBack} className="h-12 px-6">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back
+            <Button variant="outline" onClick={handleBack} className="h-11 px-4 sm:px-6">
+              <ArrowLeft className="w-4 h-4 mr-1.5" /> Back
             </Button>
-          ) : <div></div>}
-          
+          ) : <div />}
+
           {step < 4 ? (
-            <Button onClick={handleNext} className="bg-primary hover:bg-primary/90 h-12 px-8 font-semibold">
-              Next Step <ArrowRight className="w-4 h-4 ml-2" />
+            <Button onClick={handleNext} className="bg-primary hover:bg-primary/90 h-11 px-6 sm:px-8 font-semibold">
+              Continue <ArrowRight className="w-4 h-4 ml-1.5" />
             </Button>
           ) : (
             <Button 

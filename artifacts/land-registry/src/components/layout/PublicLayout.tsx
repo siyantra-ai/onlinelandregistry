@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { FileText, Map, Package, Search, MapPin, Bell, FileSignature, Mail, ExternalLink } from "lucide-react";
+import { FileText, Map, Package, Search, MapPin, Bell, FileSignature, Mail, ExternalLink, Menu, X } from "lucide-react";
 
 const FOOTER_SERVICES = [
   { icon: FileText,      label: "Title Register",   price: "£36", slug: "title-register" },
@@ -13,25 +14,34 @@ const FOOTER_SERVICES = [
 ];
 
 const FOOTER_COMPANY = [
-  { label: "About Us",          href: "/about" },
-  { label: "Contact Support",   href: "/contact" },
-  { label: "FAQs",              href: "/#faqs" },
-  { label: "Privacy Policy",    href: "/privacy" },
-  { label: "Terms & Conditions",href: "/terms" },
-  { label: "Cookie Policy",     href: "/cookies" },
+  { label: "About Us",           href: "/about" },
+  { label: "Contact Support",    href: "/contact" },
+  { label: "FAQs",               href: "/#faqs" },
+  { label: "Privacy Policy",     href: "/privacy" },
+  { label: "Terms & Conditions", href: "/terms" },
+  { label: "Cookie Policy",      href: "/cookies" },
+];
+
+const NAV_LINKS = [
+  { label: "Services",     href: "/#services" },
+  { label: "How It Works", href: "/#how-it-works" },
+  { label: "FAQs",         href: "/#faqs" },
+  { label: "Admin",        href: "/admin" },
 ];
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background flex flex-col font-sans">
 
       {/* ─── Navigation ─── */}
       <header className="bg-primary text-primary-foreground sticky top-0 z-50 border-b border-white/8">
-        <div className="container mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
+          <Link href="/" className="flex items-center gap-2.5 shrink-0" onClick={() => setMenuOpen(false)}>
             <div className="bg-accent p-1.5 rounded-md">
-              <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
             </div>
@@ -40,19 +50,66 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             </span>
           </Link>
 
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-7 text-[0.875rem] font-medium">
-            <a href="/#services" className="text-white/65 hover:text-white transition-colors">Services</a>
-            <a href="/#how-it-works" className="text-white/65 hover:text-white transition-colors">How It Works</a>
-            <a href="/#faqs" className="text-white/65 hover:text-white transition-colors">FAQs</a>
-            <Link href="/admin" className="text-white/65 hover:text-white transition-colors">Admin</Link>
+            {NAV_LINKS.map(({ label, href }) =>
+              href.startsWith("/") && !href.includes("#") ? (
+                <Link key={label} href={href} className="text-white/65 hover:text-white transition-colors">{label}</Link>
+              ) : (
+                <a key={label} href={href} className="text-white/65 hover:text-white transition-colors">{label}</a>
+              )
+            )}
           </nav>
 
-          <Link href="/order">
-            <Button className="bg-accent hover:bg-accent/90 text-white border-0 font-semibold text-sm h-9 px-5 shadow-sm rounded-md">
-              Order Documents
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/order" className="hidden sm:block">
+              <Button className="bg-accent hover:bg-accent/90 text-white border-0 font-semibold text-sm h-9 px-5 shadow-sm rounded-md">
+                Order Documents
+              </Button>
+            </Link>
+
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden p-2 text-white/70 hover:text-white rounded-md hover:bg-white/10 transition-colors"
+              onClick={() => setMenuOpen(o => !o)}
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile drawer */}
+        {menuOpen && (
+          <div className="md:hidden bg-primary border-t border-white/10 px-4 pb-5 pt-3 space-y-1">
+            {NAV_LINKS.map(({ label, href }) =>
+              href.startsWith("/") && !href.includes("#") ? (
+                <Link
+                  key={label} href={href}
+                  className="block py-2.5 px-3 text-[0.9375rem] font-medium text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-colors"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </Link>
+              ) : (
+                <a
+                  key={label} href={href}
+                  className="block py-2.5 px-3 text-[0.9375rem] font-medium text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-colors"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </a>
+              )
+            )}
+            <div className="pt-3">
+              <Link href="/order" onClick={() => setMenuOpen(false)}>
+                <Button className="w-full bg-accent hover:bg-accent/90 text-white font-semibold h-11 rounded-lg">
+                  Order Documents
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="flex-1">{children}</main>
@@ -63,11 +120,11 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <footer className="bg-[#0d1a2d] text-white/60">
 
         {/* Main grid */}
-        <div className="container mx-auto px-6 lg:px-8 pt-16 pb-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10">
+          <div className="grid grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
 
-            {/* Col 1 — Brand (wider) */}
-            <div className="lg:col-span-4 space-y-5">
+            {/* Col 1 — Brand (full width on mobile) */}
+            <div className="col-span-2 lg:col-span-4 space-y-5">
               <Link href="/" className="inline-flex items-center gap-2.5">
                 <div className="bg-accent p-1.5 rounded-md shrink-0">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +156,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             </div>
 
             {/* Col 2 — Services */}
-            <div className="lg:col-span-3 lg:col-start-6">
+            <div className="col-span-1 lg:col-span-3 lg:col-start-6">
               <p className="text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Document Shop</p>
               <ul className="space-y-3">
                 {FOOTER_SERVICES.map(({ icon: Icon, label, price, slug }) => (
@@ -122,7 +179,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             </div>
 
             {/* Col 3 — Company */}
-            <div className="lg:col-span-2">
+            <div className="col-span-1 lg:col-span-2">
               <p className="text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Company</p>
               <ul className="space-y-3">
                 {FOOTER_COMPANY.map(({ label, href }) => (
@@ -135,20 +192,20 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               </ul>
             </div>
 
-            {/* Col 4 — Contact */}
-            <div className="lg:col-span-3">
+            {/* Col 4 — Contact (full width on mobile) */}
+            <div className="col-span-2 lg:col-span-3">
               <p className="text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Contact</p>
               <div className="space-y-5">
                 <div>
                   <p className="text-[0.6875rem] font-semibold text-white/25 uppercase tracking-wide mb-1.5">Support</p>
-                  <a href="mailto:support@onlinelandregistry.uk" className="flex items-center gap-1.5 text-[0.8125rem] text-white/45 hover:text-white/80 transition-colors">
+                  <a href="mailto:support@onlinelandregistry.uk" className="flex items-center gap-1.5 text-[0.8125rem] text-white/45 hover:text-white/80 transition-colors break-all">
                     <Mail className="w-3 h-3 shrink-0" />
                     support@onlinelandregistry.uk
                   </a>
                 </div>
                 <div>
                   <p className="text-[0.6875rem] font-semibold text-white/25 uppercase tracking-wide mb-1.5">Sales</p>
-                  <a href="mailto:sales@onlinelandregistry.uk" className="flex items-center gap-1.5 text-[0.8125rem] text-white/45 hover:text-white/80 transition-colors">
+                  <a href="mailto:sales@onlinelandregistry.uk" className="flex items-center gap-1.5 text-[0.8125rem] text-white/45 hover:text-white/80 transition-colors break-all">
                     <Mail className="w-3 h-3 shrink-0" />
                     sales@onlinelandregistry.uk
                   </a>
@@ -169,7 +226,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
         {/* Disclaimer */}
         <div className="border-t border-white/6">
-          <div className="container mx-auto px-6 lg:px-8 py-6">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <p className="text-[0.75rem] text-white/25 leading-relaxed max-w-5xl">
               <strong className="text-white/40 font-semibold">Independent Service Notice:</strong>{" "}
               Onlinelandregistry.uk is operated by <strong className="text-white/35 font-semibold">Swift Task Services Ltd</strong>, an independent intermediary. We are{" "}
@@ -184,8 +241,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
         {/* Bottom bar */}
         <div className="border-t border-white/6">
-          <div className="container mx-auto px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="text-[0.75rem] text-white/25">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p className="text-[0.75rem] text-white/25 text-center sm:text-left">
               &copy; {new Date().getFullYear()} Swift Task Services Ltd. All rights reserved.
               <span className="mx-2 text-white/12">·</span>
               Company No. <span className="font-mono">SC123456</span>
