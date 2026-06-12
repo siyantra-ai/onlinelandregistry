@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm install --frozen-lockfile && node scripts/build-vercel.js",
+  "buildCommand": "pnpm install --frozen-lockfile && node scripts/build-vercel.cjs",
   "outputDirectory": "public",
   "framework": null,
   "rewrites": [
