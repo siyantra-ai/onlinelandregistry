@@ -1,6 +1,6 @@
 {
   "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter @workspace/land-registry run build",
-  "outputDirectory": "artifacts/land-registry/dist/public",
+  "outputDirectory": "artifacts/land-registry/public",
   "framework": null,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },

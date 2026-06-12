@@ -1,5 +1,5 @@
 {
-  "outputDirectory": "dist/public",
+  "outputDirectory": "public",
   "rewrites": [
     { "source": "/((?!_next|favicon\\.svg|opengraph\\.jpg|robots\\.txt).*)", "destination": "/index.html" }
   ],
