@@ -1,5 +1,5 @@
 import { useListServices, useCalculatePrice, useCreateOrder, useCreateCheckoutSession, OrderInputCountry, OrderInputDeliveryType, OrderInputNotificationType, OrderInputTrackingType, useLookupPostcode } from "@workspace/api-client-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -10,8 +10,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, ArrowRight, ArrowLeft, Check, Search, ShieldCheck } from "lucide-react";
+import { Loader2, ArrowRight, ArrowLeft, Check, Search, ShieldCheck, Map } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+const MapPicker = lazy(() => import("@/components/ui/MapPicker"));
 
 // Types for wizard state
 interface OrderState {
@@ -99,7 +101,12 @@ export default function OrderWizard() {
         toast({ title: "Error", description: "Please select a service", variant: "destructive" });
         return;
       }
-      if (!state.propertyAddress) {
+      const isMapSearch = selectedService?.slug === "map-land-search";
+      if (isMapSearch && (!state.lat || !state.lng)) {
+        toast({ title: "Pin required", description: "Please click on the map or search an address to mark the land parcel location.", variant: "destructive" });
+        return;
+      }
+      if (!isMapSearch && !state.propertyAddress) {
         toast({ title: "Error", description: "Please provide a property address", variant: "destructive" });
         return;
       }
@@ -294,44 +301,72 @@ export default function OrderWizard() {
 
                   <Separator />
 
-                  <div className="space-y-4">
-                    <Label className="text-base block">Find Property</Label>
-                    <div className="flex gap-2">
-                      <Input 
-                        placeholder="Enter Postcode (e.g. SW1A 1AA)" 
-                        value={postcodeSearch} 
-                        onChange={(e) => setPostcodeSearch(e.target.value)}
-                        className="h-12"
-                      />
-                      <Button onClick={() => searchPostcode()} type="button" className="h-12 w-24 bg-secondary hover:bg-secondary/80 text-secondary-foreground" disabled={postcodeLoading}>
-                        {postcodeLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-                      </Button>
-                    </div>
-                    {postcodeResult?.addresses && postcodeResult.addresses.length > 0 && (
-                      <div className="mt-2">
-                        <Select onValueChange={(val) => updateState({ propertyAddress: val })}>
-                          <SelectTrigger className="h-12">
-                            <SelectValue placeholder="Select an address" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {postcodeResult.addresses.map((addr, i) => (
-                              <SelectItem key={i} value={addr}>{addr}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                  {/* ── Map / Land Search: interactive map picker ── */}
+                  {selectedService?.slug === "map-land-search" ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Map className="w-4 h-4 text-accent" />
+                        <Label className="text-base">Locate the Land Parcel</Label>
                       </div>
-                    )}
-                    <div className="space-y-2">
-                      <Label htmlFor="address-manual" className="text-sm font-normal text-muted-foreground">Or enter address manually</Label>
-                      <Input 
-                        id="address-manual"
-                        placeholder="Full property address" 
-                        value={state.propertyAddress}
-                        onChange={(e) => updateState({ propertyAddress: e.target.value })}
-                        className="h-12"
-                      />
+                      <p className="text-sm text-muted-foreground -mt-1">
+                        Search by address or postcode, or click directly on the map to pin the exact location. You can drag the pin to fine-tune.
+                      </p>
+                      <Suspense fallback={
+                        <div className="flex items-center justify-center h-[460px] rounded-xl border border-border/60 bg-muted/30">
+                          <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                        </div>
+                      }>
+                        <MapPicker
+                          initialLat={state.lat}
+                          initialLng={state.lng}
+                          initialAddress={state.propertyAddress}
+                          onLocationSelect={(lat, lng, address) => {
+                            updateState({ lat, lng, propertyAddress: address });
+                          }}
+                        />
+                      </Suspense>
                     </div>
-                  </div>
+                  ) : (
+                    /* ── Standard postcode / address lookup ── */
+                    <div className="space-y-4">
+                      <Label className="text-base block">Find Property</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Enter Postcode (e.g. SW1A 1AA)"
+                          value={postcodeSearch}
+                          onChange={(e) => setPostcodeSearch(e.target.value)}
+                          className="h-12"
+                        />
+                        <Button onClick={() => searchPostcode()} type="button" className="h-12 w-24 bg-secondary hover:bg-secondary/80 text-secondary-foreground" disabled={postcodeLoading}>
+                          {postcodeLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                        </Button>
+                      </div>
+                      {postcodeResult?.addresses && postcodeResult.addresses.length > 0 && (
+                        <div className="mt-2">
+                          <Select onValueChange={(val) => updateState({ propertyAddress: val })}>
+                            <SelectTrigger className="h-12">
+                              <SelectValue placeholder="Select an address" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {postcodeResult.addresses.map((addr, i) => (
+                                <SelectItem key={i} value={addr}>{addr}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                      <div className="space-y-2">
+                        <Label htmlFor="address-manual" className="text-sm font-normal text-muted-foreground">Or enter address manually</Label>
+                        <Input
+                          id="address-manual"
+                          placeholder="Full property address"
+                          value={state.propertyAddress}
+                          onChange={(e) => updateState({ propertyAddress: e.target.value })}
+                          className="h-12"
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   <div className="space-y-3">
                     <Label htmlFor="titleNumber">Title Number (Optional)</Label>
