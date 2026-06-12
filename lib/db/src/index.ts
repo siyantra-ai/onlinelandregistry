@@ -1,3 +1,10 @@
+import * as path from "path";
+import { config } from "dotenv";
+
+// Locally load .env file from the root directory so backend scripts have access
+config({ path: path.resolve(process.cwd(), "../../.env") });
+config({ path: path.resolve(process.cwd(), ".env") }); // fallback for root execution
+
 import { createClient } from "@supabase/supabase-js";
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {

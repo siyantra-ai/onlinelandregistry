@@ -11,7 +11,7 @@ router.get("/services", async (req, res): Promise<void> => {
     res.status(500).json({ error: error?.message || "Failed to fetch services" });
     return;
   }
-  res.json(ListServicesResponse.parse(services.map(s => ({ ...s, basePrice: Number(s.basePrice) }))));
+  res.json(ListServicesResponse.parse(services.map(s => ({ ...s, basePrice: Number(s.base_price) }))));
 });
 
 router.get("/services/:id", async (req, res): Promise<void> => {
@@ -30,7 +30,7 @@ router.get("/services/:id", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Service not found" });
     return;
   }
-  res.json(GetServiceResponse.parse({ ...service, basePrice: Number(service.basePrice) }));
+  res.json(GetServiceResponse.parse({ ...service, basePrice: Number(service.base_price) }));
 });
 
 export default router;

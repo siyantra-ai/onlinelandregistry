@@ -719,7 +719,7 @@ export default function OrderWizard() {
                           {priceBreakdown.lineItems.map((item, idx) => (
                             <div key={idx} className="flex justify-between">
                               <span className="text-muted-foreground">{item.label}</span>
-                              <span className="font-medium text-foreground">£{(item.amount/100).toFixed(2)}</span>
+                              <span className="font-medium text-foreground">£{(item.amount).toFixed(2)}</span>
                             </div>
                           ))}
                         </div>
@@ -729,20 +729,20 @@ export default function OrderWizard() {
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground font-medium">Total Document Fees (No VAT)</span>
-                            <span className="font-semibold text-foreground">£{(priceBreakdown.documentFee/100).toFixed(2)}</span>
+                            <span className="font-semibold text-foreground">£{(priceBreakdown.documentFee).toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground font-medium">Service & Processing Fees</span>
-                            <span className="font-semibold text-foreground">£{(priceBreakdown.serviceFee/100).toFixed(2)}</span>
+                            <span className="font-semibold text-foreground">£{(priceBreakdown.serviceFee).toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground font-medium">VAT (on services only)</span>
-                            <span className="font-semibold text-foreground">£{(priceBreakdown.vatAmount/100).toFixed(2)}</span>
+                            <span className="font-semibold text-foreground">£{(priceBreakdown.vatAmount).toFixed(2)}</span>
                           </div>
                           
                           <div className="flex justify-between items-center pt-4 mt-2 border-t">
                             <span className="font-bold text-xl text-primary font-heading">Total to Pay</span>
-                            <span className="font-bold text-2xl text-primary font-heading">£{(priceBreakdown.totalAmount/100).toFixed(2)}</span>
+                            <span className="font-bold text-2xl text-primary font-heading">£{(priceBreakdown.totalAmount).toFixed(2)}</span>
                           </div>
                         </div>
                       </div>
