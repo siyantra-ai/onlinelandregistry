@@ -5,13 +5,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 
 import PublicLayout from "@/components/layout/PublicLayout";
-import AdminLayout from "@/components/layout/AdminLayout";
 import Home from "@/pages/home";
 import OrderWizard from "@/pages/order";
 import OrderSuccess from "@/pages/order-success";
-import AdminDashboard from "@/pages/admin-dashboard";
-import AdminOrders from "@/pages/admin-orders";
-import AdminOrderDetail from "@/pages/admin-order-detail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,23 +36,6 @@ function Router() {
         <PublicLayout>
           <OrderSuccess />
         </PublicLayout>
-      </Route>
-
-      {/* Admin Routes */}
-      <Route path="/admin">
-        <AdminLayout>
-          <AdminDashboard />
-        </AdminLayout>
-      </Route>
-      <Route path="/admin/orders">
-        <AdminLayout>
-          <AdminOrders />
-        </AdminLayout>
-      </Route>
-      <Route path="/admin/orders/:id">
-        <AdminLayout>
-          <AdminOrderDetail />
-        </AdminLayout>
       </Route>
 
       {/* Fallback */}

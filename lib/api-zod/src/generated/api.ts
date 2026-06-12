@@ -54,54 +54,6 @@ export const GetServiceResponse = zod.object({
 
 
 /**
- * @summary List all orders (admin)
- */
-export const listOrdersQueryLimitDefault = 50;
-export const listOrdersQueryOffsetDefault = 0;
-
-export const ListOrdersQueryParams = zod.object({
-  "status": zod.enum(['new', 'in_progress', 'awaiting_docs', 'completed', 'refunded']).optional(),
-  "search": zod.coerce.string().optional(),
-  "limit": zod.coerce.number().default(listOrdersQueryLimitDefault),
-  "offset": zod.coerce.number().default(listOrdersQueryOffsetDefault)
-})
-
-export const ListOrdersResponse = zod.object({
-  "orders": zod.array(zod.object({
-  "id": zod.number(),
-  "orderNumber": zod.string(),
-  "status": zod.enum(['new', 'in_progress', 'awaiting_docs', 'completed', 'refunded']),
-  "serviceId": zod.number(),
-  "serviceName": zod.string(),
-  "customerName": zod.string(),
-  "customerEmail": zod.string(),
-  "customerPhone": zod.string().nullish(),
-  "propertyCount": zod.number().optional(),
-  "country": zod.enum(['england_wales', 'scotland']).optional(),
-  "tenure": zod.string().nullish(),
-  "titleNumber": zod.string().nullish(),
-  "postcode": zod.string().nullish(),
-  "propertyAddress": zod.string().nullish(),
-  "addons": zod.array(zod.string()).optional(),
-  "trackingType": zod.enum(['standard', 'fast_track', 'super_fast_track']).optional(),
-  "deliveryType": zod.enum(['pdf_only', 'pdf_printed']).optional(),
-  "notificationType": zod.enum(['email', 'sms', 'both']).optional(),
-  "documentFee": zod.number().optional(),
-  "serviceFee": zod.number().optional(),
-  "vatAmount": zod.number().optional(),
-  "totalAmount": zod.number(),
-  "stripeSessionId": zod.string().nullish(),
-  "paidAt": zod.string().nullish(),
-  "notes": zod.string().nullish(),
-  "staffNotes": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
-})),
-  "total": zod.number()
-})
-
-
-/**
  * @summary Create a new order (draft from checkout)
  */
 export const CreateOrderBody = zod.object({
@@ -144,6 +96,7 @@ export const GetOrderResponse = zod.object({
   "customerName": zod.string(),
   "customerEmail": zod.string(),
   "customerPhone": zod.string().nullish(),
+  "customerAddress": zod.string().nullish(),
   "propertyCount": zod.number().optional(),
   "country": zod.enum(['england_wales', 'scotland']).optional(),
   "tenure": zod.string().nullish(),
@@ -164,64 +117,6 @@ export const GetOrderResponse = zod.object({
   "staffNotes": zod.string().nullish(),
   "createdAt": zod.string(),
   "updatedAt": zod.string().optional()
-})
-
-
-/**
- * @summary Update order (admin)
- */
-export const UpdateOrderParams = zod.object({
-  "id": zod.coerce.number()
-})
-
-export const UpdateOrderBody = zod.object({
-  "status": zod.enum(['new', 'in_progress', 'awaiting_docs', 'completed', 'refunded']).optional(),
-  "staffNotes": zod.string().optional(),
-  "notes": zod.string().optional()
-})
-
-export const UpdateOrderResponse = zod.object({
-  "id": zod.number(),
-  "orderNumber": zod.string(),
-  "status": zod.enum(['new', 'in_progress', 'awaiting_docs', 'completed', 'refunded']),
-  "serviceId": zod.number(),
-  "serviceName": zod.string(),
-  "customerName": zod.string(),
-  "customerEmail": zod.string(),
-  "customerPhone": zod.string().nullish(),
-  "propertyCount": zod.number().optional(),
-  "country": zod.enum(['england_wales', 'scotland']).optional(),
-  "tenure": zod.string().nullish(),
-  "titleNumber": zod.string().nullish(),
-  "postcode": zod.string().nullish(),
-  "propertyAddress": zod.string().nullish(),
-  "addons": zod.array(zod.string()).optional(),
-  "trackingType": zod.enum(['standard', 'fast_track', 'super_fast_track']).optional(),
-  "deliveryType": zod.enum(['pdf_only', 'pdf_printed']).optional(),
-  "notificationType": zod.enum(['email', 'sms', 'both']).optional(),
-  "documentFee": zod.number().optional(),
-  "serviceFee": zod.number().optional(),
-  "vatAmount": zod.number().optional(),
-  "totalAmount": zod.number(),
-  "stripeSessionId": zod.string().nullish(),
-  "paidAt": zod.string().nullish(),
-  "notes": zod.string().nullish(),
-  "staffNotes": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
-})
-
-
-/**
- * @summary Add a staff note to an order
- */
-export const AddOrderNoteParams = zod.object({
-  "id": zod.coerce.number()
-})
-
-export const AddOrderNoteBody = zod.object({
-  "note": zod.string(),
-  "author": zod.string().optional()
 })
 
 
@@ -282,116 +177,6 @@ export const LookupPostcodeResponse = zod.object({
  */
 export const StripeWebhookResponse = zod.object({
   "received": zod.boolean()
-})
-
-
-/**
- * @summary List all payments (admin)
- */
-export const ListPaymentsQueryParams = zod.object({
-  "orderId": zod.coerce.number().optional()
-})
-
-export const ListPaymentsResponseItem = zod.object({
-  "id": zod.number(),
-  "orderId": zod.number(),
-  "stripePaymentId": zod.string(),
-  "stripeSessionId": zod.string().nullish(),
-  "grossAmount": zod.number(),
-  "stripeFee": zod.number().nullish(),
-  "netAmount": zod.number().nullish(),
-  "currency": zod.string().optional(),
-  "method": zod.string().nullish(),
-  "status": zod.enum(['pending', 'paid', 'refunded']),
-  "refundReason": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-export const ListPaymentsResponse = zod.array(ListPaymentsResponseItem)
-
-
-/**
- * @summary Get dashboard stats for admin CRM
- */
-export const GetDashboardResponse = zod.object({
-  "totalOrders": zod.number(),
-  "newOrders": zod.number(),
-  "inProgressOrders": zod.number(),
-  "completedOrders": zod.number(),
-  "totalRevenue": zod.number(),
-  "todayRevenue": zod.number(),
-  "conversionRate": zod.number(),
-  "statusBreakdown": zod.array(zod.object({
-  "status": zod.string(),
-  "count": zod.number()
-})),
-  "topServices": zod.array(zod.object({
-  "serviceName": zod.string(),
-  "count": zod.number(),
-  "revenue": zod.number()
-})).optional()
-})
-
-
-/**
- * @summary Get recent orders for dashboard feed
- */
-export const getRecentOrdersQueryLimitDefault = 10;
-
-export const GetRecentOrdersQueryParams = zod.object({
-  "limit": zod.coerce.number().default(getRecentOrdersQueryLimitDefault)
-})
-
-export const GetRecentOrdersResponseItem = zod.object({
-  "id": zod.number(),
-  "orderNumber": zod.string(),
-  "status": zod.enum(['new', 'in_progress', 'awaiting_docs', 'completed', 'refunded']),
-  "serviceId": zod.number(),
-  "serviceName": zod.string(),
-  "customerName": zod.string(),
-  "customerEmail": zod.string(),
-  "customerPhone": zod.string().nullish(),
-  "propertyCount": zod.number().optional(),
-  "country": zod.enum(['england_wales', 'scotland']).optional(),
-  "tenure": zod.string().nullish(),
-  "titleNumber": zod.string().nullish(),
-  "postcode": zod.string().nullish(),
-  "propertyAddress": zod.string().nullish(),
-  "addons": zod.array(zod.string()).optional(),
-  "trackingType": zod.enum(['standard', 'fast_track', 'super_fast_track']).optional(),
-  "deliveryType": zod.enum(['pdf_only', 'pdf_printed']).optional(),
-  "notificationType": zod.enum(['email', 'sms', 'both']).optional(),
-  "documentFee": zod.number().optional(),
-  "serviceFee": zod.number().optional(),
-  "vatAmount": zod.number().optional(),
-  "totalAmount": zod.number(),
-  "stripeSessionId": zod.string().nullish(),
-  "paidAt": zod.string().nullish(),
-  "notes": zod.string().nullish(),
-  "staffNotes": zod.string().nullish(),
-  "createdAt": zod.string(),
-  "updatedAt": zod.string().optional()
-})
-export const GetRecentOrdersResponse = zod.array(GetRecentOrdersResponseItem)
-
-
-/**
- * @summary Get revenue breakdown by period
- */
-export const getRevenueStatsQueryPeriodDefault = `month`;
-
-export const GetRevenueStatsQueryParams = zod.object({
-  "period": zod.enum(['week', 'month', 'year']).default(getRevenueStatsQueryPeriodDefault)
-})
-
-export const GetRevenueStatsResponse = zod.object({
-  "period": zod.string(),
-  "totalRevenue": zod.number(),
-  "totalOrders": zod.number(),
-  "dailyRevenue": zod.array(zod.object({
-  "date": zod.string(),
-  "revenue": zod.number(),
-  "orders": zod.number()
-}))
 })
 
 

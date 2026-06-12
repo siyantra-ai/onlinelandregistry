@@ -1,17 +1,9 @@
 import { Router, type IRouter } from "express";
 import { db, ordersTable, activityLogsTable, servicesTable } from "@workspace/db";
-import { eq, desc, ilike, sql, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import {
-  ListOrdersQueryParams,
-  ListOrdersResponse,
   CreateOrderBody,
-  GetOrderParams,
   GetOrderResponse,
-  UpdateOrderParams,
-  UpdateOrderBody,
-  UpdateOrderResponse,
-  AddOrderNoteParams,
-  AddOrderNoteBody,
 } from "@workspace/api-zod";
 import { calculatePrice } from "../lib/pricing";
 
@@ -37,31 +29,6 @@ function generateOrderNumber(): string {
   const random = Math.floor(Math.random() * 90000) + 10000;
   return `OLR-${year}-${random}`;
 }
-
-router.get("/orders", async (req, res): Promise<void> => {
-  const params = ListOrdersQueryParams.safeParse(req.query);
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
-    return;
-  }
-  const { status, search, limit = 50, offset = 0 } = params.data;
-
-  const conditions = [];
-  if (status) conditions.push(eq(ordersTable.status, status as "new" | "in_progress" | "awaiting_docs" | "completed" | "refunded"));
-  if (search) conditions.push(ilike(ordersTable.customerName, `%${search}%`));
-
-  const where = conditions.length > 0 ? and(...conditions) : undefined;
-
-  const [orders, countResult] = await Promise.all([
-    db.select().from(ordersTable).where(where).orderBy(desc(ordersTable.createdAt)).limit(limit).offset(offset),
-    db.select({ count: sql<number>`count(*)` }).from(ordersTable).where(where),
-  ]);
-
-  res.json(ListOrdersResponse.parse({
-    orders: orders.map(formatOrder),
-    total: Number(countResult[0]?.count ?? 0),
-  }));
-});
 
 router.post("/orders", async (req, res): Promise<void> => {
   const parsed = CreateOrderBody.safeParse(req.body);
@@ -125,84 +92,6 @@ router.post("/orders", async (req, res): Promise<void> => {
   });
 
   res.status(201).json(GetOrderResponse.parse(formatOrder(order as unknown as Record<string, unknown>)));
-});
-
-router.get("/orders/:id", async (req, res): Promise<void> => {
-  const params = GetOrderParams.safeParse({ id: req.params.id });
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
-    return;
-  }
-  const [order] = await db.select().from(ordersTable).where(eq(ordersTable.id, params.data.id));
-  if (!order) {
-    res.status(404).json({ error: "Order not found" });
-    return;
-  }
-  res.json(GetOrderResponse.parse(formatOrder(order as unknown as Record<string, unknown>)));
-});
-
-router.patch("/orders/:id", async (req, res): Promise<void> => {
-  const params = UpdateOrderParams.safeParse({ id: req.params.id });
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
-    return;
-  }
-  const parsed = UpdateOrderBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
-    return;
-  }
-
-  const updateData: Record<string, unknown> = {};
-  if (parsed.data.status != null) updateData.status = parsed.data.status;
-  if (parsed.data.staffNotes != null) updateData.staffNotes = parsed.data.staffNotes;
-  if (parsed.data.notes != null) updateData.notes = parsed.data.notes;
-
-  const [order] = await db.update(ordersTable).set(updateData).where(eq(ordersTable.id, params.data.id)).returning();
-  if (!order) {
-    res.status(404).json({ error: "Order not found" });
-    return;
-  }
-
-  if (parsed.data.status) {
-    await db.insert(activityLogsTable).values({
-      orderId: order.id,
-      action: "status_changed",
-      detail: `Status updated to ${parsed.data.status}`,
-      author: "Admin",
-    });
-  }
-
-  res.json(UpdateOrderResponse.parse(formatOrder(order as unknown as Record<string, unknown>)));
-});
-
-router.post("/orders/:id/notes", async (req, res): Promise<void> => {
-  const params = AddOrderNoteParams.safeParse({ id: req.params.id });
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
-    return;
-  }
-  const parsed = AddOrderNoteBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
-    return;
-  }
-
-  const [log] = await db.insert(activityLogsTable).values({
-    orderId: params.data.id,
-    action: "staff_note",
-    detail: parsed.data.note,
-    author: parsed.data.author ?? "Staff",
-  }).returning();
-
-  res.status(201).json({
-    id: log.id,
-    orderId: log.orderId,
-    action: log.action,
-    detail: log.detail,
-    author: log.author,
-    createdAt: log.createdAt.toISOString(),
-  });
 });
 
 export default router;

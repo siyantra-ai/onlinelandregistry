@@ -78,6 +78,8 @@ export interface Order {
   customerEmail: string;
   /** @nullable */
   customerPhone?: string | null;
+  /** @nullable */
+  customerAddress?: string | null;
   propertyCount?: number;
   country?: OrderCountry;
   /** @nullable */
@@ -106,11 +108,6 @@ export interface Order {
   staffNotes?: string | null;
   createdAt: string;
   updatedAt?: string;
-}
-
-export interface OrderList {
-  orders: Order[];
-  total: number;
 }
 
 export type OrderInputCountry = typeof OrderInputCountry[keyof typeof OrderInputCountry];
@@ -170,39 +167,6 @@ export interface OrderInput {
   deliveryType: OrderInputDeliveryType;
   notificationType: OrderInputNotificationType;
   agreedToWaiveCancel?: boolean;
-}
-
-export type OrderUpdateStatus = typeof OrderUpdateStatus[keyof typeof OrderUpdateStatus];
-
-
-export const OrderUpdateStatus = {
-  new: 'new',
-  in_progress: 'in_progress',
-  awaiting_docs: 'awaiting_docs',
-  completed: 'completed',
-  refunded: 'refunded',
-} as const;
-
-export interface OrderUpdate {
-  status?: OrderUpdateStatus;
-  staffNotes?: string;
-  notes?: string;
-}
-
-export interface NoteInput {
-  note: string;
-  author?: string;
-}
-
-export interface ActivityLog {
-  id: number;
-  orderId: number;
-  action: string;
-  /** @nullable */
-  detail?: string | null;
-  /** @nullable */
-  author?: string | null;
-  createdAt: string;
 }
 
 export interface CheckoutSessionInput {
@@ -278,115 +242,11 @@ export interface PostcodeLookupResult {
   postcode?: string;
 }
 
-export type PaymentStatus = typeof PaymentStatus[keyof typeof PaymentStatus];
-
-
-export const PaymentStatus = {
-  pending: 'pending',
-  paid: 'paid',
-  refunded: 'refunded',
-} as const;
-
-export interface Payment {
-  id: number;
-  orderId: number;
-  stripePaymentId: string;
-  /** @nullable */
-  stripeSessionId?: string | null;
-  grossAmount: number;
-  /** @nullable */
-  stripeFee?: number | null;
-  /** @nullable */
-  netAmount?: number | null;
-  currency?: string;
-  /** @nullable */
-  method?: string | null;
-  status: PaymentStatus;
-  /** @nullable */
-  refundReason?: string | null;
-  createdAt: string;
-}
-
 export interface WebhookAck {
   received: boolean;
 }
 
-export interface StatusCount {
-  status: string;
-  count: number;
-}
-
-export interface ServiceCount {
-  serviceName: string;
-  count: number;
-  revenue: number;
-}
-
-export interface DashboardStats {
-  totalOrders: number;
-  newOrders: number;
-  inProgressOrders: number;
-  completedOrders: number;
-  totalRevenue: number;
-  todayRevenue: number;
-  conversionRate: number;
-  statusBreakdown: StatusCount[];
-  topServices?: ServiceCount[];
-}
-
-export interface DailyRevenue {
-  date: string;
-  revenue: number;
-  orders: number;
-}
-
-export interface RevenueStats {
-  period: string;
-  totalRevenue: number;
-  totalOrders: number;
-  dailyRevenue: DailyRevenue[];
-}
-
-export type ListOrdersParams = {
-status?: ListOrdersStatus;
-search?: string;
-limit?: number;
-offset?: number;
-};
-
-export type ListOrdersStatus = typeof ListOrdersStatus[keyof typeof ListOrdersStatus];
-
-
-export const ListOrdersStatus = {
-  new: 'new',
-  in_progress: 'in_progress',
-  awaiting_docs: 'awaiting_docs',
-  completed: 'completed',
-  refunded: 'refunded',
-} as const;
-
 export type LookupPostcodeParams = {
 postcode: string;
 };
-
-export type ListPaymentsParams = {
-orderId?: number;
-};
-
-export type GetRecentOrdersParams = {
-limit?: number;
-};
-
-export type GetRevenueStatsParams = {
-period?: GetRevenueStatsPeriod;
-};
-
-export type GetRevenueStatsPeriod = typeof GetRevenueStatsPeriod[keyof typeof GetRevenueStatsPeriod];
-
-
-export const GetRevenueStatsPeriod = {
-  week: 'week',
-  month: 'month',
-  year: 'year',
-} as const;
 

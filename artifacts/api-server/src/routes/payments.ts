@@ -1,7 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db, paymentsTable, ordersTable, activityLogsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
-import { ListPaymentsQueryParams, ListPaymentsResponse } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
 import Stripe from "stripe";
 
@@ -22,20 +21,6 @@ function formatPayment(p: Record<string, unknown>) {
     createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : p.createdAt,
   };
 }
-
-router.get("/payments", async (req, res): Promise<void> => {
-  const params = ListPaymentsQueryParams.safeParse(req.query);
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
-    return;
-  }
-
-  const payments = await db.select().from(paymentsTable)
-    .where(params.data.orderId ? eq(paymentsTable.orderId, params.data.orderId) : undefined)
-    .orderBy(paymentsTable.createdAt);
-
-  res.json(ListPaymentsResponse.parse(payments.map(p => formatPayment(p as unknown as Record<string, unknown>))));
-});
 
 // Stripe webhook — raw body required
 router.post("/webhooks/stripe", async (req, res): Promise<void> => {

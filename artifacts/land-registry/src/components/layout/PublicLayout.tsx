@@ -26,7 +26,6 @@ const NAV_LINKS = [
   { label: "Services",     href: "/#services" },
   { label: "How It Works", href: "/#how-it-works" },
   { label: "FAQs",         href: "/#faqs" },
-  { label: "Admin",        href: "/admin" },
 ];
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {

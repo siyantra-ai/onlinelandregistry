@@ -21,6 +21,8 @@ export interface Order {
   customerEmail: string;
   /** @nullable */
   customerPhone?: string | null;
+  /** @nullable */
+  customerAddress?: string | null;
   propertyCount?: number;
   country?: OrderCountry;
   /** @nullable */

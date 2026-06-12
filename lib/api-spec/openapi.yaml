@@ -15,8 +15,6 @@ tags:
     description: Order management
   - name: payments
     description: Payment processing
-  - name: admin
-    description: Admin CRM operations
   - name: checkout
     description: Checkout flow
 
@@ -71,38 +69,6 @@ paths:
           description: Not found
 
   /orders:
-    get:
-      operationId: listOrders
-      tags: [orders]
-      summary: List all orders (admin)
-      parameters:
-        - in: query
-          name: status
-          schema:
-            type: string
-            enum: [new, in_progress, awaiting_docs, completed, refunded]
-        - in: query
-          name: search
-          schema:
-            type: string
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            default: 50
-        - in: query
-          name: offset
-          schema:
-            type: integer
-            default: 0
-      responses:
-        "200":
-          description: List of orders
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrderList"
-
     post:
       operationId: createOrder
       tags: [orders]
@@ -141,55 +107,6 @@ paths:
                 $ref: "#/components/schemas/Order"
         "404":
           description: Not found
-
-    patch:
-      operationId: updateOrder
-      tags: [orders]
-      summary: Update order (admin)
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/OrderUpdate"
-      responses:
-        "200":
-          description: Updated order
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Order"
-
-  /orders/{id}/notes:
-    post:
-      operationId: addOrderNote
-      tags: [orders]
-      summary: Add a staff note to an order
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/NoteInput"
-      responses:
-        "201":
-          description: Note added
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ActivityLog"
 
   /checkout/session:
     post:
@@ -263,80 +180,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/WebhookAck"
 
-  /payments:
-    get:
-      operationId: listPayments
-      tags: [payments]
-      summary: List all payments (admin)
-      parameters:
-        - in: query
-          name: orderId
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: List of payments
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Payment"
-
-  /admin/dashboard:
-    get:
-      operationId: getDashboard
-      tags: [admin]
-      summary: Get dashboard stats for admin CRM
-      responses:
-        "200":
-          description: Dashboard statistics
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DashboardStats"
-
-  /admin/orders/recent:
-    get:
-      operationId: getRecentOrders
-      tags: [admin]
-      summary: Get recent orders for dashboard feed
-      parameters:
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            default: 10
-      responses:
-        "200":
-          description: Recent orders
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Order"
-
-  /admin/revenue:
-    get:
-      operationId: getRevenueStats
-      tags: [admin]
-      summary: Get revenue breakdown by period
-      parameters:
-        - in: query
-          name: period
-          schema:
-            type: string
-            enum: [week, month, year]
-            default: month
-      responses:
-        "200":
-          description: Revenue statistics
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RevenueStats"
-
 components:
   schemas:
     HealthStatus:
@@ -390,6 +233,8 @@ components:
           type: string
         customerPhone:
           type: ["string", "null"]
+        customerAddress:
+          type: ["string", "null"]
         propertyCount:
           type: integer
         country:
@@ -437,16 +282,6 @@ components:
         updatedAt:
           type: string
 
-    OrderList:
-      type: object
-      required: [orders, total]
-      properties:
-        orders:
-          type: array
-          items:
-            $ref: "#/components/schemas/Order"
-        total:
-          type: integer
 
     OrderInput:
       type: object
@@ -499,42 +334,6 @@ components:
         agreedToWaiveCancel:
           type: boolean
 
-    OrderUpdate:
-      type: object
-      properties:
-        status:
-          type: string
-          enum: [new, in_progress, awaiting_docs, completed, refunded]
-        staffNotes:
-          type: string
-        notes:
-          type: string
-
-    NoteInput:
-      type: object
-      required: [note]
-      properties:
-        note:
-          type: string
-        author:
-          type: string
-
-    ActivityLog:
-      type: object
-      required: [id, orderId, action, createdAt]
-      properties:
-        id:
-          type: integer
-        orderId:
-          type: integer
-        action:
-          type: string
-        detail:
-          type: ["string", "null"]
-        author:
-          type: ["string", "null"]
-        createdAt:
-          type: string
 
     CheckoutSessionInput:
       type: object
@@ -616,35 +415,6 @@ components:
         postcode:
           type: string
 
-    Payment:
-      type: object
-      required: [id, orderId, stripePaymentId, grossAmount, status, createdAt]
-      properties:
-        id:
-          type: integer
-        orderId:
-          type: integer
-        stripePaymentId:
-          type: string
-        stripeSessionId:
-          type: ["string", "null"]
-        grossAmount:
-          type: number
-        stripeFee:
-          type: ["number", "null"]
-        netAmount:
-          type: ["number", "null"]
-        currency:
-          type: string
-        method:
-          type: ["string", "null"]
-        status:
-          type: string
-          enum: [pending, paid, refunded]
-        refundReason:
-          type: ["string", "null"]
-        createdAt:
-          type: string
 
     WebhookAck:
       type: object
@@ -653,75 +423,4 @@ components:
         received:
           type: boolean
 
-    DashboardStats:
-      type: object
-      required: [totalOrders, newOrders, inProgressOrders, completedOrders, totalRevenue, todayRevenue, conversionRate, statusBreakdown]
-      properties:
-        totalOrders:
-          type: integer
-        newOrders:
-          type: integer
-        inProgressOrders:
-          type: integer
-        completedOrders:
-          type: integer
-        totalRevenue:
-          type: number
-        todayRevenue:
-          type: number
-        conversionRate:
-          type: number
-        statusBreakdown:
-          type: array
-          items:
-            $ref: "#/components/schemas/StatusCount"
-        topServices:
-          type: array
-          items:
-            $ref: "#/components/schemas/ServiceCount"
 
-    StatusCount:
-      type: object
-      required: [status, count]
-      properties:
-        status:
-          type: string
-        count:
-          type: integer
-
-    ServiceCount:
-      type: object
-      required: [serviceName, count, revenue]
-      properties:
-        serviceName:
-          type: string
-        count:
-          type: integer
-        revenue:
-          type: number
-
-    RevenueStats:
-      type: object
-      required: [period, totalRevenue, totalOrders, dailyRevenue]
-      properties:
-        period:
-          type: string
-        totalRevenue:
-          type: number
-        totalOrders:
-          type: integer
-        dailyRevenue:
-          type: array
-          items:
-            $ref: "#/components/schemas/DailyRevenue"
-
-    DailyRevenue:
-      type: object
-      required: [date, revenue, orders]
-      properties:
-        date:
-          type: string
-        revenue:
-          type: number
-        orders:
-          type: integer
