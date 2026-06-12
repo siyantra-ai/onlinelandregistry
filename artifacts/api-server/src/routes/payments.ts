@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, paymentsTable, ordersTable, activityLogsTable, hasDb } from "@workspace/db";
+import { db, paymentsTable, ordersTable, activityLogsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { logger } from "../lib/logger";
 import Stripe from "stripe";
@@ -26,12 +26,6 @@ function formatPayment(p: Record<string, unknown>) {
 router.post("/webhooks/stripe", async (req, res): Promise<void> => {
   const sig = req.headers["stripe-signature"] as string;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  if (!hasDb) {
-    req.log.warn("DATABASE_URL is not set. Webhook received but database updates skipped.");
-    res.json({ received: true, mock: true });
-    return;
-  }
 
   if (!webhookSecret) {
     req.log.error("STRIPE_WEBHOOK_SECRET not set");

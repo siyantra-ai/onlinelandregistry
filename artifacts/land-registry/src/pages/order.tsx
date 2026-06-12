@@ -42,78 +42,6 @@ interface OrderState {
   agreedToWaiveCancel: boolean;
 }
 
-const MOCK_SERVICES = [
-  {
-    id: 1,
-    name: "HM Land Registry Title Register",
-    slug: "title-register",
-    basePrice: 36,
-    description: "Official record confirming the registered owners, tenure type (Freehold/Leasehold), purchase price, mortgages, and charges.",
-    deliverables: "Official Copy, Register Details, Owner Info",
-    turnaround: "From 1 hour",
-    popular: true,
-  },
-  {
-    id: 2,
-    name: "HM Land Registry Title Plan",
-    slug: "title-plan",
-    basePrice: 36,
-    description: "Scale boundary map illustrating the property outline in red, adjacent access roads, and shared easement zones.",
-    deliverables: "Official Copy, Boundary Map, Scale Details",
-    turnaround: "From 1 hour",
-    popular: false,
-  },
-  {
-    id: 3,
-    name: "Property Ownership Bundle",
-    slug: "ownership-bundle",
-    basePrice: 60,
-    description: "Both the Title Register and Title Plan compiled into a single PDF package. Saves money compared to separate orders.",
-    deliverables: "Title Register, Title Plan, Combined PDF",
-    turnaround: "From 1 hour",
-    popular: true,
-  },
-  {
-    id: 4,
-    name: "Official Deed Search",
-    slug: "deed-search",
-    basePrice: 41,
-    description: "Historical transfers (TR1 forms), original leasehold contracts, and historic boundary plans.",
-    deliverables: "Historic Deeds, Original TR1, Covenants",
-    turnaround: "4 hours Fast-Track",
-    popular: false,
-  },
-  {
-    id: 5,
-    name: "Map / Land Search",
-    slug: "map-land-search",
-    basePrice: 53,
-    description: "GIS coordinate-based lookup for plots, fields, verges, or forests lacking a standard postal address.",
-    deliverables: "GIS Coordinate Map, Parcel Boundary",
-    turnaround: "4 hours Fast-Track",
-    popular: false,
-  },
-  {
-    id: 6,
-    name: "Property Alert Service",
-    slug: "property-alert",
-    basePrice: 36,
-    description: "Fraud monitoring for up to 3 titles. Notifies you instantly if third parties attempt to alter deeds.",
-    deliverables: "Fraud Alert, Real-time Monitoring",
-    turnaround: "Instant Setup",
-    popular: false,
-  },
-  {
-    id: 7,
-    name: "Deceased Joint Proprietor (DJP)",
-    slug: "deceased-joint-proprietor",
-    basePrice: 65,
-    description: "Form preparation and filing service to remove a deceased joint owner's name and establish sole absolute title.",
-    deliverables: "Form DJP, Registration Update",
-    turnaround: "1-2 days Dispatch",
-    popular: false,
-  }
-];
 
 export default function OrderWizard() {
   const [location, setLocation] = useLocation();
@@ -122,7 +50,7 @@ export default function OrderWizard() {
   const { toast } = useToast();
 
   const { data: apiServices, isLoading: servicesLoading } = useListServices();
-  const services = Array.isArray(apiServices) ? apiServices : MOCK_SERVICES;
+  const services = apiServices || [];
   const createOrder = useCreateOrder();
   const createCheckoutSession = useCreateCheckoutSession();
 

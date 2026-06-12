@@ -1,0 +1,95 @@
+-- 1. Create Custom Types (Enums)
+CREATE TYPE order_status AS ENUM ('new', 'in_progress', 'awaiting_docs', 'completed', 'refunded');
+CREATE TYPE country_type AS ENUM ('england_wales', 'scotland');
+CREATE TYPE tracking_type AS ENUM ('standard', 'fast_track', 'super_fast_track');
+CREATE TYPE delivery_type AS ENUM ('pdf_only', 'pdf_printed');
+CREATE TYPE notification_type AS ENUM ('email', 'sms', 'both');
+CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'refunded');
+
+-- 2. Create Services Table
+CREATE TABLE services (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    slug TEXT NOT NULL UNIQUE,
+    base_price NUMERIC(10, 2) NOT NULL,
+    description TEXT NOT NULL,
+    deliverables TEXT NOT NULL,
+    category TEXT,
+    turnaround TEXT,
+    popular BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- 3. Create Orders Table
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    order_number TEXT NOT NULL UNIQUE,
+    status order_status NOT NULL DEFAULT 'new',
+    service_id INTEGER NOT NULL,
+    service_name TEXT NOT NULL,
+    customer_title TEXT,
+    customer_name TEXT NOT NULL,
+    customer_email TEXT NOT NULL,
+    customer_phone TEXT,
+    customer_address TEXT,
+    property_count INTEGER NOT NULL DEFAULT 1,
+    country country_type NOT NULL DEFAULT 'england_wales',
+    tenure TEXT,
+    title_number TEXT,
+    postcode TEXT,
+    property_address TEXT,
+    lat NUMERIC(12, 8),
+    lng NUMERIC(12, 8),
+    addons TEXT[] NOT NULL DEFAULT '{}',
+    tracking_type tracking_type NOT NULL DEFAULT 'standard',
+    delivery_type delivery_type NOT NULL DEFAULT 'pdf_only',
+    notification_type notification_type NOT NULL DEFAULT 'email',
+    document_fee NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
+    service_fee NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
+    vat_amount NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
+    total_amount NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
+    stripe_session_id TEXT,
+    agreed_to_waive_cancel BOOLEAN NOT NULL DEFAULT FALSE,
+    paid_at TIMESTAMP WITH TIME ZONE,
+    notes TEXT,
+    staff_notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- 4. Create Payments Table
+CREATE TABLE payments (
+    id SERIAL PRIMARY KEY,
+    order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    stripe_payment_id TEXT NOT NULL,
+    stripe_session_id TEXT,
+    gross_amount NUMERIC(10, 2) NOT NULL,
+    stripe_fee NUMERIC(10, 2),
+    net_amount NUMERIC(10, 2),
+    currency TEXT NOT NULL DEFAULT 'gbp',
+    method TEXT,
+    status payment_status NOT NULL DEFAULT 'pending',
+    refund_reason TEXT,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- 5. Create Activity Logs Table
+CREATE TABLE activity_logs (
+    id SERIAL PRIMARY KEY,
+    order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    action TEXT NOT NULL,
+    detail TEXT,
+    author TEXT,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- 6. Insert Default Services
+INSERT INTO services (name, slug, base_price, description, deliverables, category, turnaround, popular) VALUES
+('HM Land Registry Title Register', 'title-register', 36.00, 'Official record confirming the registered owners, tenure type (Freehold/Leasehold), purchase price, mortgages, and charges.', 'Official Copy, Register Details, Owner Info', 'property_document', 'From 1 hour', TRUE),
+('HM Land Registry Title Plan', 'title-plan', 36.00, 'Scale boundary map illustrating the property outline in red, adjacent access roads, and shared easement zones.', 'Official Copy, Boundary Map, Scale Details', 'property_document', 'From 1 hour', FALSE),
+('Property Ownership Bundle', 'ownership-bundle', 60.00, 'Both the Title Register and Title Plan compiled into a single PDF package. Saves money compared to separate orders.', 'Title Register, Title Plan, Combined PDF', 'bundle', 'From 1 hour', TRUE),
+('Official Deed Search', 'deed-search', 41.00, 'Historical transfers (TR1 forms), original leasehold contracts, and historic boundary plans.', 'Historic Deeds, Original TR1, Covenants', 'deed_search', '4 hours Fast-Track', FALSE),
+('Map / Land Search', 'map-land-search', 53.00, 'GIS coordinate-based lookup for plots, fields, verges, or forests lacking a standard postal address.', 'GIS Coordinate Map, Parcel Boundary', 'land_search', '4 hours Fast-Track', FALSE),
+('Property Alert Service', 'property-alert', 36.00, 'Fraud monitoring for up to 3 titles. Notifies you instantly if third parties attempt to alter deeds.', 'Fraud Alert, Real-time Monitoring', 'monitoring', 'Instant Setup', FALSE),
+('Deceased Joint Proprietor (DJP)', 'deceased-joint-proprietor', 65.00, 'Form preparation and filing service to remove a deceased joint owner''s name and establish sole absolute title.', 'Form DJP, Registration Update', 'legal_form', '1-2 days Dispatch', FALSE);
