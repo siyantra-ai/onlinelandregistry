@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter @workspace/land-registry run build",
-  "outputDirectory": "artifacts/land-registry/public",
+  "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter @workspace/land-registry run build && node -e \"const fs=require('fs'); fs.rmSync('public', {recursive:true, force:true}); fs.cpSync('artifacts/land-registry/public', 'public', {recursive:true});\"",
+  "outputDirectory": "public",
   "framework": null,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
