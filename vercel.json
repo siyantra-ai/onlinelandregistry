@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter @workspace/land-registry run build && node -e \"const fs=require('fs'); fs.rmSync('public', {recursive:true, force:true}); fs.cpSync('artifacts/land-registry/public', 'public', {recursive:true});\"",
+  "buildCommand": "pnpm install --frozen-lockfile && node scripts/build-vercel.js",
   "outputDirectory": "public",
   "framework": null,
   "rewrites": [
