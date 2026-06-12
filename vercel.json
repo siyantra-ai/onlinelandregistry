@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm install --frozen-lockfile && node -e \"const fs=require('fs'); const path=require('path'); let dir=process.cwd(); while(dir!==path.dirname(dir) && !fs.existsSync(path.join(dir,'scripts/vercel-build.cjs'))){ dir=path.dirname(dir); } if(fs.existsSync(path.join(dir,'scripts/vercel-build.cjs'))){ require(path.join(dir,'scripts/vercel-build.cjs')); } else { console.error('vercel-build.cjs not found'); process.exit(1); }\"",
+  "buildCommand": "pnpm install --frozen-lockfile && (node scripts/vercel-build.cjs || node ../../scripts/vercel-build.cjs)",
   "outputDirectory": "public",
   "framework": null,
   "rewrites": [
