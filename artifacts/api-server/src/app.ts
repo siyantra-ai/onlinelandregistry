@@ -35,4 +35,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
+app.get("/", (req, res) => {
+  res.send("Onlinelandregistry.uk API Server");
+});
+
 export default app;

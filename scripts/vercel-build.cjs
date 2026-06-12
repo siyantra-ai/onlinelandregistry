@@ -16,10 +16,18 @@ try {
     console.log('Detected api-server project. Building api-server...');
     execSync('pnpm --filter @workspace/api-server run build', { stdio: 'inherit', cwd: repoRoot });
     
-    // Create a dummy public directory so Vercel does not throw "missing public directory" error
-    console.log('Creating a dummy public folder for Vercel deployment satisfaction...');
-    fs.mkdirSync('public', { recursive: true });
-    fs.writeFileSync('public/index.html', '<h1>Onlinelandregistry.uk API Server</h1>');
+    console.log('Setting up public directory for Vercel deployment...');
+    const destPublic = 'public';
+    const srcDist = 'dist';
+    
+    fs.rmSync(destPublic, { recursive: true, force: true });
+    fs.cpSync(srcDist, destPublic, { recursive: true });
+    
+    // Rename app.mjs to index.mjs to serve as the serverless function entrypoint
+    fs.renameSync(path.join(destPublic, 'app.mjs'), path.join(destPublic, 'index.mjs'));
+    if (fs.existsSync(path.join(destPublic, 'app.mjs.map'))) {
+      fs.renameSync(path.join(destPublic, 'app.mjs.map'), path.join(destPublic, 'index.mjs.map'));
+    }
     
     console.log('api-server build completed!');
   } else {

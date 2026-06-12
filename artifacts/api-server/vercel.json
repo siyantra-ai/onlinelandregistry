@@ -2,6 +2,6 @@
   "buildCommand": "node ../../scripts/vercel-build.cjs",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api" }
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
