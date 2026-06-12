@@ -50,7 +50,7 @@ export default function OrderWizard() {
   const { toast } = useToast();
 
   const { data: apiServices, isLoading: servicesLoading } = useListServices();
-  const services = apiServices || [];
+  const services = Array.isArray(apiServices) ? apiServices : [];
   const createOrder = useCreateOrder();
   const createCheckoutSession = useCreateCheckoutSession();
 

@@ -91,7 +91,7 @@ const FAQS = [
 
 export default function Home() {
   const { data: apiServices, isLoading } = useListServices();
-  const services = apiServices || [];
+  const services = Array.isArray(apiServices) ? apiServices : [];
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
