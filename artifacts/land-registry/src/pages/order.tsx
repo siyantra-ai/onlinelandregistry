@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, ArrowRight, ArrowLeft, Check, Search, ShieldCheck, Map, Bell } from "lucide-react";
+import { Loader2, ArrowRight, ArrowLeft, Check, Search, ShieldCheck, Map, Bell, Sparkles, Clock, Zap, FileText, Mail, Building2, Flame } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const MapPicker = lazy(() => import("@/components/ui/MapPicker"));
@@ -215,141 +215,174 @@ export default function OrderWizard() {
   const hasTitlePlan    = ["title-plan", "ownership-bundle"].includes(selectedService?.slug ?? "");
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 max-w-3xl min-h-[calc(100vh-200px)]">
-      {/* Progress Bar */}
-      <div className="mb-8">
+    <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-14 max-w-4xl min-h-[calc(100vh-200px)]">
+      
+      {/* Progress timeline bar */}
+      <div className="mb-10 max-w-2xl mx-auto">
         <div className="flex justify-between items-center relative">
-          <div className="absolute left-0 right-0 top-4 h-0.5 bg-muted -z-10 rounded-full"></div>
-          <div className="absolute left-0 top-4 h-0.5 bg-primary -z-10 rounded-full transition-all duration-300" style={{ width: `${((step - 1) / 3) * 100}%` }}></div>
+          <div className="absolute left-[8%] right-[8%] top-[18px] h-[3px] bg-slate-200 -z-10 rounded-full"></div>
+          <div className="absolute left-[8%] top-[18px] h-[3px] bg-accent -z-10 rounded-full transition-all duration-350" style={{ width: `${((step - 1) / 3) * 84}%` }}></div>
           {[
-            { num: 1, label: "Property" },
-            { num: 2, label: "Details" },
-            { num: 3, label: "Options" },
-            { num: 4, label: "Pay" }
+            { num: 1, label: "Select Property" },
+            { num: 2, label: "Your Info" },
+            { num: 3, label: "Preferences" },
+            { num: 4, label: "Review & Pay" }
           ].map((s) => (
-            <div key={s.num} className="flex flex-col items-center gap-1.5">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all border-2 ${
-                step >= s.num ? "bg-primary border-primary text-primary-foreground shadow-sm" : "bg-background border-muted text-muted-foreground"
+            <div key={s.num} className="flex flex-col items-center gap-2">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-extrabold text-sm transition-all border-3 ${
+                step >= s.num ? "bg-primary border-primary text-white shadow-md shadow-primary/10" : "bg-white border-slate-200 text-slate-400"
               }`}>
-                {step > s.num ? <Check className="w-4 h-4" /> : s.num}
+                {step > s.num ? <Check className="w-4 h-4 stroke-[3px]" /> : s.num}
               </div>
-              <span className={`text-[0.7rem] font-semibold tracking-wide ${step >= s.num ? "text-primary" : "text-muted-foreground"}`}>{s.label}</span>
+              <span className={`text-[0.725rem] font-bold uppercase tracking-wider ${step >= s.num ? "text-primary font-black" : "text-slate-400 font-semibold"}`}>{s.label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Main Form Area */}
-      <Card className="shadow-lg border-primary/10 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-1 bg-accent h-full"></div>
-        <CardHeader className="bg-primary/5 px-4 sm:px-6 pb-4">
-          <CardTitle className="text-xl sm:text-2xl font-heading text-primary">
-            {step === 1 && (isAlertService ? "Alert Setup" : "Property Details")}
-            {step === 2 && "Your Details"}
-            {step === 3 && "Processing & Delivery"}
-            {step === 4 && "Review & Pay"}
+      {/* Main wizard card layout */}
+      <Card className="shadow-xl border border-slate-200/80 rounded-2xl overflow-hidden bg-white">
+        
+        {/* Decorative thin accent header strip */}
+        <div className="h-2.5 bg-gradient-to-r from-accent via-amber-500 to-accent"></div>
+        
+        <CardHeader className="bg-slate-50 border-b border-slate-150 px-6 sm:px-8 py-5">
+          <CardTitle className="text-xl sm:text-2xl font-extrabold font-heading text-primary flex items-center gap-2">
+            {step === 1 && (isAlertService ? "Set Up Property Alert" : "Property Verification")}
+            {step === 2 && "Your Contact Details"}
+            {step === 3 && "Processing & Delivery Options"}
+            {step === 4 && "Review & Secure Checkout"}
           </CardTitle>
-          <CardDescription className="text-sm">
-            {step === 1 && (isAlertService ? "Tell us which titles you'd like to monitor for fraud." : isMapSearch ? "Pin the land parcel on the map below." : "Tell us which property you need documents for.")}
-            {step === 2 && "Where should we send your documents?"}
-            {step === 3 && "How fast do you need them?"}
-            {step === 4 && "Secure your order and start processing."}
+          <CardDescription className="text-[0.8125rem] sm:text-xs text-slate-500 font-medium">
+            {step === 1 && (isAlertService ? "Specify the UK title numbers or property address you wish to monitor." : isMapSearch ? "Use the interactive map pins to mark the exact land parcel boundary." : "Select the document you need and search for the target address.")}
+            {step === 2 && "Provide the details where your verified official Land Registry PDFs will be sent."}
+            {step === 3 && "Tailor delivery speeds, SMS notification alerts, and printed copy deliveries."}
+            {step === 4 && "Review your final price breakdown and proceed to card checkout via Stripe."}
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-4 sm:p-6">
+
+        <CardContent className="p-6 sm:p-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25 }}
             >
               {step === 1 && (
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="service" className="text-base">Select Service</Label>
-                    <Select value={state.serviceId?.toString() || ""} onValueChange={(val) => updateState({ serviceId: parseInt(val) })}>
-                      <SelectTrigger id="service" className="h-12 text-base">
-                        <SelectValue placeholder="Select a service" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {services?.map(s => (
-                          <SelectItem key={s.id} value={s.id.toString()}>{s.name} — from £{s.basePrice.toFixed(0)}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                <div className="space-y-8">
+                  
+                  {/* Select Service: Clickable Grid instead of boring dropdown */}
+                  <div className="space-y-4">
+                    <Label className="text-sm font-extrabold uppercase tracking-wider text-slate-400 block">Select Document Service</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {services?.map(s => {
+                        const isSelected = state.serviceId === s.id;
+                        return (
+                          <div
+                            key={s.id}
+                            onClick={() => updateState({ serviceId: s.id })}
+                            className={`p-5 rounded-xl border-2 transition-all cursor-pointer text-left flex flex-col justify-between ${
+                              isSelected 
+                                ? "border-accent bg-accent/[0.03] shadow-md shadow-accent/5" 
+                                : "border-slate-200 bg-white hover:border-slate-350"
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className={`text-[0.675rem] font-bold uppercase tracking-wider ${isSelected ? 'text-accent' : 'text-slate-400'}`}>
+                                  Official HMLR Document
+                                </span>
+                                {isSelected && (
+                                  <div className="w-5 h-5 rounded-full bg-accent text-white flex items-center justify-center text-[10px] font-bold">
+                                    ✓
+                                  </div>
+                                )}
+                              </div>
+                              <h4 className="font-heading font-extrabold text-[0.9375rem] text-slate-900 leading-snug mb-1">{s.name}</h4>
+                              <p className="text-[0.725rem] text-slate-500 line-clamp-2 leading-relaxed">{s.description}</p>
+                            </div>
+                            <div className="mt-4 pt-3 border-t border-slate-100 flex items-baseline justify-between">
+                              <span className="text-[0.675rem] text-slate-400 font-semibold uppercase">from</span>
+                              <span className="font-bold font-heading text-[1.125rem] text-slate-900">£{s.basePrice.toFixed(0)}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-3">
-                      <Label htmlFor="country" className="text-base">Country</Label>
+                  {/* Country & Tenure Details */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-xl border border-slate-150">
+                    <div className="space-y-2">
+                      <Label htmlFor="country" className="text-xs font-bold text-slate-600 uppercase tracking-wider">Jurisdiction</Label>
                       <Select value={state.country} onValueChange={(val) => updateState({ country: val as any })}>
-                        <SelectTrigger id="country" className="h-12">
+                        <SelectTrigger id="country" className="h-11 bg-white border-slate-200 text-xs sm:text-sm">
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="england_wales">England & Wales</SelectItem>
+                          <SelectItem value="england_wales">England &amp; Wales (HM Land Registry)</SelectItem>
                           <SelectItem value="scotland">Scotland (Registers of Scotland)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-3">
-                      <Label htmlFor="tenure" className="text-base">Tenure Type</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="tenure" className="text-xs font-bold text-slate-600 uppercase tracking-wider">Tenure Type (If Known)</Label>
                       <Select value={state.tenure} onValueChange={(val) => updateState({ tenure: val })}>
-                        <SelectTrigger id="tenure" className="h-12">
+                        <SelectTrigger id="tenure" className="h-11 bg-white border-slate-200 text-xs sm:text-sm">
                           <SelectValue placeholder="Select tenure" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="freehold">Freehold</SelectItem>
-                          <SelectItem value="leasehold">Leasehold</SelectItem>
-                          <SelectItem value="unsure">Unsure / Any</SelectItem>
+                          <SelectItem value="freehold">Freehold (Absolute Ownership)</SelectItem>
+                          <SelectItem value="leasehold">Leasehold (Lease Agreement)</SelectItem>
+                          <SelectItem value="unsure">Unsure / Retrieve Any Available</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
 
-                  <Separator />
-
-                  {/* ── Property Alert: title-number based monitoring ── */}
+                  {/* ── Property Alert Service (Special Address UI) ── */}
                   {isAlertService && (
-                    <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-4 space-y-3">
-                      <div className="flex items-start gap-2.5">
-                        <Bell className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                    <div className="rounded-xl border border-amber-250 bg-amber-50/60 p-5 space-y-4 shadow-sm">
+                      <div className="flex items-start gap-3">
+                        <Bell className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
                         <div>
-                          <p className="text-sm font-semibold text-amber-900">Fraud Monitoring Service</p>
-                          <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">
-                            We'll monitor up to 3 title numbers and alert you immediately if anyone attempts to alter or charge your deeds. Provide the title number(s) below, or leave blank if unknown — our team will locate them from your address.
+                          <p className="text-[0.9375rem] font-bold text-amber-900 leading-tight">Fraud Monitoring Setup</p>
+                          <p className="text-[0.775rem] text-amber-700 mt-1 leading-relaxed">
+                            Monitor property deeds for unsanctioned filings or transfers. Provide the title number(s) if known, or write the address so we can locate the titles for you.
                           </p>
                         </div>
                       </div>
-                      <Input
-                        placeholder="Title number(s) e.g. NGL12345, SGL99001 (optional)"
-                        value={state.titleNumber}
-                        onChange={(e) => updateState({ titleNumber: e.target.value })}
-                        className="h-11 bg-white"
-                      />
-                      <Input
-                        placeholder="Property address (to help us locate your titles)"
-                        value={state.propertyAddress}
-                        onChange={(e) => updateState({ propertyAddress: e.target.value })}
-                        className="h-11 bg-white"
-                      />
+                      <div className="space-y-3">
+                        <Input
+                          placeholder="Title number(s) e.g. EGL109340 (leave blank if unknown)"
+                          value={state.titleNumber}
+                          onChange={(e) => updateState({ titleNumber: e.target.value })}
+                          className="h-11 bg-white border-slate-200"
+                        />
+                        <Input
+                          placeholder="Property address to monitor (full street line)"
+                          value={state.propertyAddress}
+                          onChange={(e) => updateState({ propertyAddress: e.target.value })}
+                          className="h-11 bg-white border-slate-200"
+                        />
+                      </div>
                     </div>
                   )}
 
-                  {/* ── Map / Land Search or Standard address lookup ── */}
+                  {/* ── Map parcel Search OR standard address lookup ── */}
                   {!isAlertService && (isMapSearch ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Map className="w-4 h-4 text-accent" />
-                        <Label className="text-base">Locate the Land Parcel</Label>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Map className="w-5 h-5 text-accent" />
+                        <Label className="text-[0.9375rem] font-bold text-slate-800">Identify Land Parcel Boundary</Label>
                       </div>
-                      <p className="text-sm text-muted-foreground -mt-1">
-                        Search by address or postcode, or click directly on the map to pin the exact location. You can drag the pin to fine-tune.
+                      <p className="text-xs sm:text-sm text-slate-500 leading-relaxed -mt-2">
+                        Input address to center, then click on the map boundary to place your verification pin. You may drag the pin to adjust.
                       </p>
                       <Suspense fallback={
-                        <div className="flex items-center justify-center h-[460px] rounded-xl border border-border/60 bg-muted/30">
+                        <div className="flex items-center justify-center h-[420px] rounded-xl border border-slate-200 bg-slate-50">
                           <Loader2 className="w-6 h-6 animate-spin text-primary" />
                         </div>
                       }>
@@ -364,25 +397,30 @@ export default function OrderWizard() {
                       </Suspense>
                     </div>
                   ) : (
-                    /* ── Standard postcode / address lookup ── */
+                    /* ── Address Postcode Lookup ── */
                     <div className="space-y-4">
-                      <Label className="text-base block">Find Property</Label>
+                      <Label className="text-sm font-extrabold uppercase tracking-wider text-slate-400 block">Find Address</Label>
                       <div className="flex gap-2">
                         <Input
-                          placeholder="Enter Postcode (e.g. SW1A 1AA)"
+                          placeholder="Postcode lookup (e.g. SW19 1QT)"
                           value={postcodeSearch}
                           onChange={(e) => setPostcodeSearch(e.target.value)}
-                          className="h-12"
+                          className="h-12 border-slate-200 shadow-sm"
                         />
-                        <Button onClick={() => searchPostcode()} type="button" className="h-12 w-24 bg-secondary hover:bg-secondary/80 text-secondary-foreground" disabled={postcodeLoading}>
-                          {postcodeLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                        <Button 
+                          onClick={() => searchPostcode()} 
+                          type="button" 
+                          className="h-12 w-28 bg-[#1e293b] hover:bg-slate-800 text-white font-bold" 
+                          disabled={postcodeLoading}
+                        >
+                          {postcodeLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Find Address"}
                         </Button>
                       </div>
                       {postcodeResult?.addresses && postcodeResult.addresses.length > 0 && (
-                        <div className="mt-2">
+                        <div className="animate-fade-in">
                           <Select onValueChange={(val) => updateState({ propertyAddress: val })}>
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Select an address" />
+                            <SelectTrigger className="h-11 border-slate-200 bg-white">
+                              <SelectValue placeholder="Select matching address" />
                             </SelectTrigger>
                             <SelectContent>
                               {postcodeResult.addresses.map((addr, i) => (
@@ -393,99 +431,110 @@ export default function OrderWizard() {
                         </div>
                       )}
                       <div className="space-y-2">
-                        <Label htmlFor="address-manual" className="text-sm font-normal text-muted-foreground">Or enter address manually</Label>
+                        <Label htmlFor="address-manual" className="text-xs font-semibold text-slate-500 uppercase">Address Details (manual entry or override)</Label>
                         <Input
                           id="address-manual"
-                          placeholder="Full property address"
+                          placeholder="Complete property line e.g. 14 Gladstone Road, Wimbledon, London SW19 1QT"
                           value={state.propertyAddress}
                           onChange={(e) => updateState({ propertyAddress: e.target.value })}
-                          className="h-12"
+                          className="h-12 border-slate-200"
                         />
                       </div>
                     </div>
                   ))}
 
-                  {/* Title number — not shown for property-alert (already has its own input above) */}
+                  {/* Title Number */}
                   {!isAlertService && (
-                    <div className="space-y-3">
-                      <Label htmlFor="titleNumber">Title Number (Optional)</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="titleNumber" className="text-xs font-bold text-slate-500 uppercase">HMLR Title Number (Optional)</Label>
                       <Input
                         id="titleNumber"
-                        placeholder="e.g. NGL12345"
+                        placeholder="e.g. EGL390492"
                         value={state.titleNumber}
                         onChange={(e) => updateState({ titleNumber: e.target.value })}
-                        className="h-12"
+                        className="h-11 border-slate-200"
                       />
-                      <p className="text-xs text-muted-foreground">If you know the official title number, it can speed up processing.</p>
+                      <p className="text-[11px] text-slate-400">Locating a specific title number speeds up intermediary search times.</p>
                     </div>
                   )}
 
-                  {/* Add-ons — not shown for property-alert or map-land-search */}
+                  {/* Recommended Add-ons */}
                   {!isAlertService && !isMapSearch && (
-                  <div>
-                  <Separator className="mb-5" />
-                  <div className="space-y-4 bg-muted/30 p-4 rounded-xl border border-border">
-                    <Label className="text-base font-semibold">Recommended Add-ons</Label>
+                    <div className="space-y-4 pt-4 border-t border-slate-150">
+                      <Label className="text-sm font-extrabold uppercase tracking-wider text-slate-400 block">Recommended Add-ons</Label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        {/* Title Plan add-on */}
+                        {!hasTitlePlan && (
+                          <div
+                            onClick={() => {
+                              const selected = state.addons.includes("title_plan");
+                              updateState({
+                                addons: selected 
+                                  ? state.addons.filter(a => a !== "title_plan")
+                                  : [...state.addons, "title_plan"]
+                              });
+                            }}
+                            className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-3 select-none ${
+                              state.addons.includes("title_plan")
+                                ? "border-emerald-500 bg-emerald-500/[0.02]"
+                                : "border-slate-200 bg-white hover:border-slate-350"
+                            }`}
+                          >
+                            <div className={`w-5 h-5 rounded border-2 shrink-0 flex items-center justify-center mt-0.5 ${
+                              state.addons.includes("title_plan") ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300"
+                            }`}>
+                              {state.addons.includes("title_plan") && <Check className="w-3.5 h-3.5 stroke-[3px]" />}
+                            </div>
+                            <div className="space-y-1">
+                              <h5 className="font-extrabold text-[0.875rem] text-slate-900">Official Title Plan Map (+£36)</h5>
+                              <p className="text-[11px] text-slate-500 leading-normal">Adds the official boundary plans outlined in red from ordnance maps.</p>
+                            </div>
+                          </div>
+                        )}
 
-                    {/* Title Plan add-on — hidden when service already includes a plan */}
-                    {!hasTitlePlan && (
-                    <div className="flex items-start space-x-3">
-                      <Checkbox
-                        id="addon-plan"
-                        checked={state.addons.includes("title_plan")}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            updateState({ addons: [...state.addons, "title_plan"] });
-                          } else {
-                            updateState({ addons: state.addons.filter(a => a !== "title_plan") });
-                          }
-                        }}
-                      />
-                      <div className="grid gap-1.5 leading-none">
-                        <label htmlFor="addon-plan" className="text-sm font-medium leading-none cursor-pointer">
-                          Add Title Plan (+£36)
-                        </label>
-                        <p className="text-sm text-muted-foreground">
-                          Shows the official boundaries of the property.
-                        </p>
+                        {/* Flood report */}
+                        <div
+                          onClick={() => {
+                            const selected = state.addons.includes("flood_risk");
+                            updateState({
+                              addons: selected 
+                                ? state.addons.filter(a => a !== "flood_risk")
+                                : [...state.addons, "flood_risk"]
+                            });
+                          }}
+                          className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-3 select-none ${
+                            state.addons.includes("flood_risk")
+                              ? "border-emerald-500 bg-emerald-500/[0.02]"
+                              : "border-slate-200 bg-white hover:border-slate-350"
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded border-2 shrink-0 flex items-center justify-center mt-0.5 ${
+                            state.addons.includes("flood_risk") ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300"
+                          }`}>
+                            {state.addons.includes("flood_risk") && <Check className="w-3.5 h-3.5 stroke-[3px]" />}
+                          </div>
+                          <div className="space-y-1">
+                            <h5 className="font-extrabold text-[0.875rem] text-slate-900">Flood Risk Assessment (+£14.95)</h5>
+                            <p className="text-[11px] text-slate-500 leading-normal">Environmental history assessment indicating high-risk flood potentials.</p>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
-                    )}
-                    
-                    <div className="flex items-start space-x-3">
-                      <Checkbox 
-                        id="addon-flood" 
-                        checked={state.addons.includes("flood_risk")}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            updateState({ addons: [...state.addons, "flood_risk"] });
-                          } else {
-                            updateState({ addons: state.addons.filter(a => a !== "flood_risk") });
-                          }
-                        }}
-                      />
-                      <div className="grid gap-1.5 leading-none">
-                        <label htmlFor="addon-flood" className="text-sm font-medium leading-none cursor-pointer">
-                          Add Flood Risk Report (+£14.95)
-                        </label>
-                        <p className="text-sm text-muted-foreground">
-                          Comprehensive environmental risk assessment.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
                   )}
+
                 </div>
               )}
 
               {step === 2 && (
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="space-y-3">
-                      <Label htmlFor="title">Title</Label>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 bg-slate-50 p-6 rounded-xl border border-slate-150">
+                    <div className="md:col-span-3 space-y-2">
+                      <Label htmlFor="title" className="text-xs font-bold text-slate-600 uppercase tracking-wider">Salutation</Label>
                       <Select value={state.customerTitle} onValueChange={(val) => updateState({ customerTitle: val })}>
-                        <SelectTrigger id="title" className="h-12">
+                        <SelectTrigger id="title" className="h-11 bg-white border-slate-200 text-xs sm:text-sm">
                           <SelectValue placeholder="Title" />
                         </SelectTrigger>
                         <SelectContent>
@@ -494,282 +543,284 @@ export default function OrderWizard() {
                           <SelectItem value="Ms">Ms</SelectItem>
                           <SelectItem value="Miss">Miss</SelectItem>
                           <SelectItem value="Dr">Dr</SelectItem>
-                          <SelectItem value="Company">Company</SelectItem>
+                          <SelectItem value="Company">Company / Solicitor</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-3 md:col-span-3">
-                      <Label htmlFor="fullName">Full Name</Label>
+                    <div className="md:col-span-9 space-y-2">
+                      <Label htmlFor="fullName" className="text-xs font-bold text-slate-600 uppercase tracking-wider">Full Name / Business Representative</Label>
                       <Input 
                         id="fullName"
                         placeholder="John Doe" 
                         value={state.customerName}
                         onChange={(e) => updateState({ customerName: e.target.value })}
-                        className="h-12"
+                        className="h-11 bg-white border-slate-200"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-3">
-                      <Label htmlFor="email">Email Address</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-xs font-bold text-slate-500 uppercase">Email Address (Deliveries sent here)</Label>
                       <Input 
                         id="email"
                         type="email"
-                        placeholder="john@example.com" 
+                        placeholder="yourname@gmail.com" 
                         value={state.customerEmail}
                         onChange={(e) => updateState({ customerEmail: e.target.value })}
-                        className="h-12"
+                        className="h-11 border-slate-200"
                       />
                     </div>
-                    <div className="space-y-3">
-                      <Label htmlFor="emailConfirm">Confirm Email Address</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="emailConfirm" className="text-xs font-bold text-slate-500 uppercase">Confirm Email Address</Label>
                       <Input 
                         id="emailConfirm"
                         type="email"
-                        placeholder="john@example.com" 
+                        placeholder="yourname@gmail.com" 
                         value={state.customerEmailConfirm}
                         onChange={(e) => updateState({ customerEmailConfirm: e.target.value })}
-                        className="h-12"
+                        className="h-11 border-slate-200"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="phone">Mobile Number (Optional)</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-xs font-bold text-slate-500 uppercase">Mobile Number (Optional)</Label>
                     <Input 
                       id="phone"
                       type="tel"
-                      placeholder="07..." 
+                      placeholder="e.g. +44 7123 456789" 
                       value={state.customerPhone}
                       onChange={(e) => updateState({ customerPhone: e.target.value })}
-                      className="h-12"
+                      className="h-11 border-slate-200"
                     />
-                    <p className="text-xs text-muted-foreground">Required if you select SMS notifications.</p>
+                    <p className="text-[11px] text-slate-450 leading-relaxed">Necessary to receive real-time SMS progress updates.</p>
                   </div>
 
-                  <Separator />
+                  <Separator className="my-4" />
 
-                  <div className="space-y-3">
-                    <Label htmlFor="billingAddress">Your Postal Address</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="billingAddress" className="text-xs font-bold text-slate-500 uppercase">Your Billing &amp; Mailing Address</Label>
                     <Input 
                       id="billingAddress"
-                      placeholder="123 High Street, London, SW1A 1AA" 
+                      placeholder="Complete billing address e.g. 23 High Street, Richmond TW9 1LN" 
                       value={state.customerAddress}
                       onChange={(e) => updateState({ customerAddress: e.target.value })}
-                      className="h-12"
+                      className="h-11 border-slate-200"
                     />
-                    <p className="text-xs text-muted-foreground">Used for billing and any physical document deliveries.</p>
+                    <p className="text-[11px] text-slate-450 leading-relaxed">Used for receipt billing. If printed copy delivery format is selected below, documents are dispatched to this address.</p>
                   </div>
                 </div>
               )}
 
               {step === 3 && (
                 <div className="space-y-8">
+                  
+                  {/* Processing Speed Option Cards */}
                   <div className="space-y-4">
-                    <Label className="text-lg font-heading">Processing Speed</Label>
+                    <Label className="text-sm font-extrabold uppercase tracking-wider text-slate-400 block">Processing Speed Priority</Label>
                     <RadioGroup 
                       value={state.trackingType} 
                       onValueChange={(val) => updateState({ trackingType: val as any })}
-                      className="grid gap-4"
+                      className="grid grid-cols-1 gap-4"
                     >
-                      <Label htmlFor="speed-standard" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-muted/50 [&:has(:checked)]:bg-primary/5 [&:has(:checked)]:border-primary transition-colors">
-                        <div className="flex items-center gap-3">
-                          <RadioGroupItem value="standard" id="speed-standard" />
-                          <div>
-                            <div className="font-semibold text-primary">Standard Processing</div>
-                            <div className="text-sm text-muted-foreground">Usually 1-2 working days</div>
+                      {[
+                        { id: "standard", icon: Clock, title: "Standard Processing", desc: "Official queue processing, typical delivery within 1-2 working days.", price: "Free", bg: "bg-slate-100 text-slate-600" },
+                        { id: "fast_track", icon: Zap, title: "Fast-Track Processing", desc: "Intermediary queue priority, delivery within 4 working hours.", price: "+£10.00", bg: "bg-amber-100 text-amber-600 border-amber-200/50" },
+                        { id: "super_fast_track", icon: Flame, title: "Super-Fast Track Processing", desc: "Instant queue bypass, document search and delivery within 1 hour.", price: "+£20.00", bg: "bg-rose-100 text-rose-600 border-rose-200/50" }
+                      ].map((item) => (
+                        <Label 
+                          key={item.id}
+                          htmlFor={`speed-${item.id}`} 
+                          className={`flex items-center justify-between border-2 rounded-xl p-5 cursor-pointer hover:border-slate-350 [&:has(:checked)]:border-accent [&:has(:checked)]:bg-accent/[0.02] transition-all`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <RadioGroupItem value={item.id} id={`speed-${item.id}`} />
+                            <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center shrink-0`}>
+                              <item.icon className="w-5 h-5" />
+                            </div>
+                            <div className="text-left space-y-0.5">
+                              <span className="font-extrabold text-[0.9375rem] text-slate-900 leading-tight block">{item.title}</span>
+                              <span className="text-xs text-slate-500 font-medium leading-relaxed">{item.desc}</span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="font-semibold text-primary">Free</div>
-                      </Label>
-                      
-                      <Label htmlFor="speed-fast" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-muted/50 [&:has(:checked)]:bg-primary/5 [&:has(:checked)]:border-primary transition-colors">
-                        <div className="flex items-center gap-3">
-                          <RadioGroupItem value="fast_track" id="speed-fast" />
-                          <div>
-                            <div className="font-semibold text-primary">Fast-Track</div>
-                            <div className="text-sm text-muted-foreground">Priority queue, usually within hours</div>
-                          </div>
-                        </div>
-                        <div className="font-semibold text-primary">+£10.00</div>
-                      </Label>
-
-                      <Label htmlFor="speed-super" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-muted/50 [&:has(:checked)]:bg-primary/5 [&:has(:checked)]:border-primary transition-colors">
-                        <div className="flex items-center gap-3">
-                          <RadioGroupItem value="super_fast_track" id="speed-super" />
-                          <div>
-                            <div className="font-semibold text-primary">Super-Fast Track</div>
-                            <div className="text-sm text-muted-foreground">Jump the queue, processed immediately</div>
-                          </div>
-                        </div>
-                        <div className="font-semibold text-primary">+£20.00</div>
-                      </Label>
+                          <span className="font-bold text-[0.875rem] text-primary shrink-0 ml-4">{item.price}</span>
+                        </Label>
+                      ))}
                     </RadioGroup>
                   </div>
 
                   <Separator />
 
+                  {/* Delivery Format Option Cards */}
                   <div className="space-y-4">
-                    <Label className="text-lg font-heading">Delivery Format</Label>
+                    <Label className="text-sm font-extrabold uppercase tracking-wider text-slate-400 block">Delivery Format</Label>
                     <RadioGroup 
                       value={state.deliveryType} 
                       onValueChange={(val) => updateState({ deliveryType: val as any })}
-                      className="grid gap-4"
+                      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
                     >
-                      <Label htmlFor="del-pdf" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-muted/50 [&:has(:checked)]:bg-primary/5 [&:has(:checked)]:border-primary transition-colors">
-                        <div className="flex items-center gap-3">
-                          <RadioGroupItem value="pdf_only" id="del-pdf" />
-                          <div>
-                            <div className="font-semibold text-primary">PDF Only</div>
-                            <div className="text-sm text-muted-foreground">Sent securely via email</div>
+                      {[
+                        { id: "pdf_only", icon: FileText, title: "Digital PDF Copy Only", desc: "Sent securely to your email. Highly recommended.", price: "Free" },
+                        { id: "pdf_printed", icon: Mail, title: "PDF + Official Print Copy", desc: "Emailed plus official printed copy posted via Royal Mail 1st Class.", price: "+£9.95" }
+                      ].map((item) => (
+                        <Label 
+                          key={item.id}
+                          htmlFor={`del-${item.id}`} 
+                          className={`flex flex-col justify-between border-2 rounded-xl p-5 cursor-pointer hover:border-slate-350 [&:has(:checked)]:border-accent [&:has(:checked)]:bg-accent/[0.02] transition-all text-left gap-3`}
+                        >
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <RadioGroupItem value={item.id} id={`del-${item.id}`} />
+                                <item.icon className="w-4.5 h-4.5 text-slate-700" />
+                              </div>
+                              <span className="font-bold text-xs text-slate-900">{item.price}</span>
+                            </div>
+                            <div>
+                              <span className="font-extrabold text-[0.875rem] text-slate-900 leading-snug block">{item.title}</span>
+                              <span className="text-xs text-slate-500 font-medium leading-relaxed mt-1 block">{item.desc}</span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="font-semibold text-primary">Free</div>
-                      </Label>
-                      
-                      <Label htmlFor="del-print" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-muted/50 [&:has(:checked)]:bg-primary/5 [&:has(:checked)]:border-primary transition-colors">
-                        <div className="flex items-center gap-3">
-                          <RadioGroupItem value="pdf_printed" id="del-print" />
-                          <div>
-                            <div className="font-semibold text-primary">PDF + Printed Copy</div>
-                            <div className="text-sm text-muted-foreground">Emailed plus physical copy posted 1st Class</div>
-                          </div>
-                        </div>
-                        <div className="font-semibold text-primary">+£9.95</div>
-                      </Label>
+                        </Label>
+                      ))}
                     </RadioGroup>
                   </div>
 
                   <Separator />
 
+                  {/* Notifications Option Cards */}
                   <div className="space-y-4">
-                    <Label className="text-lg font-heading">Notifications</Label>
+                    <Label className="text-sm font-extrabold uppercase tracking-wider text-slate-400 block">Progress Notifications</Label>
                     <RadioGroup 
                       value={state.notificationType} 
                       onValueChange={(val) => updateState({ notificationType: val as any })}
-                      className="grid gap-4 md:grid-cols-2"
+                      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
                     >
-                      <Label htmlFor="notif-email" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-muted/50 [&:has(:checked)]:bg-primary/5 [&:has(:checked)]:border-primary transition-colors">
+                      <Label htmlFor="notif-email" className="flex items-center justify-between border-2 rounded-xl p-5 cursor-pointer hover:border-slate-300 [&:has(:checked)]:border-accent [&:has(:checked)]:bg-accent/[0.02] transition-all">
                         <div className="flex items-center gap-3">
                           <RadioGroupItem value="email" id="notif-email" />
-                          <div className="font-semibold text-primary">Email Updates</div>
+                          <div className="text-left">
+                            <span className="font-extrabold text-[0.875rem] text-slate-900 block leading-tight">Email Notifications</span>
+                            <span className="text-xs text-slate-500 font-medium">Standard email updates.</span>
+                          </div>
                         </div>
-                        <div className="font-semibold text-primary text-sm">Free</div>
+                        <span className="font-bold text-xs text-slate-900">Free</span>
                       </Label>
                       
-                      <Label htmlFor="notif-sms" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-muted/50 [&:has(:checked)]:bg-primary/5 [&:has(:checked)]:border-primary transition-colors">
+                      <Label htmlFor="notif-sms" className="flex items-center justify-between border-2 rounded-xl p-5 cursor-pointer hover:border-slate-300 [&:has(:checked)]:border-accent [&:has(:checked)]:bg-accent/[0.02] transition-all">
                         <div className="flex items-center gap-3">
                           <RadioGroupItem value="both" id="notif-sms" />
-                          <div className="font-semibold text-primary">Email & SMS</div>
+                          <div className="text-left">
+                            <span className="font-extrabold text-[0.875rem] text-slate-900 block leading-tight">Email &amp; SMS Alerts</span>
+                            <span className="text-xs text-slate-500 font-medium">SMS updates to mobile.</span>
+                          </div>
                         </div>
-                        <div className="font-semibold text-primary text-sm">+£4.95</div>
+                        <span className="font-bold text-xs text-slate-900">+£4.95</span>
                       </Label>
                     </RadioGroup>
                   </div>
+
                 </div>
               )}
 
               {step === 4 && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   {priceCalculating || !priceBreakdown ? (
-                    <div className="py-12 flex flex-col items-center justify-center space-y-4">
+                    <div className="py-16 flex flex-col items-center justify-center space-y-4">
                       <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                      <p className="text-muted-foreground font-medium">Calculating final price...</p>
+                      <p className="text-slate-500 text-sm font-semibold">Calculating official HMLR fees &amp; service VAT...</p>
                     </div>
                   ) : (
                     <>
-                      <div className="bg-gray-50 rounded-xl p-5 border border-border">
-                        <h4 className="font-heading font-bold text-lg mb-4 text-primary">Order Summary</h4>
-
-                        <div className="space-y-3 mb-5">
-                          <div className="flex justify-between gap-3">
-                            <span className="text-muted-foreground font-medium shrink-0">Service</span>
-                            <span className="font-semibold text-foreground text-right text-sm">{selectedService?.name}</span>
-                          </div>
-                          {isMapSearch && state.lat && state.lng ? (
-                            <div className="flex justify-between gap-3">
-                              <span className="text-muted-foreground font-medium shrink-0">Location</span>
-                              <span className="font-semibold text-foreground text-right text-sm font-mono">{state.lat.toFixed(5)}, {state.lng.toFixed(5)}</span>
-                            </div>
-                          ) : isAlertService ? (
-                            <div className="flex justify-between gap-3">
-                              <span className="text-muted-foreground font-medium shrink-0">Monitoring</span>
-                              <span className="font-semibold text-foreground text-right text-sm max-w-[55%] truncate">{state.titleNumber || state.propertyAddress || "—"}</span>
-                            </div>
-                          ) : (
-                            <div className="flex justify-between gap-3">
-                              <span className="text-muted-foreground font-medium shrink-0">Property</span>
-                              <span className="font-semibold text-foreground text-right text-sm max-w-[55%] truncate" title={state.propertyAddress}>{state.propertyAddress || "—"}</span>
-                            </div>
-                          )}
-                          <div className="flex justify-between gap-3">
-                            <span className="text-muted-foreground font-medium shrink-0">Delivery</span>
-                            <span className="font-semibold text-foreground text-right text-sm">{state.deliveryType === 'pdf_only' ? 'PDF Only' : 'PDF + Print'}</span>
-                          </div>
-                          <div className="flex justify-between gap-3">
-                            <span className="text-muted-foreground font-medium shrink-0">Speed</span>
-                            <span className="font-semibold text-foreground text-right text-sm capitalize">{state.trackingType.replace(/_/g, ' ')}</span>
-                          </div>
+                      {/* Premium Digital Receipt Summary */}
+                      <div className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-inner">
+                        <div className="bg-[#121f35] px-6 py-4 text-white flex justify-between items-center">
+                          <span className="font-heading font-extrabold text-sm sm:text-base">Document Order Summary</span>
+                          <span className="text-xs font-bold bg-accent/20 border border-accent/35 text-accent px-2.5 py-0.5 rounded-full uppercase tracking-wider">Review Copy</span>
                         </div>
-
-                        <Separator className="my-4" />
-
-                        <div className="space-y-3 text-sm">
-                          {priceBreakdown.lineItems.map((item, idx) => (
-                            <div key={idx} className="flex justify-between">
-                              <span className="text-muted-foreground">{item.label}</span>
-                              <span className="font-medium text-foreground">£{(item.amount).toFixed(2)}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <Separator className="my-4" />
-
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground font-medium">Total Document Fees (No VAT)</span>
-                            <span className="font-semibold text-foreground">£{(priceBreakdown.documentFee).toFixed(2)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground font-medium">Service & Processing Fees</span>
-                            <span className="font-semibold text-foreground">£{(priceBreakdown.serviceFee).toFixed(2)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground font-medium">VAT (on services only)</span>
-                            <span className="font-semibold text-foreground">£{(priceBreakdown.vatAmount).toFixed(2)}</span>
-                          </div>
+                        
+                        <div className="p-6 space-y-4 text-sm">
                           
-                          <div className="flex justify-between items-center pt-4 mt-2 border-t">
-                            <span className="font-bold text-xl text-primary font-heading">Total to Pay</span>
-                            <span className="font-bold text-2xl text-primary font-heading">£{(priceBreakdown.totalAmount).toFixed(2)}</span>
+                          {/* Top summary row details */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 pb-4 border-b border-slate-200">
+                            <div>
+                              <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Service Ordered</span>
+                              <span className="font-bold text-slate-800 text-[0.9375rem]">{selectedService?.name}</span>
+                            </div>
+                            <div>
+                              <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Target Address / Location</span>
+                              <span className="font-bold text-slate-800 text-[0.9375rem] block truncate" title={state.propertyAddress}>
+                                {isMapSearch && state.lat && state.lng 
+                                  ? `Pin: ${state.lat.toFixed(4)}, ${state.lng.toFixed(4)}`
+                                  : (state.propertyAddress || "Manual Search Lookup")}
+                              </span>
+                            </div>
                           </div>
+
+                          {/* Line items invoice breakdown */}
+                          <div className="space-y-3 py-2">
+                            {priceBreakdown.lineItems.map((item, idx) => (
+                              <div key={idx} className="flex justify-between items-center text-xs sm:text-sm">
+                                <span className="text-slate-550 font-medium">{item.label}</span>
+                                <span className="font-bold text-slate-800">£{(item.amount).toFixed(2)}</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Invoice divider */}
+                          <div className="border-t border-dashed border-slate-350 my-4 pt-4 space-y-2.5 text-xs sm:text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-slate-550">Total Official Document Fees (HMLR Passthrough, No VAT)</span>
+                              <span className="font-bold text-slate-800">£{(priceBreakdown.documentFee).toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-550">Processing Intermediary Fee (Excl. VAT)</span>
+                              <span className="font-bold text-slate-800">£{(priceBreakdown.serviceFee - priceBreakdown.vatAmount).toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-550">VAT on Intermediary Services (20%)</span>
+                              <span className="font-bold text-slate-800">£{(priceBreakdown.vatAmount).toFixed(2)}</span>
+                            </div>
+                          </div>
+
+                          {/* Bottom Total Paid row */}
+                          <div className="border-t border-slate-200 pt-4 flex justify-between items-center">
+                            <div>
+                              <span className="font-bold text-primary text-base font-heading block leading-none">Total Amount Due</span>
+                              <span className="text-[10px] text-slate-450 mt-1 block">Includes official government fee and VAT.</span>
+                            </div>
+                            <span className="font-extrabold text-2xl text-accent font-heading">£{(priceBreakdown.totalAmount).toFixed(2)}</span>
+                          </div>
+
                         </div>
                       </div>
 
-                      <div className="flex items-start space-x-3 p-4 bg-blue-50/50 border border-blue-100 rounded-lg">
+                      {/* Immediate waive tickbox */}
+                      <div className="flex items-start space-x-3.5 p-5 bg-amber-50/40 border border-amber-200/60 rounded-xl text-left">
                         <Checkbox 
                           id="terms" 
                           checked={state.agreedToWaiveCancel}
                           onCheckedChange={(checked) => updateState({ agreedToWaiveCancel: checked as boolean })}
-                          className="mt-1"
+                          className="mt-1 border-amber-300 data-[state=checked]:bg-amber-600 data-[state=checked]:border-amber-600"
                         />
-                        <div className="grid gap-1.5 leading-none">
+                        <div className="grid gap-1">
                           <label
                             htmlFor="terms"
-                            className="text-sm font-medium leading-snug cursor-pointer"
+                            className="text-sm font-bold leading-snug cursor-pointer text-amber-900"
                           >
-                            I request immediate processing of my order
+                            Consent to Immediate Processing (Waive 14-Day Cancellation)
                           </label>
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            By ticking this box, I consent to the immediate start of the service and acknowledge that I will lose my right to cancel within the 14-day cancellation period once the service has been fully performed.
+                          <p className="text-[11px] text-amber-800/80 leading-relaxed mt-0.5">
+                            I explicitly request Onlinelandregistry to retrieve my documents immediately. I understand and agree that once my official copies are retrieved and delivered, I waive my statutory right to cancel or obtain a refund for the service.
                           </p>
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-2 justify-center text-sm text-muted-foreground">
-                        <ShieldCheck className="w-4 h-4 text-green-600" />
-                        <span>256-bit encrypted secure checkout via Stripe</span>
+                      {/* Secure Stripe lock row */}
+                      <div className="flex items-center gap-2 justify-center text-xs text-slate-450 py-1 font-semibold border-t border-slate-150 pt-4">
+                        <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>PCI-DSS Level 1 Secure Card Processing via Stripe · 256-bit TLS Encryption</span>
                       </div>
                     </>
                   )}
@@ -778,27 +829,28 @@ export default function OrderWizard() {
             </motion.div>
           </AnimatePresence>
         </CardContent>
-        <CardFooter className="bg-muted/20 px-4 sm:px-6 py-4 flex justify-between border-t border-border mt-4">
+
+        <CardFooter className="bg-slate-50/60 border-t border-slate-150 px-6 sm:px-8 py-5 flex justify-between">
           {step > 1 ? (
-            <Button variant="outline" onClick={handleBack} className="h-11 px-4 sm:px-6">
+            <Button variant="outline" onClick={handleBack} className="h-11 px-5 font-semibold text-slate-700 hover:bg-slate-100">
               <ArrowLeft className="w-4 h-4 mr-1.5" /> Back
             </Button>
           ) : <div />}
 
           {step < 4 ? (
-            <Button onClick={handleNext} className="bg-primary hover:bg-primary/90 h-11 px-6 sm:px-8 font-semibold">
+            <Button onClick={handleNext} className="bg-[#1e293b] hover:bg-slate-800 text-white font-bold h-11 px-8 rounded-lg">
               Continue <ArrowRight className="w-4 h-4 ml-1.5" />
             </Button>
           ) : (
             <Button 
               onClick={handleSubmit} 
-              className="bg-accent hover:bg-accent/90 text-accent-foreground h-12 px-10 font-bold shadow-md hover-elevate"
+              className="bg-accent hover:bg-accent/90 text-white h-12 px-12 font-extrabold shadow-lg shadow-accent/25 rounded-lg text-[0.9375rem] transition-all hover:shadow-accent/45 hover:-translate-y-px"
               disabled={createOrder.isPending || createCheckoutSession.isPending || priceCalculating || !state.agreedToWaiveCancel}
             >
               {(createOrder.isPending || createCheckoutSession.isPending) ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Preparing Stripe Checkout...</>
               ) : (
-                <>Pay Now <ArrowRight className="w-4 h-4 ml-2" /></>
+                <>Pay &amp; Secure Order <ArrowRight className="w-4 h-4 ml-2" /></>
               )}
             </Button>
           )}

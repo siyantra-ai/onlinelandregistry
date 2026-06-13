@@ -1,31 +1,24 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { FileText, Map, Package, Search, MapPin, Bell, FileSignature, Mail, ExternalLink, Menu, X } from "lucide-react";
+import {
+  Menu, X, Mail
+} from "lucide-react";
 
-const FOOTER_SERVICES = [
-  { icon: FileText,      label: "Title Register",   price: "£36", slug: "title-register" },
-  { icon: Map,           label: "Title Plan",        price: "£36", slug: "title-plan" },
-  { icon: Package,       label: "Ownership Bundle",  price: "£60", slug: "ownership-bundle" },
-  { icon: Search,        label: "Deed Search",       price: "£41", slug: "deed-search" },
-  { icon: MapPin,        label: "Map / Land Search", price: "£53", slug: "map-land-search" },
-  { icon: Bell,          label: "Property Alert",    price: "£36", slug: "property-alert" },
-  { icon: FileSignature, label: "DJP Application",   price: "£65", slug: "deceased-joint-proprietor" },
-];
 
 const FOOTER_COMPANY = [
   { label: "About Us",           href: "/about" },
   { label: "Contact Support",    href: "/contact" },
-  { label: "FAQs",               href: "/#faqs" },
+  { label: "FAQs",               href: "/faqs" },
   { label: "Privacy Policy",     href: "/privacy" },
   { label: "Terms & Conditions", href: "/terms" },
   { label: "Cookie Policy",      href: "/cookies" },
 ];
 
 const NAV_LINKS = [
-  { label: "Services",     href: "/#services" },
-  { label: "How It Works", href: "/#how-it-works" },
-  { label: "FAQs",         href: "/#faqs" },
+  { label: "SERVICES",     href: "/#services" },
+  { label: "FAQS",         href: "/faqs" },
+  { label: "CONTACT",      href: "mailto:support@onlinelandregistry.uk" },
 ];
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -35,41 +28,44 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     <div className="min-h-screen bg-background flex flex-col font-sans">
 
       {/* ─── Navigation ─── */}
-      <header className="bg-primary text-primary-foreground sticky top-0 z-50 border-b border-white/8">
+      <header className="bg-white text-slate-900 sticky top-0 z-50 border-b border-slate-100">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
-          <Link href="/" className="flex items-center gap-2.5 shrink-0" onClick={() => setMenuOpen(false)}>
-            <div className="bg-accent p-1.5 rounded-md">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-            </div>
-            <span className="font-heading font-bold text-[1.0625rem] tracking-tight text-white">
-              Onlinelandregistry<span className="text-accent">.uk</span>
-            </span>
-          </Link>
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center gap-2.5 shrink-0" onClick={() => setMenuOpen(false)}>
+              <div className="bg-[#121f35] p-1.5 rounded-md">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+              <span className="font-heading font-bold text-[1.0625rem] tracking-tight text-slate-900">
+                Onlinelandregistry
+              </span>
+            </Link>
+          </div>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-7 text-[0.875rem] font-medium">
+          <nav className="hidden md:flex items-center gap-6 text-[0.8125rem] font-bold tracking-wider">
             {NAV_LINKS.map(({ label, href }) =>
               href.startsWith("/") && !href.includes("#") ? (
-                <Link key={label} href={href} className="text-white/65 hover:text-white transition-colors">{label}</Link>
+                <Link key={label} href={href} className="text-slate-650 hover:text-slate-900 transition-colors">{label}</Link>
               ) : (
-                <a key={label} href={href} className="text-white/65 hover:text-white transition-colors">{label}</a>
+                <a key={label} href={href} className="text-slate-650 hover:text-slate-900 transition-colors">{label}</a>
               )
             )}
           </nav>
 
           <div className="flex items-center gap-3">
+            {/* Buy now style order button */}
             <Link href="/order" className="hidden sm:block">
-              <Button className="bg-accent hover:bg-accent/90 text-white border-0 font-semibold text-sm h-9 px-5 shadow-sm rounded-md">
-                Order Documents
+              <Button className="bg-[#00b67a] hover:bg-[#009e6a] text-white font-bold text-xs tracking-wider h-9 px-5 shadow-sm rounded-full transition-all hover:-translate-y-0.5 flex items-center gap-1">
+                ORDER NOW &rarr;
               </Button>
             </Link>
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden p-2 text-white/70 hover:text-white rounded-md hover:bg-white/10 transition-colors"
+              className="md:hidden p-2 text-slate-700 hover:text-slate-900 rounded-md hover:bg-slate-100 transition-colors"
               onClick={() => setMenuOpen(o => !o)}
               aria-label="Toggle menu"
             >
@@ -80,12 +76,12 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
         {/* Mobile drawer */}
         {menuOpen && (
-          <div className="md:hidden bg-primary border-t border-white/10 px-4 pb-5 pt-3 space-y-1">
+          <div className="md:hidden bg-white border-t border-slate-100 px-4 pb-5 pt-3 space-y-1">
             {NAV_LINKS.map(({ label, href }) =>
               href.startsWith("/") && !href.includes("#") ? (
                 <Link
                   key={label} href={href}
-                  className="block py-2.5 px-3 text-[0.9375rem] font-medium text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-colors"
+                  className="block py-2.5 px-3 text-[0.875rem] font-bold text-slate-705 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {label}
@@ -93,7 +89,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               ) : (
                 <a
                   key={label} href={href}
-                  className="block py-2.5 px-3 text-[0.9375rem] font-medium text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-colors"
+                  className="block py-2.5 px-3 text-[0.875rem] font-bold text-slate-705 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {label}
@@ -102,8 +98,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             )}
             <div className="pt-3">
               <Link href="/order" onClick={() => setMenuOpen(false)}>
-                <Button className="w-full bg-accent hover:bg-accent/90 text-white font-semibold h-11 rounded-lg">
-                  Order Documents
+                <Button className="w-full bg-[#00b67a] hover:bg-[#009e6a] text-white font-bold h-11 rounded-full flex items-center justify-center gap-1">
+                  ORDER NOW &rarr;
                 </Button>
               </Link>
             </div>
@@ -113,141 +109,86 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
       <main className="flex-1">{children}</main>
 
-      {/* ═══════════════════════════════════════════════════
-          FOOTER — Corporate
-      ═══════════════════════════════════════════════════ */}
-      <footer className="bg-[#0d1a2d] text-white/60">
+      {/* ─── Footer ─── */}
+      <footer className="bg-white border-t border-slate-200 font-sans">
 
         {/* Main grid */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10">
-          <div className="grid grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-10">
+          <div className="grid gap-10 sm:grid-cols-3">
 
-            {/* Col 1 — Brand (full width on mobile) */}
-            <div className="col-span-2 lg:col-span-4 space-y-5">
-              <Link href="/" className="inline-flex items-center gap-2.5">
-                <div className="bg-accent p-1.5 rounded-md shrink-0">
+            {/* Col 1 — Brand */}
+            <div className="sm:col-span-1 space-y-5">
+              <Link href="/" className="flex items-center gap-2.5">
+                <div className="bg-[#121f35] p-2 rounded-lg shrink-0">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                   </svg>
                 </div>
-                <span className="font-heading font-bold text-white text-[1.0625rem] tracking-tight">
-                  Onlinelandregistry<span className="text-accent">.uk</span>
-                </span>
+                <span className="font-heading font-bold text-[1rem] tracking-tight text-slate-900">Online Land Registry</span>
               </Link>
-
-              <p className="text-[0.8125rem] leading-relaxed text-white/45 max-w-xs">
-                A premium, self-service portal for obtaining official UK Land Registry documents — Title Registers, Plans, Deeds, and more.
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Fast, reliable access to official HM Land Registry documents — delivered online in minutes.
               </p>
-
-              <div className="pt-1 space-y-1.5">
-                <p className="text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-white/25 mb-3">Delivery Options</p>
-                {[
-                  { dot: "bg-emerald-400", label: "Standard — next working day" },
-                  { dot: "bg-accent",      label: "Fast Track — within 4 hours" },
-                  { dot: "bg-orange-400",  label: "Super-Fast — within 1 hour" },
-                ].map(({ dot, label }) => (
-                  <div key={label} className="flex items-center gap-2.5 text-[0.8125rem] text-white/40">
-                    <span className={`w-1.5 h-1.5 rounded-full ${dot} shrink-0`} />
-                    {label}
-                  </div>
-                ))}
+              <div className="flex items-center gap-2 text-sm text-slate-500">
+                <Mail className="w-4 h-4 shrink-0 text-slate-400" />
+                <a href="mailto:support@onlinelandregistry.uk" className="hover:text-slate-900 transition-colors">
+                  support@onlinelandregistry.uk
+                </a>
               </div>
             </div>
 
-            {/* Col 2 — Services */}
-            <div className="col-span-1 lg:col-span-3 lg:col-start-6">
-              <p className="text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Document Shop</p>
-              <ul className="space-y-3">
-                {FOOTER_SERVICES.map(({ icon: Icon, label, price, slug }) => (
-                  <li key={slug}>
-                    <Link
-                      href={`/order?service=${slug}`}
-                      className="flex items-center justify-between gap-3 group"
-                    >
-                      <span className="flex items-center gap-2 text-[0.8125rem] text-white/45 group-hover:text-white/80 transition-colors">
-                        <Icon className="w-3 h-3 shrink-0 text-white/25 group-hover:text-accent/70 transition-colors" />
-                        {label}
-                      </span>
-                      <span className="font-mono text-[0.75rem] text-white/25 group-hover:text-white/50 transition-colors tabular-nums">
-                        {price}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Col 3 — Company */}
-            <div className="col-span-1 lg:col-span-2">
-              <p className="text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Company</p>
-              <ul className="space-y-3">
+            {/* Col 2 — Company */}
+            <div className="space-y-4">
+              <h3 className="font-heading text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-400">Company</h3>
+              <ul className="space-y-2.5">
                 {FOOTER_COMPANY.map(({ label, href }) => (
-                  <li key={href}>
-                    <a href={href} className="text-[0.8125rem] text-white/45 hover:text-white/80 transition-colors">
-                      {label}
-                    </a>
+                  <li key={label}>
+                    {href.startsWith("/") ? (
+                      <Link href={href} className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+                        {label}
+                      </Link>
+                    ) : (
+                      <a href={href} className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+                        {label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Col 4 — Contact (full width on mobile) */}
-            <div className="col-span-2 lg:col-span-3">
-              <p className="text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Contact</p>
-              <div className="space-y-5">
-                <div>
-                  <p className="text-[0.6875rem] font-semibold text-white/25 uppercase tracking-wide mb-1.5">Support</p>
-                  <a href="mailto:support@onlinelandregistry.uk" className="flex items-center gap-1.5 text-[0.8125rem] text-white/45 hover:text-white/80 transition-colors break-all">
-                    <Mail className="w-3 h-3 shrink-0" />
-                    support@onlinelandregistry.uk
-                  </a>
-                </div>
-                <div>
-                  <p className="text-[0.6875rem] font-semibold text-white/25 uppercase tracking-wide mb-1.5">Sales</p>
-                  <a href="mailto:sales@onlinelandregistry.uk" className="flex items-center gap-1.5 text-[0.8125rem] text-white/45 hover:text-white/80 transition-colors break-all">
-                    <Mail className="w-3 h-3 shrink-0" />
-                    sales@onlinelandregistry.uk
-                  </a>
-                </div>
-                <div className="pt-1 border-t border-white/8">
-                  <p className="text-[0.6875rem] font-semibold text-white/25 uppercase tracking-wide mb-2">Registered Office</p>
-                  <address className="not-italic text-[0.8125rem] text-white/35 leading-relaxed">
-                    Swift Task Services Ltd<br />
-                    1 Limbrick, Blackburn<br />
-                    Lancashire, BB1 8AB
-                  </address>
-                </div>
-              </div>
+            {/* Col 3 — Get Started */}
+            <div className="space-y-4">
+              <h3 className="font-heading text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-400">Get Started</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Order an official land registry document in under 2 minutes.
+              </p>
+              <Link href="/order">
+                <Button className="bg-[#00b67a] hover:bg-[#009e6a] text-white font-bold text-xs tracking-wider h-10 px-5 rounded-full transition-all hover:-translate-y-0.5 shadow-md shadow-[#00b67a]/25">
+                  ORDER NOW →
+                </Button>
+              </Link>
             </div>
 
-          </div>
-        </div>
-
-        {/* Disclaimer */}
-        <div className="border-t border-white/6">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <p className="text-[0.75rem] text-white/25 leading-relaxed max-w-5xl">
-              <strong className="text-white/40 font-semibold">Independent Service Notice:</strong>{" "}
-              Onlinelandregistry.uk is operated by <strong className="text-white/35 font-semibold">Swift Task Services Ltd</strong>, an independent intermediary. We are{" "}
-              <strong className="text-white/35 font-semibold">not affiliated with HM Land Registry or the UK Government</strong>. Documents are available directly from{" "}
-              <a href="https://www.gov.uk/search-property-information-land-registry" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-white/35 hover:text-white/55 transition-colors inline-flex items-center gap-0.5">
-                gov.uk <ExternalLink className="w-2.5 h-2.5" />
-              </a>{" "}
-              for £7.00 per document. Our prices include the HMLR document fee (£7, passed through at cost) plus our service fee (postcode validation, address mapping, priority dispatch, PDF delivery) with 20% VAT on the service portion only.
-            </p>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/6">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="text-[0.75rem] text-white/25 text-center sm:text-left">
-              &copy; {new Date().getFullYear()} Swift Task Services Ltd. All rights reserved.
-              <span className="mx-2 text-white/12">·</span>
-              Company No. <span className="font-mono">SC123456</span>
+        <div className="border-t border-slate-100">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-slate-400 text-center sm:text-left">
+              © {new Date().getFullYear()} Online Land Registry. All rights reserved.
             </p>
-            <p className="text-[0.75rem] text-white/20">
-              1 Limbrick, Blackburn, Lancashire, BB1 8AB
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-slate-400">
+              <a href="/terms" className="hover:text-slate-700 transition-colors">Terms of Service</a>
+              <a href="/privacy" className="hover:text-slate-700 transition-colors">Privacy Policy</a>
+              <a href="/cookies" className="hover:text-slate-700 transition-colors">Cookie Policy</a>
+              <a href="/refund-policy" className="hover:text-slate-700 transition-colors">Refund Policy</a>
+            </div>
+          </div>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+            <p className="text-xs text-slate-400 leading-relaxed max-w-3xl">
+              We are a commercial company neither owned by nor affiliated with HM Land Registry or the Government. Documents provided are as held by HM Land Registry. We charge an administration fee for our online services.
             </p>
           </div>
         </div>

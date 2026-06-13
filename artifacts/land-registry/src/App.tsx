@@ -8,6 +8,8 @@ import PublicLayout from "@/components/layout/PublicLayout";
 import Home from "@/pages/home";
 import OrderWizard from "@/pages/order";
 import OrderSuccess from "@/pages/order-success";
+import FAQPage from "@/pages/faq";
+import ContactPage from "@/pages/contact";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,6 +37,16 @@ function Router() {
       <Route path="/order/success">
         <PublicLayout>
           <OrderSuccess />
+        </PublicLayout>
+      </Route>
+      <Route path="/faqs">
+        <PublicLayout>
+          <FAQPage />
+        </PublicLayout>
+      </Route>
+      <Route path="/contact">
+        <PublicLayout>
+          <ContactPage />
         </PublicLayout>
       </Route>
 

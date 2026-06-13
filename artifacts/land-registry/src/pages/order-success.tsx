@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, FileText, ArrowRight } from "lucide-react";
+import { CheckCircle2, FileText, ArrowRight, ShieldCheck, Clock, Check, Inbox } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function OrderSuccess() {
@@ -9,49 +9,99 @@ export default function OrderSuccess() {
   const orderNumber = searchParams.get("order_number") || "OLR-PENDING";
 
   return (
-    <div className="min-h-[calc(100vh-200px)] bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg border border-border p-8 text-center space-y-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
+    <div className="min-h-[calc(100vh-160px)] bg-gradient-to-br from-emerald-500/[0.03] via-slate-50 to-slate-50 flex items-center justify-center py-16 px-4">
+      
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-200/80 p-8 text-center space-y-8 relative overflow-hidden">
         
-        <div className="mx-auto w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-inner">
-          <CheckCircle2 className="w-10 h-10" />
+        {/* Top green accent strip */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-emerald-500"></div>
+        
+        {/* Animated green success icon shield */}
+        <div className="relative mx-auto w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center shadow-inner border border-emerald-100/50">
+          <div className="absolute inset-0 rounded-full bg-emerald-500/10 animate-ping opacity-75" />
+          <div className="absolute inset-2 rounded-full bg-emerald-500/5 animate-pulse-slow" />
+          <CheckCircle2 className="w-12 h-12 text-emerald-600 relative z-10" />
         </div>
         
-        <div className="space-y-2">
-          <h1 className="text-3xl font-heading font-bold text-primary">Payment Successful</h1>
-          <p className="text-muted-foreground">Thank you for your order. We are now processing your request.</p>
+        <div className="space-y-2.5">
+          <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 leading-tight">Payment Completed</h1>
+          <p className="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-xs mx-auto">
+            Your payment was securely verified. Our search agents are now retrieving your documents.
+          </p>
         </div>
 
-        <div className="bg-primary/5 border border-primary/10 rounded-lg p-4 my-6">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">Order Reference</p>
-          <p className="text-2xl font-mono font-bold text-primary">{orderNumber}</p>
+        {/* Invoice Summary Code Card */}
+        <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 shadow-inner relative overflow-hidden">
+          {/* Subtle receipt notch graphics */}
+          <div className="absolute left-1/2 -translate-x-1/2 -top-2 flex gap-1.5 select-none">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="w-2.5 h-2.5 bg-white rounded-full border border-slate-200/30" />
+            ))}
+          </div>
+          
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1 pt-1">Order Reference Number</span>
+          <span className="text-xl sm:text-2xl font-mono font-extrabold text-primary select-all tracking-wider">{orderNumber}</span>
+          <span className="text-[10px] text-slate-450 block mt-1">A copy of your receipt has been dispatched to your email.</span>
         </div>
 
-        <div className="space-y-4 text-left">
-          <h3 className="font-heading font-bold text-primary">What happens next?</h3>
-          <ul className="space-y-3">
-            <li className="flex gap-3 text-sm text-muted-foreground">
-              <div className="mt-0.5 text-accent"><CheckCircle2 className="w-4 h-4" /></div>
-              <span>You will receive an email confirmation shortly containing your receipt and order details.</span>
-            </li>
-            <li className="flex gap-3 text-sm text-muted-foreground">
-              <div className="mt-0.5 text-accent"><CheckCircle2 className="w-4 h-4" /></div>
-              <span>Our team is retrieving your official documents from HM Land Registry.</span>
-            </li>
-            <li className="flex gap-3 text-sm text-muted-foreground">
-              <div className="mt-0.5 text-accent"><CheckCircle2 className="w-4 h-4" /></div>
-              <span>Once completed, your documents will be delivered securely via email based on your chosen tracking speed.</span>
-            </li>
-          </ul>
+        {/* Visual Fulfillment timeline */}
+        <div className="space-y-5 text-left pt-2">
+          <h3 className="font-heading font-extrabold text-slate-900 text-sm uppercase tracking-wider">Processing Timeline</h3>
+          
+          <div className="space-y-6 relative pl-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
+            
+            {/* Step 1 */}
+            <div className="relative flex gap-3.5">
+              <div className="absolute -left-[23px] w-4.5 h-4.5 rounded-full bg-emerald-500 flex items-center justify-center text-white border-4 border-white shadow-sm">
+                <Check className="w-2.5 h-2.5 stroke-[4px]" />
+              </div>
+              <div className="space-y-0.5">
+                <h4 className="font-extrabold text-slate-850 text-xs sm:text-sm leading-tight">Order Confirmed</h4>
+                <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Payment checked and order registered with our priority retrieval queue.</p>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative flex gap-3.5">
+              <div className="absolute -left-[23px] w-4.5 h-4.5 rounded-full bg-accent flex items-center justify-center text-white border-4 border-white shadow-sm animate-pulse-slow">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+              </div>
+              <div className="space-y-0.5">
+                <h4 className="font-extrabold text-slate-850 text-xs sm:text-sm leading-tight">Registry Retrieval In Progress</h4>
+                <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Our automated system is searching the official HM Land Registry indices to extract the matching plan and deed PDFs.</p>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative flex gap-3.5">
+              <div className="absolute -left-[23px] w-4.5 h-4.5 rounded-full bg-slate-200 flex items-center justify-center text-slate-400 border-4 border-white shadow-sm">
+                <Inbox className="w-2 h-2" />
+              </div>
+              <div className="space-y-0.5">
+                <h4 className="font-extrabold text-slate-400 text-xs sm:text-sm leading-tight">Document Dispatch</h4>
+                <p className="text-[11px] sm:text-xs text-slate-400 leading-relaxed">Quality control checks completed. Verified government copies dispatched to your inbox as official PDFs.</p>
+              </div>
+            </div>
+
+          </div>
         </div>
 
-        <div className="pt-6">
+        {/* Security / Help links */}
+        <div className="pt-4 border-t border-slate-150 flex items-center justify-between text-xs text-slate-450">
+          <span className="flex items-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Secure Order
+          </span>
+          <span>Need help? <a href="mailto:support@onlinelandregistry.uk" className="text-accent hover:underline font-bold">Email us</a></span>
+        </div>
+
+        <div className="pt-2">
           <Link href="/">
-            <Button variant="outline" className="w-full h-12 font-medium">
-              Return to Homepage
+            <Button variant="outline" className="w-full h-12 font-bold text-slate-700 border-slate-350 hover:bg-slate-50 flex items-center justify-center gap-2 rounded-xl">
+              Return to Homepage <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </div>
+        
       </div>
     </div>
   );
