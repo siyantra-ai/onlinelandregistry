@@ -373,19 +373,19 @@ export default function Home() {
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white/5 rounded-2xl p-7 space-y-4 border border-white-8/40">
-                  <Skeleton className="h-11 w-11 rounded-xl bg-white/10" />
-                  <Skeleton className="h-5 w-2/3 bg-white/10" />
-                  <Skeleton className="h-3 w-full bg-white/10" />
-                  <Skeleton className="h-3 w-4/5 bg-white/10" />
-                  <Skeleton className="h-10 w-full mt-2 bg-white/10" />
+                <div key={i} className="bg-white/5 rounded-2xl p-4 sm:p-7 space-y-3 sm:space-y-4 border border-white-8/40">
+                  <Skeleton className="h-8 w-8 sm:h-11 sm:w-11 rounded-xl bg-white/10" />
+                  <Skeleton className="h-3 sm:h-5 w-2/3 bg-white/10" />
+                  <Skeleton className="hidden sm:block h-3 w-full bg-white/10" />
+                  <Skeleton className="hidden sm:block h-3 w-4/5 bg-white/10" />
+                  <Skeleton className="hidden sm:block h-10 w-full mt-2 bg-white/10" />
                 </div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {services?.map((service, idx) => (
                 <motion.div
                   key={service.id}
@@ -401,12 +401,24 @@ export default function Home() {
                     className="group relative w-full h-full p-[1px] rounded-2xl bg-gradient-to-br from-amber-500/20 via-slate-200/50 to-transparent hover:from-amber-400 hover:via-yellow-300 hover:to-amber-500 transition-all duration-500 flex flex-col justify-between overflow-hidden shadow-lg shadow-black/30 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.2)]"
                   >
                     {/* Inner White Box */}
-                    <div className="bg-white/95 group-hover:bg-white rounded-[15px] p-7 h-full w-full flex flex-col justify-between overflow-hidden relative transition-colors duration-500 backdrop-blur-sm">
+                    <div className="bg-white/95 group-hover:bg-white rounded-[15px] p-3 sm:p-7 h-full w-full flex flex-col justify-between overflow-hidden relative transition-colors duration-500 backdrop-blur-sm">
                       
                       {/* Animated gold backdrop wash */}
                       <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/[0.04] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[15px]" />
 
-                      <div>
+                      {/* ── Mobile compact view ── */}
+                      <div className="flex flex-col items-center text-center gap-2 sm:hidden">
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/15 to-yellow-400/5 border border-amber-500/30 flex items-center justify-center">
+                          <FileText className="w-4 h-4 text-amber-500" />
+                        </div>
+                        <p className="text-[0.65rem] font-extrabold text-slate-900 leading-tight line-clamp-2">{service.name}</p>
+                        {service.price && (
+                          <span className="text-[0.6rem] font-bold text-amber-600">{service.price}</span>
+                        )}
+                      </div>
+
+                      {/* ── Desktop full view ── */}
+                      <div className="hidden sm:block">
                         {/* Top line with Icon */}
                         <div className="flex items-start justify-between mb-6 relative z-10">
                           <div className="relative">
@@ -440,8 +452,8 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Card Footer info */}
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-100 group-hover:border-amber-500/20 transition-colors mt-auto relative z-10">
+                      {/* Card Footer info — desktop only */}
+                      <div className="hidden sm:flex items-center justify-between pt-4 border-t border-slate-100 group-hover:border-amber-500/20 transition-colors mt-auto relative z-10">
                         {service.turnaround ? (
                           <div className="flex items-center gap-1.5 text-[0.75rem] font-bold text-slate-500 group-hover:text-slate-700 transition-colors">
                             <Clock className="w-3.5 h-3.5 shrink-0 text-amber-500 group-hover:text-amber-600" />
@@ -508,7 +520,7 @@ export default function Home() {
           </div>
 
           {/* Responsive grid of simple, clean cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mb-16">
             {CONVEYANCING_SERVICES.map((s, idx) => (
               <motion.div
                 key={s.id}
@@ -528,11 +540,19 @@ export default function Home() {
                 className="group relative cursor-pointer p-[1px] rounded-xl bg-gradient-to-br from-amber-500/20 via-slate-200/50 to-transparent hover:from-amber-400 hover:via-yellow-300 hover:to-amber-500 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-md shadow-black/25 hover:shadow-[0_15px_30px_-10px_rgba(245,158,11,0.15)]"
               >
                 {/* Inner White Box */}
-                <div className="bg-white/95 group-hover:bg-white rounded-[11px] p-6 w-full h-full flex flex-col justify-between overflow-hidden relative transition-colors duration-300 backdrop-blur-sm">
+                <div className="bg-white/95 group-hover:bg-white rounded-[11px] p-3 sm:p-6 w-full h-full flex flex-col justify-between overflow-hidden relative transition-colors duration-300 backdrop-blur-sm">
                   {/* Animated gold backdrop wash */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/[0.03] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-[11px]" />
-                  
-                  <div className="relative z-10 flex flex-col h-full space-y-2 text-left">
+
+                  {/* ── Mobile compact view ── */}
+                  <div className="flex flex-col items-center text-center gap-1.5 sm:hidden relative z-10">
+                    <span className="text-[0.6rem] font-black text-amber-500 font-mono">{String(idx + 1).padStart(2, "0")}</span>
+                    <p className="text-[0.65rem] font-extrabold text-slate-900 leading-tight line-clamp-3">{s.title}</p>
+                    <span className="text-[0.6rem] font-bold text-amber-600">Book now →</span>
+                  </div>
+
+                  {/* ── Desktop full view ── */}
+                  <div className="hidden sm:flex flex-col h-full space-y-2 text-left relative z-10">
                     <h3 className="font-extrabold text-slate-900 font-heading text-base leading-snug group-hover:text-amber-600 transition-colors duration-300">
                       {s.title}
                     </h3>
@@ -541,7 +561,7 @@ export default function Home() {
                     </p>
                   </div>
                   
-                  <div className="relative z-10 flex items-center justify-between pt-4 mt-4 border-t border-slate-100 group-hover:border-amber-500/20 transition-colors">
+                  <div className="hidden sm:flex items-center justify-between pt-4 mt-4 border-t border-slate-100 group-hover:border-amber-500/20 transition-colors relative z-10">
                     <span className="text-[10px] font-mono font-bold text-slate-400">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
