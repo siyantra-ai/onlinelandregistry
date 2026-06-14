@@ -56,9 +56,14 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           </nav>
 
           <div className="flex items-center gap-3">
+            {/* Sales Button */}
+            <a href="tel:03335770077" className="hidden md:flex items-center justify-center bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold text-[0.8125rem] tracking-wider h-9 px-5 shadow-sm rounded-lg transition-all hover:-translate-y-0.5">
+              SALES 0333 577 0077
+            </a>
+
             {/* Buy now style order button */}
             <Link href="/order" className="hidden sm:block">
-              <Button className="bg-[#00b67a] hover:bg-[#009e6a] text-white font-bold text-xs tracking-wider h-9 px-5 shadow-sm rounded-full transition-all hover:-translate-y-0.5 flex items-center gap-1">
+              <Button className="bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold text-xs tracking-wider h-9 px-5 shadow-sm rounded-full transition-all hover:-translate-y-0.5 flex items-center gap-1">
                 ORDER NOW &rarr;
               </Button>
             </Link>
@@ -96,9 +101,12 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 </a>
               )
             )}
-            <div className="pt-3">
+            <div className="pt-3 space-y-2.5">
+              <a href="tel:03335770077" className="w-full bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold text-[0.875rem] h-11 rounded-lg flex items-center justify-center gap-1 transition-colors">
+                SALES 0333 577 0077
+              </a>
               <Link href="/order" onClick={() => setMenuOpen(false)}>
-                <Button className="w-full bg-[#00b67a] hover:bg-[#009e6a] text-white font-bold h-11 rounded-full flex items-center justify-center gap-1">
+                <Button className="w-full bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold h-11 rounded-full flex items-center justify-center gap-1">
                   ORDER NOW &rarr;
                 </Button>
               </Link>

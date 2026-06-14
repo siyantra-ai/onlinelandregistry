@@ -284,16 +284,13 @@ export default function Home() {
             {/* Left Column - Content */}
             <div className="lg:col-span-7 space-y-6 text-left">
               
-              <div className="inline-flex items-center text-[0.75rem] font-bold uppercase tracking-[0.18em] text-[#7c8eb3]">
-                'Do-It-Yourself' Land Records Platform
-              </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold font-heading leading-[1.1] tracking-tight text-slate-900">
                 The easy and affordable way to get <span className="text-[#121f35]">Property Records.</span>
               </h1>
 
               <p className="text-[1.0625rem] text-slate-650 leading-[1.7] max-w-[620px]">
-                <strong className="text-slate-900 font-bold">Onlinelandregistry</strong> empowers you to quickly and confidently obtain official Title Registers, Plans, Deeds &amp; more yourself, in the comfort of your own home, hassle-free at an affordable fixed price; <strong className="text-accent font-bold">Only £36.00</strong>
+                <strong className="text-slate-900 font-bold">Onlinelandregistry</strong> empowers you to quickly and confidently obtain Title Registers, Plans, Deeds &amp; more -sourced directly from HM Land Registry
               </p>
 
               {/* Action Buttons (Pill shape) */}
@@ -317,6 +314,24 @@ export default function Home() {
                 </a>
               </div>
 
+              {/* Calendly Booking Button */}
+              <div className="pt-2">
+                <Button
+                  onClick={() => {
+                    const url = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/hari-siyantraaisolution/new-meeting";
+                    if ((window as any).Calendly) {
+                      (window as any).Calendly.initPopupWidget({ url });
+                    } else {
+                      window.open(url, "_blank");
+                    }
+                  }}
+                  size="lg"
+                  className="w-full sm:w-auto bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold h-14 px-8 rounded-full shadow-md hover:shadow-lg transition-all text-[0.9375rem]"
+                >
+                  Need help with Conveyancing matters? Book a free call
+                </Button>
+              </div>
+
             </div>
 
             {/* Right Column - Collage Image (Land Registry Collage with transparent PNG) */}
@@ -332,6 +347,12 @@ export default function Home() {
 
           </div>
         </div>
+        {/* Smooth SVG Wave Transition to dark section */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] z-20 pointer-events-none transform translate-y-[1px]">
+          <svg className="block w-full h-[40px] md:h-[70px] lg:h-[90px]" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path fill="#060c18" fillOpacity="1" d="M0,192L48,197.3C96,203,192,213,288,202.7C384,192,480,160,576,149.3C672,139,768,149,864,176C960,203,1056,245,1152,245.3C1248,245,1344,203,1392,181.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+          </svg>
+        </div>
       </section>
 
       {/* Testimonials and marketing bars removed for clean corporate style */}
@@ -339,12 +360,14 @@ export default function Home() {
       {/* ══════════════════════════════════════
           SERVICES SECTION (Dark Blue BG & Gold Cards)
       ══════════════════════════════════════ */}
-      <section className="py-24 bg-gradient-to-b from-[#060c18] via-[#0b1526] to-[#060c18] relative overflow-hidden" id="services">
-        {/* Background Image Watermark (istockphoto-525176867-612x612.jpg) */}
+      <section className="pt-8 pb-24 relative overflow-hidden bg-slate-900" id="services">
+        {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.2] pointer-events-none"
-          style={{ backgroundImage: "url('/assets/istockphoto-525176867-612x612.jpg')" }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+          style={{ backgroundImage: "url('/assets/modern-office-blurred-background.jpg')" }}
         />
+        {/* Semi-transparent dark overlay for text readability */}
+        <div className="absolute inset-0 bg-slate-900/60 pointer-events-none" />
 
         {/* Animated Background Mesh & Floating Lights */}
         <div className="absolute inset-0 opacity-[0.03]"
@@ -412,8 +435,8 @@ export default function Home() {
                           <FileText className="w-4 h-4 text-amber-500" />
                         </div>
                         <p className="text-[0.65rem] font-extrabold text-slate-900 leading-tight line-clamp-2">{service.name}</p>
-                        {service.price && (
-                          <span className="text-[0.6rem] font-bold text-amber-600">{service.price}</span>
+                        {service.basePrice !== undefined && (
+                          <span className="text-[0.6rem] font-bold text-amber-600">from £{service.basePrice}</span>
                         )}
                       </div>
 
@@ -477,7 +500,7 @@ export default function Home() {
             <Link href="/order">
               <Button
                 size="lg"
-                className="bg-accent hover:bg-accent/90 text-white font-bold px-10 h-13 shadow-xl shadow-accent/20 transition-all hover:-translate-y-px rounded-lg"
+                className="bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold px-10 h-13 shadow-md hover:shadow-lg transition-all hover:-translate-y-px rounded-lg"
               >
                 Start Your Order
                 <ArrowRight className="ml-2 w-4.5 h-4.5" />
@@ -587,7 +610,7 @@ export default function Home() {
                 }
               }}
               size="lg" 
-              className="w-full bg-[#4f46e5] hover:bg-[#4338ca] text-white font-bold h-14 rounded-lg shadow-md hover:shadow-lg transition-all text-base uppercase tracking-wider cursor-pointer"
+              className="w-full bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold h-14 rounded-lg shadow-md hover:shadow-lg transition-all text-base uppercase tracking-wider cursor-pointer"
             >
               Book a Free Call
             </Button>
@@ -620,10 +643,10 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* Card 1 - Need Help (styled like reference banner) - now full width */}
-            <div className="md:col-span-2 bg-sky-600 text-white rounded-2xl p-8 sm:p-10 shadow-sm transition-shadow">
+            <div className="md:col-span-2 bg-[#121f35] text-white rounded-2xl p-8 sm:p-10 shadow-sm transition-shadow">
               <div className="max-w-6xl mx-auto text-left sm:text-left">
                 <h3 className="text-2xl sm:text-3xl font-extrabold">Need help?</h3>
-                <p className="mt-4 text-sky-100 text-base max-w-3xl leading-relaxed">
+                <p className="mt-4 text-slate-300 text-base max-w-3xl leading-relaxed">
                   If you need support or are struggling to find the right documents, our dedicated team are here to help you with any queries you may have.
                 </p>
                 <div className="mt-6">

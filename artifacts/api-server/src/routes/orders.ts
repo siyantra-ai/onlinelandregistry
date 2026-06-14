@@ -78,6 +78,7 @@ router.post("/orders", async (req, res): Promise<void> => {
     deliveryType: data.deliveryType ?? "pdf_only",
     notificationType: data.notificationType ?? "email",
     addons: (data.addons as string[]) ?? [],
+    serviceSlug: service.slug,
   }, Number(service.base_price));
 
   const orderNumber = generateOrderNumber();

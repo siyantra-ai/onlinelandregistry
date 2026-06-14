@@ -93,6 +93,7 @@ router.post("/checkout/price", async (req, res): Promise<void> => {
     deliveryType: parsed.data.deliveryType,
     notificationType: parsed.data.notificationType,
     addons: parsed.data.addons as string[],
+    serviceSlug: service.slug,
   }, Number(service.base_price));
 
   res.json(pricing);
