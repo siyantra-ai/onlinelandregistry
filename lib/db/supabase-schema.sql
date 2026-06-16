@@ -87,8 +87,6 @@ CREATE TABLE activity_logs (
 -- 6. Insert Default Services
 INSERT INTO services (name, slug, base_price, description, deliverables, category, turnaround, popular) VALUES
 ('HM Land Registry Title Register', 'title-register', 36.00, 'Official record confirming the registered owners, tenure type (Freehold/Leasehold), purchase price, mortgages, and charges.', 'Official Copy, Register Details, Owner Info', 'property_document', 'From 1 hour', TRUE),
-('HM Land Registry Title Plan', 'title-plan', 36.00, 'Scale boundary map illustrating the property outline in red, adjacent access roads, and shared easement zones.', 'Official Copy, Boundary Map, Scale Details', 'property_document', 'From 1 hour', FALSE),
-('Property Ownership Bundle', 'ownership-bundle', 60.00, 'Both the Title Register and Title Plan compiled into a single PDF package. Saves money compared to separate orders.', 'Title Register, Title Plan, Combined PDF', 'bundle', 'From 1 hour', TRUE),
 ('Official Deed Search', 'deed-search', 41.00, 'Historical transfers (TR1 forms), original leasehold contracts, and historic boundary plans.', 'Historic Deeds, Original TR1, Covenants', 'deed_search', '4 hours Fast-Track', FALSE),
 ('Map / Land Search', 'map-land-search', 53.00, 'GIS coordinate-based lookup for plots, fields, verges, or forests lacking a standard postal address.', 'GIS Coordinate Map, Parcel Boundary', 'land_search', '4 hours Fast-Track', FALSE),
 ('Property Alert Service', 'property-alert', 36.00, 'Fraud monitoring for up to 3 titles. Notifies you instantly if third parties attempt to alter deeds.', 'Fraud Alert, Real-time Monitoring', 'monitoring', 'Instant Setup', FALSE),

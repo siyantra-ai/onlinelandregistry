@@ -23,6 +23,7 @@ interface PropertyDetails {
   country: OrderInputCountry;
   tenure: string;
   titleNumber: string;
+  preferredDeed?: string;
   postcode: string;
   postcodeSearch: string;
   postcodeAddresses: string[];
@@ -43,6 +44,7 @@ const createDefaultProperty = (): PropertyDetails => ({
   country: "england_wales",
   tenure: "unsure",
   titleNumber: "",
+  preferredDeed: "Select Preference",
   postcode: "",
   postcodeSearch: "",
   postcodeAddresses: [],
@@ -93,7 +95,8 @@ export default function OrderWizard() {
   const { toast } = useToast();
 
   const { data: apiServices, isLoading: servicesLoading } = useListServices();
-  const services = Array.isArray(apiServices) ? apiServices : [];
+  const services = (Array.isArray(apiServices) ? apiServices : [])
+    .filter(s => s.slug !== "title-plan" && s.slug !== "ownership-bundle");
   const createOrder = useCreateOrder();
   const createCheckoutSession = useCreateCheckoutSession();
 
@@ -385,7 +388,13 @@ export default function OrderWizard() {
         : state.propertyAddress;
 
       const formattedTenure = isCustomWizard
-        ? state.properties?.map((p, idx) => `Property ${idx + 1}: ${p.tenure}`).join(" | ")
+        ? state.properties?.map((p, idx) => {
+            let val = `Property ${idx + 1}: ${p.tenure}`;
+            if (isDeedSearch && p.preferredDeed && p.preferredDeed !== "Select Preference") {
+              val += ` (Preferred Deed: ${p.preferredDeed})`;
+            }
+            return val;
+          }).join(" | ")
         : state.tenure;
 
       const formattedTitleNumber = isCustomWizard
@@ -599,23 +608,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Register</span>
-                                  </div>
-
-                                  <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitlePlan: !prop.includeTitlePlan })}>
-                                    <div className="flex items-center gap-3">
-                                      <Checkbox 
-                                        id={`addon-tp-${idx}`} 
-                                        checked={prop.includeTitlePlan}
-                                        onCheckedChange={(checked) => updateProperty(idx, { includeTitlePlan: checked as boolean })}
-                                        onClick={(e) => e.stopPropagation()}
-                                      />
-                                      <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Plan (£30.00+vat)</span>
-                                        <span className="text-[11px] text-slate-405 font-medium">Scale boundary map outlining property.</span>
-                                      </div>
-                                    </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Plan</span>
                                   </div>
                                 </>
                               )}
@@ -631,23 +623,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Scale boundary map outlining property.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Plan</span>
-                                  </div>
-
-                                  <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitleRegister: !prop.includeTitleRegister })}>
-                                    <div className="flex items-center gap-3">
-                                      <Checkbox 
-                                        id={`addon-tr-${idx}`} 
-                                        checked={prop.includeTitleRegister}
-                                        onCheckedChange={(checked) => updateProperty(idx, { includeTitleRegister: checked as boolean })}
-                                        onClick={(e) => e.stopPropagation()}
-                                      />
-                                      <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Register (£30.00+vat)</span>
-                                        <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
-                                      </div>
-                                    </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Register</span>
                                   </div>
                                 </>
                               )}
@@ -663,7 +638,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Both documents compiled into a single package.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Bundle</span>
                                   </div>
                                 </>
                               )}
@@ -679,7 +653,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Historical transfers (TR1 forms) and leasehold deeds.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Deeds</span>
                                   </div>
 
                                   <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitleRegister: !prop.includeTitleRegister })}>
@@ -695,23 +668,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Register</span>
-                                  </div>
-
-                                  <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitlePlan: !prop.includeTitlePlan })}>
-                                    <div className="flex items-center gap-3">
-                                      <Checkbox 
-                                        id={`addon-tp-${idx}`} 
-                                        checked={prop.includeTitlePlan}
-                                        onCheckedChange={(checked) => updateProperty(idx, { includeTitlePlan: checked as boolean })}
-                                        onClick={(e) => e.stopPropagation()}
-                                      />
-                                      <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Plan (£30.00+vat)</span>
-                                        <span className="text-[11px] text-slate-405 font-medium">Scale boundary map outlining property.</span>
-                                      </div>
-                                    </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Plan</span>
                                   </div>
                                 </>
                               )}
@@ -724,10 +680,9 @@ export default function OrderWizard() {
                                       <Checkbox id={`req-map-${idx}`} checked={true} disabled={true} className="border-slate-300 disabled:opacity-100 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
                                       <div>
                                         <span className="text-sm font-bold text-slate-900 block leading-tight">Map / Land Search (£44.17+vat)</span>
-                                        <span className="text-[11px] text-slate-405 font-medium">GIS coordinate-based boundary mapping search.</span>
+                                        <span className="text-[11px] text-slate-450 font-medium">GIS coordinate-based boundary mapping search.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Search</span>
                                   </div>
 
                                   <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitleRegister: !prop.includeTitleRegister })}>
@@ -743,23 +698,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Register</span>
-                                  </div>
-
-                                  <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitlePlan: !prop.includeTitlePlan })}>
-                                    <div className="flex items-center gap-3">
-                                      <Checkbox 
-                                        id={`addon-tp-${idx}`} 
-                                        checked={prop.includeTitlePlan}
-                                        onCheckedChange={(checked) => updateProperty(idx, { includeTitlePlan: checked as boolean })}
-                                        onClick={(e) => e.stopPropagation()}
-                                      />
-                                      <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Plan (£30.00+vat)</span>
-                                        <span className="text-[11px] text-slate-405 font-medium">Scale boundary map outlining property.</span>
-                                      </div>
-                                    </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Plan</span>
                                   </div>
                                 </>
                               )}
@@ -775,7 +713,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Real-time fraud alert monitoring and email status updates.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Alert</span>
                                   </div>
 
                                   <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitleRegister: !prop.includeTitleRegister })}>
@@ -791,23 +728,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Register</span>
-                                  </div>
-
-                                  <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitlePlan: !prop.includeTitlePlan })}>
-                                    <div className="flex items-center gap-3">
-                                      <Checkbox 
-                                        id={`addon-tp-${idx}`} 
-                                        checked={prop.includeTitlePlan}
-                                        onCheckedChange={(checked) => updateProperty(idx, { includeTitlePlan: checked as boolean })}
-                                        onClick={(e) => e.stopPropagation()}
-                                      />
-                                      <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Plan (£30.00+vat)</span>
-                                        <span className="text-[11px] text-slate-405 font-medium">Scale boundary map outlining property.</span>
-                                      </div>
-                                    </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Plan</span>
                                   </div>
                                 </>
                               )}
@@ -823,7 +743,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Remove a deceased owner's name and update registered title.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample DJP</span>
                                   </div>
 
                                   <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitleRegister: !prop.includeTitleRegister })}>
@@ -839,23 +758,6 @@ export default function OrderWizard() {
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Register</span>
-                                  </div>
-
-                                  <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white select-none hover:border-slate-300 transition-all cursor-pointer" onClick={() => updateProperty(idx, { includeTitlePlan: !prop.includeTitlePlan })}>
-                                    <div className="flex items-center gap-3">
-                                      <Checkbox 
-                                        id={`addon-tp-${idx}`} 
-                                        checked={prop.includeTitlePlan}
-                                        onCheckedChange={(checked) => updateProperty(idx, { includeTitlePlan: checked as boolean })}
-                                        onClick={(e) => e.stopPropagation()}
-                                      />
-                                      <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Plan (£30.00+vat)</span>
-                                        <span className="text-[11px] text-slate-405 font-medium">Scale boundary map outlining property.</span>
-                                      </div>
-                                    </div>
-                                    <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Title Plan</span>
                                   </div>
                                 </>
                               )}
@@ -874,7 +776,6 @@ export default function OrderWizard() {
                                     <span className="text-[11px] text-slate-405 font-medium">Environmental risk assessment report.</span>
                                   </div>
                                 </div>
-                                <span className="text-xs font-bold text-accent shrink-0 select-none cursor-not-allowed">View Sample Flood Risk</span>
                               </div>
                             </div>
                           </div>
@@ -920,6 +821,29 @@ export default function OrderWizard() {
                               className="h-11 border-slate-200"
                             />
                           </div>
+
+                          {/* Preferred Deed for Deed Search */}
+                          {isDeedSearch && (
+                            <div className="space-y-2">
+                              <Label htmlFor={`preferredDeed-${idx}`} className="text-xs font-bold text-slate-600 uppercase tracking-wider">Preferred Deed</Label>
+                              <Select 
+                                value={prop.preferredDeed} 
+                                onValueChange={(val) => updateProperty(idx, { preferredDeed: val })}
+                              >
+                                <SelectTrigger id={`preferredDeed-${idx}`} className="h-11 bg-white border-slate-200 text-xs sm:text-sm">
+                                  <SelectValue placeholder="Select Preference" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Select Preference">Select Preference</SelectItem>
+                                  <SelectItem value="The Most Relevant Filed Deed">The Most Relevant Filed Deed</SelectItem>
+                                  <SelectItem value="Conveyancing Deeds">Conveyancing Deeds</SelectItem>
+                                  <SelectItem value="Transfer Deeds">Transfer Deeds</SelectItem>
+                                  <SelectItem value="Charge Deeds">Charge Deeds</SelectItem>
+                                  <SelectItem value="Lease Deeds">Lease Deeds</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          )}
 
                           {/* Postcode Lookup & Address Entries OR Map Picker */}
                           {isMapSearch ? (
@@ -1682,6 +1606,12 @@ export default function OrderWizard() {
                                 <span className="text-[10px] uppercase font-bold text-slate-400 block">Title Number</span>
                                 <span className="font-medium text-slate-700">{p.titleNumber || "Unknown / Not Provided"}</span>
                               </div>
+                              {isDeedSearch && p.preferredDeed && p.preferredDeed !== "Select Preference" && (
+                                <div>
+                                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Preferred Deed</span>
+                                  <span className="font-medium text-slate-700">{p.preferredDeed}</span>
+                                </div>
+                              )}
                               <div>
                                 <span className="text-[10px] uppercase font-bold text-slate-400 block">Add-ons Included</span>
                                 <span className="font-medium text-slate-700">

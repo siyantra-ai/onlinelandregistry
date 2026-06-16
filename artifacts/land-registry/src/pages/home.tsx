@@ -256,7 +256,8 @@ function LiveBackground() {
 
 export default function Home() {
   const { data: apiServices, isLoading } = useListServices();
-  const services = Array.isArray(apiServices) ? apiServices : [];
+  const services = (Array.isArray(apiServices) ? apiServices : [])
+    .filter(s => s.slug !== "title-plan" && s.slug !== "ownership-bundle");
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50/50">
