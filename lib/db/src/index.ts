@@ -25,3 +25,11 @@ export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   supabaseKey
 );
+
+const crmSupabaseUrl = process.env.CRM_SUPABASE_URL;
+const crmSupabaseKey = process.env.CRM_SUPABASE_SERVICE_ROLE_KEY;
+
+export const crmSupabase = crmSupabaseUrl && crmSupabaseKey
+  ? createClient(crmSupabaseUrl, crmSupabaseKey)
+  : null;
+

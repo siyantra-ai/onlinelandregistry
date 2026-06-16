@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { supabase } from "@workspace/db";
+import { supabase, crmSupabase } from "@workspace/db";
 import {
   CreateOrderBody,
   GetOrderResponse,
@@ -114,6 +114,61 @@ router.post("/orders", async (req, res): Promise<void> => {
   if (orderError || !order) {
     res.status(500).json({ error: orderError?.message || "Failed to create order" });
     return;
+  }
+
+  // Synchronize order creation with the CRM database
+  if (crmSupabase) {
+    try {
+      const nameParts = (data.customerName || "").trim().split(/\s+/);
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      // Map local service slug to CRM form_type_id
+      let formTypeId = "bac7134c-85a6-4489-b0eb-ec7e6248c839"; // default: MAP_SEARCH
+      if (service.slug === "title-register") {
+        formTypeId = "41c395a2-96ed-4665-8768-523a908d052c";
+      } else if (service.slug === "title-plan") {
+        formTypeId = "86bef7ad-2c58-4c06-b472-6a8570193bb4";
+      } else if (service.slug === "property-ownership") {
+        formTypeId = "ad13e26f-34b8-4b93-81f4-d400da0b22f2";
+      }
+
+      const { data: crmOrder, error: crmError } = await crmSupabase
+        .from("orders")
+        .insert({
+          brand_id: "746c2b99-89ff-4661-9b45-f91656b62db2", // Online Land Registry brand
+          business_id: "3c051ae6-e2c0-47a2-b61e-dd678f03711d", // Online Land Registry business
+          form_type_id: formTypeId,
+          status: "lead",
+          priority: (data.trackingType === "fast_track" || data.trackingType === "super_fast_track") ? "fast_track" : "standard",
+          amount_total: pricing.totalAmount,
+          terms_accepted: data.agreedToWaiveCancel ?? false,
+          is_inbound: false,
+          title: data.customerTitle || null,
+          first_name: firstName,
+          last_name: lastName,
+          email: data.customerEmail,
+          phone: data.customerPhone || null,
+          address_line1: data.customerAddress || null,
+          postcode: data.postcode || null,
+          title_number: data.titleNumber || null,
+          tenure: data.tenure || null,
+        })
+        .select()
+        .single();
+
+      if (crmError) {
+        console.error("Failed to create order in CRM:", crmError.message);
+      } else if (crmOrder) {
+        // Save CRM order UUID to local order's staff_notes
+        await supabase
+          .from("orders")
+          .update({ staff_notes: `CRM_ORDER_ID:${crmOrder.id}` })
+          .eq("id", order.id);
+      }
+    } catch (crmEx) {
+      console.error("Exception synchronizing order to CRM:", crmEx);
+    }
   }
 
   await supabase.from('activity_logs').insert({

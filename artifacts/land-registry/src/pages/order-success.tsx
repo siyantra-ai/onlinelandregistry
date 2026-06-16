@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, FileText, ArrowRight, ShieldCheck, Clock, Check, Inbox } from "lucide-react";
 import { useLocation } from "wouter";
+import SEO from "@/components/SEO";
 
 export default function OrderSuccess() {
   const [location] = useLocation();
@@ -10,6 +11,11 @@ export default function OrderSuccess() {
 
   return (
     <div className="min-h-[calc(100vh-160px)] bg-gradient-to-br from-emerald-500/[0.03] via-slate-50 to-slate-50 flex items-center justify-center py-16 px-4">
+      <SEO
+        title="Order Successful | Online Land Registry"
+        description="Your land registry document retrieval order has been successfully placed."
+        noindex={true}
+      />
       
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-200/80 p-8 text-center space-y-8 relative overflow-hidden">
         

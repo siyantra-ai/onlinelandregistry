@@ -1,6 +1,7 @@
 import { useListServices, useCalculatePrice, useCreateOrder, useCreateCheckoutSession, OrderInputCountry, OrderInputDeliveryType, OrderInputNotificationType, OrderInputTrackingType, useLookupPostcode, getLookupPostcodeQueryKey, lookupPostcode } from "@workspace/api-client-react";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useLocation } from "wouter";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -450,6 +451,10 @@ export default function OrderWizard() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-14 max-w-4xl min-h-[calc(100vh-200px)]">
+      <SEO
+        title="Order Official Land Registry Documents | Online Land Registry"
+        description="Retrieve official UK Land Registry documents online. Choose Title Registers, Title Plans, Deeds, or DJP applications for fast digital delivery."
+      />
       
       {/* Progress timeline bar */}
       <div className="mb-10 max-w-2xl mx-auto">

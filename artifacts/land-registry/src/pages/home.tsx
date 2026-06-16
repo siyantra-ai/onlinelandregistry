@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import BookingSteps from "@/components/BookingSteps";
+import SEO from "@/components/SEO";
 
 const STATS = [
   { value: "47,000+", label: "Documents Delivered" },
@@ -259,8 +260,73 @@ export default function Home() {
   const services = (Array.isArray(apiServices) ? apiServices : [])
     .filter(s => s.slug !== "title-plan" && s.slug !== "ownership-bundle");
 
+  const homeSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://onlinelandregistry.uk/#website",
+        "url": "https://onlinelandregistry.uk/",
+        "name": "Online Land Registry",
+        "description": "Official UK property document retrieval portal.",
+        "publisher": {
+          "@id": "https://onlinelandregistry.uk/#organization"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://onlinelandregistry.uk/#organization",
+        "name": "Online Land Registry",
+        "url": "https://onlinelandregistry.uk/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://onlinelandregistry.uk/favicon.svg"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "0333 577 0077",
+          "contactType": "customer service",
+          "availableLanguage": "English"
+        }
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://onlinelandregistry.uk/#service",
+        "name": "Online Land Registry Property Document Retrieval",
+        "image": "https://onlinelandregistry.uk/opengraph.jpg",
+        "description": "Expedited verification and retrieval of official HM Land Registry Title Registers, Title Plans, and Deeds.",
+        "url": "https://onlinelandregistry.uk/",
+        "telephone": "0333 577 0077",
+        "priceRange": "£36-£65",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "GB"
+        },
+        "areaServed": [
+          {
+            "@type": "AdministrativeArea",
+            "name": "England"
+          },
+          {
+            "@type": "AdministrativeArea",
+            "name": "Wales"
+          },
+          {
+            "@type": "AdministrativeArea",
+            "name": "Scotland"
+          }
+        ]
+      }
+    ]
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50/50">
+      <SEO
+        title="Official HM Land Registry Documents & Property Records | Online Land Registry"
+        description="Retrieve official UK property registers, title deeds, plans, and historic land documents online. Fast-track processing and legally valid documents for conveyancing."
+        schemaData={homeSchema}
+      />
 
       {/* ══════════════════════════════════════
           HERO SECTION (SPLIT LAYOUT - YOU CAN DO PROBATE STYLE)
@@ -287,11 +353,11 @@ export default function Home() {
               
 
               <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold font-heading leading-[1.1] tracking-tight text-slate-900">
-                The easy and affordable way to get <span className="text-[#121f35]">Property Records.</span>
+                Official HM <span className="text-[#121f35]">Land Registry Documents</span> &amp; Property Records
               </h1>
 
               <p className="text-[1.0625rem] text-slate-650 leading-[1.7] max-w-[620px]">
-                <strong className="text-slate-900 font-bold">Onlinelandregistry</strong> empowers you to quickly and confidently obtain Title Registers, Plans, Deeds &amp; more -sourced directly from HM Land Registry
+                The fast, secure, and professional way to obtain Title Registers, Title Plans, Deeds, and boundary records sourced directly from the official UK registry.
               </p>
 
               {/* Action Buttons (Pill shape) */}
@@ -397,9 +463,9 @@ export default function Home() {
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white/5 rounded-2xl p-4 sm:p-7 space-y-3 sm:space-y-4 border border-white-8/40">
+                <div key={i} className="bg-white/5 rounded-2xl p-4 sm:p-7 space-y-3 sm:space-y-4 border border-white-8/40 w-[calc(33.333%-8px)] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
                   <Skeleton className="h-8 w-8 sm:h-11 sm:w-11 rounded-xl bg-white/10" />
                   <Skeleton className="h-3 sm:h-5 w-2/3 bg-white/10" />
                   <Skeleton className="hidden sm:block h-3 w-full bg-white/10" />
@@ -409,7 +475,7 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
               {services?.map((service, idx) => (
                 <motion.div
                   key={service.id}
@@ -418,7 +484,7 @@ export default function Home() {
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: idx * 0.08 }}
                   whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                  className="h-full flex"
+                  className="h-full flex w-[calc(33.333%-8px)] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
                 >
                   <Link
                     href={`/order?service=${service.slug}`}
@@ -544,7 +610,7 @@ export default function Home() {
           </div>
 
           {/* Responsive grid of simple, clean cards */}
-          <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mb-16">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mb-16">
             {CONVEYANCING_SERVICES.map((s, idx) => (
               <motion.div
                 key={s.id}
@@ -561,7 +627,7 @@ export default function Home() {
                     window.open(url, "_blank");
                   }
                 }}
-                className="group relative cursor-pointer p-[1px] rounded-xl bg-gradient-to-br from-amber-500/20 via-slate-200/50 to-transparent hover:from-amber-400 hover:via-yellow-300 hover:to-amber-500 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-md shadow-black/25 hover:shadow-[0_15px_30px_-10px_rgba(245,158,11,0.15)]"
+                className="group relative cursor-pointer p-[1px] rounded-xl bg-gradient-to-br from-amber-500/20 via-slate-200/50 to-transparent hover:from-amber-400 hover:via-yellow-300 hover:to-amber-500 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-md shadow-black/25 hover:shadow-[0_15px_30px_-10px_rgba(245,158,11,0.15)] w-[calc(33.333%-8px)] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
               >
                 {/* Inner White Box */}
                 <div className="bg-white/95 group-hover:bg-white rounded-[11px] p-3 sm:p-6 w-full h-full flex flex-col justify-between overflow-hidden relative transition-colors duration-300 backdrop-blur-sm">

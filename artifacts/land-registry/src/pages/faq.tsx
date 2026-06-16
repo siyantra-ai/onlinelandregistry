@@ -7,54 +7,69 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { PhoneCall, Mail, ArrowLeft, Clock } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const FAQS = [
   {
-    q: "What is HM Land Registry and why do I need their documents?",
-    a: "HM Land Registry (HMLR) is the non-ministerial government department that registers the ownership of land and property in England and Wales. Their documents — Title Registers, Title Plans, and Deeds — are the legal proof of ownership, boundary, and encumbrances for any registered property. You may need them for conveyancing, mortgage applications, boundary disputes, remortgages, probate, or simply to confirm who owns a neighbouring plot.",
+    q: "What is the function of HM Land Registry?",
+    a: "HM Land Registry (HMLR) is the official government department responsible for registering land and property ownership in England and Wales. It maintains the definitive database of property ownership, title boundaries, legal charges, and covenants. Sourced documents (Title Registers, Title Plans, and Deeds) serve as legally recognized proof of ownership and encumbrances.",
   },
   {
-    q: "What is a Title Register and what information does it contain?",
-    a: "A Title Register (also called the register of title) is the definitive legal record for a registered property. It contains: the registered owner's name and address, the price paid (for purchases since April 2000), any mortgages or charges secured against the property, rights of way, covenants, restrictions, and the property's unique title number. It is split into three parts: Property Register (location), Proprietorship Register (owner), and Charges Register (mortgages and other interests).",
+    q: "What key information is contained within a Title Register?",
+    a: "A Title Register is divided into three main sections: the Property Register (describing the land, property type, and associated easements or rights of way); the Proprietorship Register (identifying the legal owners, contact addresses, and restrictions affecting disposal powers); and the Charges Register (detailing mortgages, financial burdens, covenants, and legal restrictions registered against the title).",
   },
   {
-    q: "What is the difference between a Title Register and a Title Plan?",
-    a: "The Title Register is a text-based document confirming legal ownership and any associated rights and charges. The Title Plan is an OS-based map showing the general boundary of the property, drawn to a stated scale with the property outlined in red. Both documents use the same title number and are typically ordered together — which is why our Ownership Bundle combines both for a saving compared to ordering separately.",
+    q: "What is the distinction between a Title Register and a Title Plan?",
+    a: "The Title Register is the primary text document detailing ownership and legal status. The Title Plan is the official map illustrating the general boundaries of the property, outlined in red, based on Ordnance Survey mapping. These documents share the same title number and are typically required together to form a complete legal view of the property.",
   },
   {
-    q: "How much does it cost to get Land Registry documents?",
-    a: "The official government fee charged by HM Land Registry is £7.00 per document (Title Register or Title Plan). Our service price covers this official fee plus our intermediary processing charge — which includes postcode validation, address mapping, document retrieval, quality checking, and priority PDF delivery. Our total prices start from £36 for a Title Register or Title Plan, up to £65 for a Deceased Joint Proprietor (DJP) application. All prices include 20% VAT on our service portion.",
+    q: "What are the fees associated with retrieving Land Registry documents?",
+    a: "The statutory fee charged by HM Land Registry is £7.00 per document. Our portal provides a managed document retrieval service, which includes manual postcode verification, official title matching, document verification, and priority digital delivery. Our service charge is itemized separately from the HMLR statutory fee, with standard packages starting from £36.00 (inclusive of VAT).",
   },
   {
-    q: "Can I get Land Registry documents directly from the government?",
-    a: "Yes. You can purchase official documents directly from gov.uk/search-property-information-land-registry for the base £7.00 HMLR fee. Our premium service is designed for those who need faster processing, expert validation of the correct title number, professional PDF formatting, priority dispatch, and the peace of mind of a dedicated support team — particularly useful for time-sensitive conveyancing and legal work.",
+    q: "What are the standard and expedited delivery times?",
+    a: "Standard orders are processed and delivered within one working day. We offer priority processing options: Fast Track orders are delivered within 4 working hours, and Super-Fast Track orders are delivered within 1 working hour. Processing hours are Monday to Friday, 9:00 AM to 5:30 PM (excluding UK Bank Holidays).",
   },
   {
-    q: "How quickly will I receive my documents?",
-    a: "Standard orders are typically fulfilled the next working day. With Fast Track, you receive your documents within 4 working hours. Super-Fast Track guarantees delivery within 1 working hour — ideal for urgent completions or same-day exchange. Turnaround times run from order confirmation during business hours (Mon–Fri, 9am–5:30pm).",
+    q: "Are the retrieved documents legally admissible?",
+    a: "Yes. All Title Registers, Title Plans, and Deeds retrieved through our portal are official copies sourced directly from HM Land Registry. They carry the official copy stamp and are legally admissible in courts, for mortgage applications, by HM Revenue & Customs (HMRC), and during conveyancing transactions.",
   },
   {
-    q: "Are Land Registry documents legally valid?",
-    a: "Yes. Official copies obtained from HM Land Registry are legally admissible and accepted by solicitors, banks, mortgage lenders, courts, and HMRC as proof of ownership, title, and registered interests. The documents we retrieve carry the official HMLR office copy stamp.",
+    q: "What is a Deed Search and when is it required?",
+    a: "A Deed Search retrieves historical deeds, transfer documents (e.g., TR1 forms), or leases filed with HM Land Registry that are not included in the standard register. This is typically required during conveyancing to investigate historic covenants, check rights of way, or verify old lease clauses.",
   },
   {
-    q: "What is a Deed Search and when do I need one?",
-    a: "A Deed Search retrieves historic title deeds and pre-registration documents stored with the Land Registry but not shown in the standard Title Register. These include original TR1 transfer forms, historical conveyances, old leasehold contracts, and lease copies. Deed Searches are commonly required during conveyancing when a solicitor needs to investigate the full title history.",
-  },
-  {
-    q: "Do you cover properties in Scotland and Wales?",
-    a: "Yes. We cover registered properties across England, Wales, and Scotland. Properties in England and Wales are registered with HM Land Registry. Scottish properties are registered with Registers of Scotland (RoS), which operates a separate but equivalent system. A small Scotland service fee premium applies due to the additional RoS processing requirements.",
+    q: "Do your retrieval services cover all jurisdictions within the United Kingdom?",
+    a: "We cover registered properties in England and Wales via HM Land Registry, and Scotland via the Registers of Scotland (RoS) database. Scottish property searches are processed through the equivalent RoS system, which may incur minor price variations due to regional administrative structures.",
   },
   {
     q: "What is a Deceased Joint Proprietor (DJP) application?",
-    a: "When a property is owned jointly and one proprietor has died, the title must be updated via a DJP form to remove the deceased owner and confirm sole ownership. Our DJP Application service at £65 covers full form preparation, HMLR filing, and title transfer to the surviving proprietor — helping bereaved families navigate this process without the complexity of doing it alone.",
+    a: "When a property is held in joint names and one of the registered owners passes away, the title must be formally updated. Our service assists in preparing and submitting the statutory DJP application to HM Land Registry, removing the deceased owner's name and updating the register to reflect the surviving proprietor as the sole owner.",
   },
 ];
 
 export default function FAQPage() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": FAQS.map(({ q, a }) => ({
+      "@type": "Question",
+      "name": q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": a,
+      },
+    })),
+  };
+
   return (
     <div className="bg-slate-50 min-h-screen">
-      
+      <SEO
+        title="Frequently Asked Questions (FAQs) | Online Land Registry"
+        description="Find professional answers to frequently asked questions about official UK Land Registry documents, title registers, plans, deeds, and conveyancing services."
+        schemaData={faqSchema}
+      />
+
       {/* Premium Header Banner */}
       <section className="py-20 bg-slate-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]"
@@ -107,26 +122,22 @@ export default function FAQPage() {
               {/* Call Center Support Card */}
               <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-slate-100 shrink-0 shadow-inner">
-                    <img 
-                      src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=200&q=80" 
-                      alt="Helpline representative advisor"
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center shrink-0 border border-accent/20">
+                    <PhoneCall className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <span className="text-[0.625rem] font-bold text-accent uppercase tracking-wider block">Customer Helpline</span>
-                    <h3 className="font-extrabold text-slate-900 text-base font-heading">We are here to help</h3>
+                    <span className="text-[0.625rem] font-bold text-accent uppercase tracking-wider block">Direct Assistance</span>
+                    <h3 className="font-extrabold text-slate-900 text-base font-heading">Professional Support Desk</h3>
                   </div>
                 </div>
                 
                 <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                  Have an enquiry or need help verifying your search? Speak to our friendly advisors.
+                  For order inquiries or guidance with property search verification, contact our dedicated processing specialists.
                 </p>
 
                 <div className="space-y-2.5 pt-2">
-                  <a href="tel:08006891447" className="flex items-center justify-center gap-2 w-full text-sm font-bold text-white bg-accent hover:bg-accent/90 px-4 py-3 rounded-lg transition-colors">
-                    <PhoneCall className="w-4 h-4" /> 0800 689 1447
+                  <a href="tel:03335770077" className="flex items-center justify-center gap-2 w-full text-sm font-bold text-white bg-accent hover:bg-accent/90 px-4 py-3 rounded-lg transition-colors">
+                    <PhoneCall className="w-4 h-4" /> 0333 577 0077
                   </a>
                   <a href="mailto:support@onlinelandregistry.uk" className="flex items-center justify-center gap-2 w-full text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 px-4 py-3 rounded-lg transition-colors">
                     <Mail className="w-4 h-4" /> support@onlinelandregistry.uk
@@ -158,3 +169,4 @@ export default function FAQPage() {
     </div>
   );
 }
+

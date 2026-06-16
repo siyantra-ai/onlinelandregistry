@@ -34,6 +34,10 @@ router.post("/checkout/session", async (req, res): Promise<void> => {
   const host = req.headers["x-forwarded-host"] || req.headers.host || "localhost";
   const baseUrl = `${protocol}://${host}`;
 
+  const crmOrderId = order.staff_notes?.startsWith("CRM_ORDER_ID:")
+    ? order.staff_notes.replace("CRM_ORDER_ID:", "")
+    : "";
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
@@ -56,11 +60,15 @@ router.post("/checkout/session", async (req, res): Promise<void> => {
     metadata: {
       orderId: order.id.toString(),
       orderNumber: order.order_number,
+      order_id: crmOrderId,
+      business_id: "3c051ae6-e2c0-47a2-b61e-dd678f03711d", // Online Land Registry Business ID in CRM
     },
     payment_intent_data: {
       metadata: {
         orderId: order.id.toString(),
         orderNumber: order.order_number,
+        order_id: crmOrderId,
+        business_id: "3c051ae6-e2c0-47a2-b61e-dd678f03711d",
       },
     },
   });

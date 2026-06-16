@@ -1,10 +1,30 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { PhoneCall, Mail, Clock, ArrowLeft } from "lucide-react";
+import SEO from "@/components/SEO";
 
 export default function ContactPage() {
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Online Land Registry Support",
+    "description": "Professional UK property document retrieval assistance.",
+    "url": "https://onlinelandregistry.uk/contact",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "Online Land Registry",
+      "telephone": "0333 577 0077",
+      "email": "support@onlinelandregistry.uk",
+    },
+  };
+
   return (
     <div className="bg-slate-50 min-h-screen">
+      <SEO
+        title="Contact Document Retrieval Support | Online Land Registry"
+        description="Get in touch with our professional UK property document retrieval support team for inquiries regarding land registry files, title deeds, and custom searches."
+        schemaData={contactSchema}
+      />
       <section className="py-20 bg-slate-900 text-white relative overflow-hidden">
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-4">
           <Link href="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors uppercase tracking-wider mb-2">
@@ -46,11 +66,11 @@ export default function ContactPage() {
 
             <div className="space-y-6">
               <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                <h3 className="font-extrabold text-slate-900">Customer Helpline</h3>
-                <p className="text-slate-500 text-sm">Have an enquiry or need help verifying your search? Speak to our friendly advisors.</p>
+                <h3 className="font-extrabold text-slate-900">Direct Assistance</h3>
+                <p className="text-slate-500 text-sm">For order inquiries or guidance with property search verification, contact our dedicated processing specialists.</p>
                 <div className="space-y-2.5 pt-2">
-                  <a href="tel:08006891447" className="flex items-center gap-2 w-full text-sm font-bold text-white bg-accent hover:bg-accent/90 px-4 py-3 rounded-lg transition-colors">
-                    <PhoneCall className="w-4 h-4" /> 0800 689 1447
+                  <a href="tel:03335770077" className="flex items-center gap-2 w-full text-sm font-bold text-white bg-accent hover:bg-accent/90 px-4 py-3 rounded-lg transition-colors">
+                    <PhoneCall className="w-4 h-4" /> 0333 577 0077
                   </a>
                   <a href="mailto:support@onlinelandregistry.uk" className="flex items-center gap-2 w-full text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 px-4 py-3 rounded-lg transition-colors">
                     <Mail className="w-4 h-4" /> support@onlinelandregistry.uk
