@@ -96,8 +96,7 @@ export default function OrderWizard() {
   const { toast } = useToast();
 
   const { data: apiServices, isLoading: servicesLoading } = useListServices();
-  const services = (Array.isArray(apiServices) ? apiServices : [])
-    .filter(s => s.slug !== "title-plan" && s.slug !== "ownership-bundle");
+  const services = (Array.isArray(apiServices) ? apiServices : []);
   const createOrder = useCreateOrder();
   const createCheckoutSession = useCreateCheckoutSession();
 

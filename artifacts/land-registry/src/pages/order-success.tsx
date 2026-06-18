@@ -97,7 +97,7 @@ export default function OrderSuccess() {
           <span className="flex items-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Secure Order
           </span>
-          <span>Need help? <a href="mailto:support@onlinelandregistry.uk" className="text-accent hover:underline font-bold">Email us</a></span>
+          <span>Need help? <Link href="/contact" className="text-accent hover:underline font-bold">Contact Support</Link></span>
         </div>
 
         <div className="pt-2">

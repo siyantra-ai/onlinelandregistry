@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +20,7 @@ const NAV_LINKS = [
   { label: "SERVICES",     href: "/#services" },
   { label: "BLOG",         href: "/blog" },
   { label: "FAQS",         href: "/faqs" },
-  { label: "CONTACT",      href: "mailto:support@onlinelandregistry.uk" },
+  { label: "CONTACT",      href: "/contact" },
 ];
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -29,7 +29,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen bg-background flex flex-col font-sans">
 
-      {/* â”€â”€â”€ Navigation â”€â”€â”€ */}
+      {/* ─── Navigation ─── */}
       <header className="bg-white text-slate-900 sticky top-0 z-50 border-b border-slate-100">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
@@ -119,7 +119,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
       <main className="flex-1">{children}</main>
 
-      {/* â”€â”€â”€ Footer â”€â”€â”€ */}
+      {/* ─── Footer ─── */}
       <footer className="bg-white border-t border-slate-200 font-sans">
 
         {/* Main grid */}
@@ -137,13 +137,21 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 <span className="font-heading font-bold text-[1rem] tracking-tight text-slate-900">Online Land Registry</span>
               </Link>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Fast, reliable access to official HM Land Registry documents â€” delivered online in minutes.
+                Fast, reliable access to official HM Land Registry documents — delivered online in minutes.
               </p>
-              <div className="flex items-center gap-2 text-sm text-slate-500">
-                <Mail className="w-4 h-4 shrink-0 text-slate-400" />
-                <a href="mailto:support@onlinelandregistry.uk" className="hover:text-slate-900 transition-colors">
-                  support@onlinelandregistry.uk
-                </a>
+              <div className="flex flex-col gap-2 text-sm text-slate-500">
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 shrink-0 text-slate-400" />
+                  <a href="mailto:Support@onlinelandregistry.uk" className="hover:text-slate-900 transition-colors">
+                    Support@onlinelandregistry.uk
+                  </a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 shrink-0 text-slate-400" />
+                  <a href="mailto:Sales@onlinelandregistry.uk" className="hover:text-slate-900 transition-colors">
+                    Sales@onlinelandregistry.uk
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -175,7 +183,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               </p>
               <Link href="/order">
                 <Button className="bg-[#00b67a] hover:bg-[#009e6a] text-white font-bold text-xs tracking-wider h-10 px-5 rounded-full transition-all hover:-translate-y-0.5 shadow-md shadow-[#00b67a]/25">
-                  ORDER NOW â†’
+                  ORDER NOW →
                 </Button>
               </Link>
             </div>
@@ -187,7 +195,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         <div className="border-t border-slate-100">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-slate-400 text-center sm:text-left">
-              Â© {new Date().getFullYear()} Online Land Registry. All rights reserved.
+              © {new Date().getFullYear()} Online Land Registry. All rights reserved.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-slate-400">
               <a href="/terms" className="hover:text-slate-700 transition-colors">Terms of Service</a>

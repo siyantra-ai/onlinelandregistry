@@ -16,24 +16,24 @@ import SEO from "@/components/SEO";
 const STATS = [
   { value: "47,000+", label: "Documents Delivered" },
   { value: "< 2 hrs", label: "Avg. Turnaround" },
-  { value: "99.8%",   label: "Accuracy Rate" },
+  { value: "99.8%", label: "Accuracy Rate" },
   { value: "4.9 / 5", label: "Customer Rating" },
 ];
 
 const FEATURES = [
-  { icon: BadgeCheck, title: "Official HMLR Source",        desc: "Every document sourced directly from HM Land Registry — the authoritative UK government record." },
-  { icon: Zap,        title: "Express Processing",          desc: "Fast Track within 4 hours. Super-Fast Track within 1 hour for urgent conveyancing deadlines." },
-  { icon: Lock,       title: "Bank-Grade Security",         desc: "TLS 1.3 encryption and PCI DSS Level 1 payments via Stripe. Zero card data stored." },
-  { icon: Globe,      title: "England, Wales & Scotland",   desc: "Full coverage across all three jurisdictions, including Registers of Scotland titles." },
-  { icon: Users,      title: "Built for Professionals",     desc: "Trusted by conveyancers, solicitors, estate agents, and property investors nationwide." },
-  { icon: Award,      title: "Transparent Pricing",         desc: "The official £7 HMLR fee is always itemised separately from our service charge." },
+  { icon: BadgeCheck, title: "Official HMLR Source", desc: "Every document sourced directly from HM Land Registry — the authoritative UK government record." },
+  { icon: Zap, title: "Express Processing", desc: "Fast Track within 4 hours. Super-Fast Track within 1 hour for urgent conveyancing deadlines." },
+  { icon: Lock, title: "Bank-Grade Security", desc: "TLS 1.3 encryption and PCI DSS Level 1 payments via Stripe. Zero card data stored." },
+  { icon: Globe, title: "England, Wales & Scotland", desc: "Full coverage across all three jurisdictions, including Registers of Scotland titles." },
+  { icon: Users, title: "Built for Professionals", desc: "Trusted by conveyancers, solicitors, estate agents, and property investors nationwide." },
+  { icon: Award, title: "Transparent Pricing", desc: "The official £7 HMLR fee is always itemised separately from our service charge." },
 ];
 
 const STEPS = [
-  { icon: Search,    title: "Choose a Document",    desc: "Select from 7 official document types — Title Registers, Plans, Deeds and more." },
+  { icon: Search, title: "Choose a Document", desc: "Select from 7 official document types — Title Registers, Plans, Deeds and more." },
   { icon: Building2, title: "Enter Property Details", desc: "Provide the address or HMLR title number. We validate it against the official index." },
-  { icon: FileCheck, title: "Secure Checkout",       desc: "Pay via Stripe. Your total is always calculated server-side — never browser-manipulated." },
-  { icon: FileText,  title: "Receive Documents",     desc: "Official PDFs delivered to your inbox, typically within hours of your order." },
+  { icon: FileCheck, title: "Secure Checkout", desc: "Pay via Stripe. Your total is always calculated server-side — never browser-manipulated." },
+  { icon: FileText, title: "Receive Documents", desc: "Official PDFs delivered to your inbox, typically within hours of your order." },
 ];
 
 const REVIEWS = [
@@ -158,25 +158,25 @@ const CONVEYANCING_SERVICES = [
 
 function LiveBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    
+
     let animationFrameId: number;
     let width = (canvas.width = canvas.offsetWidth);
     let height = (canvas.height = canvas.offsetHeight);
-    
+
     const handleResize = () => {
       if (!canvas) return;
       width = canvas.width = canvas.offsetWidth;
       height = canvas.height = canvas.offsetHeight;
     };
-    
+
     window.addEventListener("resize", handleResize, { passive: true });
-    
+
     const particles: Array<{
       x: number;
       y: number;
@@ -184,7 +184,7 @@ function LiveBackground() {
       vy: number;
       radius: number;
     }> = [];
-    
+
     // Create particles
     const particleCount = Math.min(30, Math.floor((width * height) / 30000));
     for (let i = 0; i < particleCount; i++) {
@@ -196,30 +196,30 @@ function LiveBackground() {
         radius: Math.random() * 1.5 + 0.5,
       });
     }
-    
+
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
-      
+
       // Draw particles and lines (dark slate for light background)
       ctx.fillStyle = "rgba(15, 23, 42, 0.08)";
       ctx.lineWidth = 0.5;
-      
+
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        
+
         // Wrap around boundaries
         if (p.x < 0) p.x = width;
         if (p.x > width) p.x = 0;
         if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
-        
+
         // Draw particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fill();
-        
+
         // Draw connections
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j];
@@ -235,18 +235,18 @@ function LiveBackground() {
           }
         }
       }
-      
+
       animationFrameId = requestAnimationFrame(draw);
     };
-    
+
     draw();
-    
+
     return () => {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
-  
+
   return (
     <canvas
       ref={canvasRef}
@@ -257,8 +257,7 @@ function LiveBackground() {
 
 export default function Home() {
   const { data: apiServices, isLoading } = useListServices();
-  const services = (Array.isArray(apiServices) ? apiServices : [])
-    .filter(s => s.slug !== "title-plan" && s.slug !== "ownership-bundle");
+  const services = Array.isArray(apiServices) ? apiServices : [];
 
   const homeSchema = {
     "@context": "https://schema.org",
@@ -332,7 +331,7 @@ export default function Home() {
           HERO SECTION (SPLIT LAYOUT - YOU CAN DO PROBATE STYLE)
       ══════════════════════════════════════ */}
       <section className="relative min-h-[580px] lg:min-h-[660px] flex items-center overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50/20 py-16 lg:py-24 text-slate-900 border-b border-slate-100">
-        
+
         {/* Sleek, professional UK residential housing backdrop related to our platform */}
         <div className="absolute inset-0 bg-cover bg-center opacity-[0.15] pointer-events-none"
           style={{ backgroundImage: "url('/assets/due-diligence-for-land-purchase.jpg')" }} />
@@ -347,10 +346,10 @@ export default function Home() {
 
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            
+
             {/* Left Column - Content */}
             <div className="lg:col-span-7 space-y-6 text-left">
-              
+
 
               <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold font-heading leading-[1.1] tracking-tight text-slate-900">
                 Official HM <span className="text-[#121f35]">Land Registry Documents</span> &amp; Property Records
@@ -385,7 +384,7 @@ export default function Home() {
               <div className="pt-2">
                 <Button
                   onClick={() => {
-                    const url = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/hari-siyantraaisolution/new-meeting";
+                    const url = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/landregistrytransfers/30min";
                     if ((window as any).Calendly) {
                       (window as any).Calendly.initPopupWidget({ url });
                     } else {
@@ -434,7 +433,7 @@ export default function Home() {
                 ))}
                 <span className="text-slate-500 text-xl ml-12">•</span>
               </div>
-              
+
               {/* Duplicate set for seamless loop */}
               <div className="flex items-center space-x-12 px-6">
                 {services.map((service, idx) => (
@@ -459,7 +458,7 @@ export default function Home() {
       ══════════════════════════════════════ */}
       <section className="pt-8 pb-24 relative overflow-hidden bg-slate-900" id="services">
         {/* Background Image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
           style={{ backgroundImage: "url('/assets/modern-office-blurred-background.jpg')" }}
         />
@@ -469,7 +468,7 @@ export default function Home() {
         {/* Animated Background Mesh & Floating Lights */}
         <div className="absolute inset-0 opacity-[0.03]"
           style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "45px 45px" }} />
-        
+
         {/* Breathing ambient dark blue / gold glows */}
         <div className="absolute top-20 left-1/3 w-[450px] h-[450px] bg-amber-500/[0.04] rounded-full blur-[110px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
         <div className="absolute bottom-20 right-1/3 w-[550px] h-[550px] bg-blue-600/[0.04] rounded-full blur-[130px] pointer-events-none animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
@@ -522,7 +521,7 @@ export default function Home() {
                   >
                     {/* Inner White Box */}
                     <div className="bg-white/95 group-hover:bg-white rounded-[15px] p-3 sm:p-7 h-full w-full flex flex-col justify-between overflow-hidden relative transition-colors duration-500 backdrop-blur-sm">
-                      
+
                       {/* Animated gold backdrop wash */}
                       <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/[0.04] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[15px]" />
 
@@ -592,7 +591,7 @@ export default function Home() {
               ))}
             </div>
           )}
-          
+
           <div className="text-center mt-12">
             <Link href="/order">
               <Button
@@ -612,7 +611,7 @@ export default function Home() {
       ══════════════════════════════════════ */}
       <section className="py-24 bg-transparent relative overflow-hidden" id="conveyancing">
         {/* Background Image (full, reduced overlays) */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.95] pointer-events-none"
           style={{ backgroundImage: "url('/assets/conveyancing.jpeg')" }}
         />
@@ -625,7 +624,7 @@ export default function Home() {
         <div className="absolute bottom-20 right-1/4 w-[550px] h-[550px] bg-blue-600/[0.01] rounded-full blur-[80px] pointer-events-none" style={{ animationDelay: '1s' }} />
 
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
-          
+
           <div className="text-center mb-16 max-w-2xl mx-auto space-y-4">
             <span className="text-[0.6875rem] font-black tracking-[0.22em] uppercase text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3.5 py-1.5 rounded-full shadow-sm shadow-amber-500/5">
               Expert Conveyancing
@@ -650,7 +649,7 @@ export default function Home() {
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: idx * 0.05 }}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 onClick={() => {
-                  const url = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/hari-siyantraaisolution/new-meeting";
+                  const url = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/landregistrytransfers/30min";
                   if ((window as any).Calendly) {
                     (window as any).Calendly.initPopupWidget({ url });
                   } else {
@@ -680,7 +679,7 @@ export default function Home() {
                       {s.desc}
                     </p>
                   </div>
-                  
+
                   <div className="hidden sm:flex items-center justify-between pt-4 mt-4 border-t border-slate-100 group-hover:border-amber-500/20 transition-colors relative z-10">
                     <span className="text-[10px] font-mono font-bold text-slate-400">
                       {String(idx + 1).padStart(2, "0")}
@@ -697,16 +696,16 @@ export default function Home() {
 
           {/* Full-width Book a Free Call Button */}
           <div className="max-w-4xl mx-auto mt-12 relative z-10">
-            <Button 
+            <Button
               onClick={() => {
-                const url = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/hari-siyantraaisolution/new-meeting";
+                const url = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/landregistrytransfers/30min";
                 if ((window as any).Calendly) {
                   (window as any).Calendly.initPopupWidget({ url });
                 } else {
                   window.open(url, "_blank");
                 }
               }}
-              size="lg" 
+              size="lg"
               className="w-full bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold h-14 rounded-lg shadow-md hover:shadow-lg transition-all text-base uppercase tracking-wider cursor-pointer"
             >
               Book a Free Call
@@ -738,7 +737,7 @@ export default function Home() {
       <section className="py-10 bg-slate-50 border-t border-slate-200">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
+
             {/* Card 1 - Need Help (styled like reference banner) - now full width */}
             <div className="md:col-span-2 bg-[#121f35] text-white rounded-2xl p-8 sm:p-10 shadow-sm transition-shadow">
               <div className="max-w-6xl mx-auto text-left sm:text-left">

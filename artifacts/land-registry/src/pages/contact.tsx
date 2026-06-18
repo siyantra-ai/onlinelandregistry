@@ -269,7 +269,8 @@ export default function ContactPage() {
                     <div>
                       <h4 className="font-semibold text-slate-900 text-sm mb-1">Email Enquiry</h4>
                       <div className="flex flex-col gap-1">
-                        <a href="mailto:support@onlinelandregistry.uk" className="font-semibold text-slate-700 hover:text-accent text-sm transition-colors">support@onlinelandregistry.uk</a>
+                        <a href="mailto:Support@onlinelandregistry.uk" className="font-semibold text-slate-700 hover:text-accent text-sm transition-colors">Support@onlinelandregistry.uk</a>
+                        <a href="mailto:Sales@onlinelandregistry.uk" className="font-semibold text-slate-700 hover:text-accent text-sm transition-colors">Sales@onlinelandregistry.uk</a>
                       </div>
                       <p className="text-slate-500 text-xs mt-2">Send documents and scans for file audits.</p>
                     </div>

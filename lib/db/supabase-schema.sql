@@ -1,13 +1,42 @@
 -- 1. Create Custom Types (Enums)
-CREATE TYPE order_status AS ENUM ('new', 'in_progress', 'awaiting_docs', 'completed', 'refunded');
-CREATE TYPE country_type AS ENUM ('england_wales', 'scotland');
-CREATE TYPE tracking_type AS ENUM ('standard', 'fast_track', 'super_fast_track');
-CREATE TYPE delivery_type AS ENUM ('pdf_only', 'pdf_printed');
-CREATE TYPE notification_type AS ENUM ('email', 'sms', 'both');
-CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'refunded');
+DO $$ BEGIN
+    CREATE TYPE order_status AS ENUM ('new', 'in_progress', 'awaiting_docs', 'completed', 'refunded');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE country_type AS ENUM ('england_wales', 'scotland');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE tracking_type AS ENUM ('standard', 'fast_track', 'super_fast_track');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE delivery_type AS ENUM ('pdf_only', 'pdf_printed');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE notification_type AS ENUM ('email', 'sms', 'both');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'refunded');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- 2. Create Services Table
-CREATE TABLE services (
+CREATE TABLE IF NOT EXISTS services (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     slug TEXT NOT NULL UNIQUE,
@@ -21,7 +50,7 @@ CREATE TABLE services (
 );
 
 -- 3. Create Orders Table
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     order_number TEXT NOT NULL UNIQUE,
     status order_status NOT NULL DEFAULT 'new',
@@ -58,7 +87,7 @@ CREATE TABLE orders (
 );
 
 -- 4. Create Payments Table
-CREATE TABLE payments (
+CREATE TABLE IF NOT EXISTS payments (
     id SERIAL PRIMARY KEY,
     order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
     stripe_payment_id TEXT NOT NULL,
@@ -75,7 +104,7 @@ CREATE TABLE payments (
 );
 
 -- 5. Create Activity Logs Table
-CREATE TABLE activity_logs (
+CREATE TABLE IF NOT EXISTS activity_logs (
     id SERIAL PRIMARY KEY,
     order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
     action TEXT NOT NULL,
@@ -86,8 +115,18 @@ CREATE TABLE activity_logs (
 
 -- 6. Insert Default Services
 INSERT INTO services (name, slug, base_price, description, deliverables, category, turnaround, popular) VALUES
-('HM Land Registry Title Register', 'title-register', 36.00, 'Official record confirming the registered owners, tenure type (Freehold/Leasehold), purchase price, mortgages, and charges.', 'Official Copy, Register Details, Owner Info', 'property_document', 'From 1 hour', TRUE),
-('Official Deed Search', 'deed-search', 41.00, 'Historical transfers (TR1 forms), original leasehold contracts, and historic boundary plans.', 'Historic Deeds, Original TR1, Covenants', 'deed_search', '4 hours Fast-Track', FALSE),
-('Map / Land Search', 'map-land-search', 53.00, 'GIS coordinate-based lookup for plots, fields, verges, or forests lacking a standard postal address.', 'GIS Coordinate Map, Parcel Boundary', 'land_search', '4 hours Fast-Track', FALSE),
+('Title Register', 'title-register', 36.00, 'Official record confirming the registered owners, tenure type (Freehold/Leasehold), purchase price, mortgages, and charges.', 'Official Copy, Register Details, Owner Info', 'property_document', 'From 1 hour', TRUE),
+('Title Plan', 'title-plan', 36.00, 'Detailed geographic representation of the property boundaries, drawn by HM Land Registry.', 'Official Title Plan, Boundary Map', 'property_document', 'From 1 hour', FALSE),
+('Property Ownership (Register + Plan)', 'ownership-bundle', 60.00, 'A comprehensive bundle containing both the Title Register and Title Plan for complete property verification.', 'Title Register, Title Plan, Owner Info', 'property_bundle', 'From 1 hour', TRUE),
+('Deed Search', 'deed-search', 41.00, 'Historical transfers (TR1 forms), original leasehold contracts, and historic boundary plans.', 'Historic Deeds, Original TR1, Covenants', 'deed_search', '4 hours Fast-Track', FALSE),
+('Map / Land Search (no address)', 'map-land-search', 53.00, 'GIS coordinate-based lookup for plots, fields, verges, or forests lacking a standard postal address.', 'GIS Coordinate Map, Parcel Boundary', 'land_search', '4 hours Fast-Track', FALSE),
 ('Property Alert Service', 'property-alert', 36.00, 'Fraud monitoring for up to 3 titles. Notifies you instantly if third parties attempt to alter deeds.', 'Fraud Alert, Real-time Monitoring', 'monitoring', 'Instant Setup', FALSE),
-('Deceased Joint Proprietor (DJP)', 'deceased-joint-proprietor', 65.00, 'Form preparation and filing service to remove a deceased joint owner''s name and establish sole absolute title.', 'Form DJP, Registration Update', 'legal_form', '1-2 days Dispatch', FALSE);
+('Deceased Joint Proprietor (DJP)', 'deceased-joint-proprietor', 65.00, 'Form preparation and filing service to remove a deceased joint owner''s name and establish sole absolute title.', 'Form DJP, Registration Update', 'legal_form', '1-2 days Dispatch', FALSE)
+ON CONFLICT (slug) DO UPDATE SET
+    name = EXCLUDED.name,
+    base_price = EXCLUDED.base_price,
+    description = EXCLUDED.description,
+    deliverables = EXCLUDED.deliverables,
+    category = EXCLUDED.category,
+    turnaround = EXCLUDED.turnaround,
+    popular = EXCLUDED.popular;
