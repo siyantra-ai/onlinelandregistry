@@ -55,3 +55,7 @@ Thumbs.db
 .env
 .env.local
 .env.*
+
+# compiled frontend assets
+/artifacts/land-registry/public/assets
+/public/assets

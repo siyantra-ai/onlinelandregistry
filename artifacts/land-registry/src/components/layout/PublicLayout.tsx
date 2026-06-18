@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +8,7 @@ import {
 
 const FOOTER_COMPANY = [
   { label: "About Us",           href: "/about" },
+  { label: "Blog",               href: "/blog" },
   { label: "Contact Support",    href: "/contact" },
   { label: "FAQs",               href: "/faqs" },
   { label: "Privacy Policy",     href: "/privacy" },
@@ -17,6 +18,7 @@ const FOOTER_COMPANY = [
 
 const NAV_LINKS = [
   { label: "SERVICES",     href: "/#services" },
+  { label: "BLOG",         href: "/blog" },
   { label: "FAQS",         href: "/faqs" },
   { label: "CONTACT",      href: "mailto:support@onlinelandregistry.uk" },
 ];
@@ -27,7 +29,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen bg-background flex flex-col font-sans">
 
-      {/* ─── Navigation ─── */}
+      {/* â”€â”€â”€ Navigation â”€â”€â”€ */}
       <header className="bg-white text-slate-900 sticky top-0 z-50 border-b border-slate-100">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
@@ -117,14 +119,14 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
       <main className="flex-1">{children}</main>
 
-      {/* ─── Footer ─── */}
+      {/* â”€â”€â”€ Footer â”€â”€â”€ */}
       <footer className="bg-white border-t border-slate-200 font-sans">
 
         {/* Main grid */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-10">
           <div className="grid gap-10 sm:grid-cols-3">
 
-            {/* Col 1 — Brand */}
+            {/* Col 1 â€” Brand */}
             <div className="sm:col-span-1 space-y-5">
               <Link href="/" className="flex items-center gap-2.5">
                 <div className="bg-[#121f35] p-2 rounded-lg shrink-0">
@@ -135,7 +137,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 <span className="font-heading font-bold text-[1rem] tracking-tight text-slate-900">Online Land Registry</span>
               </Link>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Fast, reliable access to official HM Land Registry documents — delivered online in minutes.
+                Fast, reliable access to official HM Land Registry documents â€” delivered online in minutes.
               </p>
               <div className="flex items-center gap-2 text-sm text-slate-500">
                 <Mail className="w-4 h-4 shrink-0 text-slate-400" />
@@ -145,7 +147,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               </div>
             </div>
 
-            {/* Col 2 — Company */}
+            {/* Col 2 â€” Company */}
             <div className="space-y-4">
               <h3 className="font-heading text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-400">Company</h3>
               <ul className="space-y-2.5">
@@ -165,7 +167,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               </ul>
             </div>
 
-            {/* Col 3 — Get Started */}
+            {/* Col 3 â€” Get Started */}
             <div className="space-y-4">
               <h3 className="font-heading text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-400">Get Started</h3>
               <p className="text-sm text-slate-500 leading-relaxed">
@@ -173,7 +175,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               </p>
               <Link href="/order">
                 <Button className="bg-[#00b67a] hover:bg-[#009e6a] text-white font-bold text-xs tracking-wider h-10 px-5 rounded-full transition-all hover:-translate-y-0.5 shadow-md shadow-[#00b67a]/25">
-                  ORDER NOW →
+                  ORDER NOW â†’
                 </Button>
               </Link>
             </div>
@@ -185,7 +187,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         <div className="border-t border-slate-100">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-slate-400 text-center sm:text-left">
-              © {new Date().getFullYear()} Online Land Registry. All rights reserved.
+              Â© {new Date().getFullYear()} Online Land Registry. All rights reserved.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-slate-400">
               <a href="/terms" className="hover:text-slate-700 transition-colors">Terms of Service</a>
@@ -205,3 +207,5 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     </div>
   );
 }
+
+
