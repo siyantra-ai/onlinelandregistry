@@ -414,12 +414,42 @@ export default function Home() {
 
           </div>
         </div>
-        {/* Smooth SVG Wave Transition to dark section */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] z-20 pointer-events-none transform translate-y-[1px]">
-          <svg className="block w-full h-[40px] md:h-[70px] lg:h-[90px]" viewBox="0 0 1440 320" preserveAspectRatio="none">
-            <path fill="#060c18" fillOpacity="1" d="M0,192L48,197.3C96,203,192,213,288,202.7C384,192,480,160,576,149.3C672,139,768,149,864,176C960,203,1056,245,1152,245.3C1248,245,1344,203,1392,181.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-          </svg>
-        </div>
+
+        {/* ══════════════════════════════════════
+            ANIMATED MARQUEE - CORE SERVICES WITH PRICES (Dynamic from DB)
+        ══════════════════════════════════════ */}
+        {!isLoading && services && services.length > 0 && (
+          <div className="absolute bottom-0 left-0 right-0 bg-[#0a1628]/95 py-4 overflow-hidden border-t border-slate-700/50 backdrop-blur-sm z-30">
+            {/* Moving text container */}
+            <div className="flex whitespace-nowrap" style={{ animation: 'marquee 40s linear infinite' }}>
+              {/* First set of services from DB */}
+              <div className="flex items-center space-x-12 px-6">
+                {services.map((service, idx) => (
+                  <div key={`service-1-${service.id}`} className="flex items-center space-x-12">
+                    <span className="text-amber-400 text-base font-bold flex items-center gap-2">
+                      <FileText className="w-5 h-5" /> {service.name}
+                    </span>
+                    {idx < services.length - 1 && <span className="text-slate-500 text-xl">•</span>}
+                  </div>
+                ))}
+                <span className="text-slate-500 text-xl ml-12">•</span>
+              </div>
+              
+              {/* Duplicate set for seamless loop */}
+              <div className="flex items-center space-x-12 px-6">
+                {services.map((service, idx) => (
+                  <div key={`service-2-${service.id}`} className="flex items-center space-x-12">
+                    <span className="text-amber-400 text-base font-bold flex items-center gap-2">
+                      <FileText className="w-5 h-5" /> {service.name}
+                    </span>
+                    {idx < services.length - 1 && <span className="text-slate-500 text-xl">•</span>}
+                  </div>
+                ))}
+                <span className="text-slate-500 text-xl ml-12">•</span>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Testimonials and marketing bars removed for clean corporate style */}
