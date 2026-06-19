@@ -334,7 +334,7 @@ export default function Home() {
 
         {/* Sleek, professional UK residential housing backdrop related to our platform */}
         <div className="absolute inset-0 bg-cover bg-center opacity-[0.15] pointer-events-none"
-          style={{ backgroundImage: "url('/assets/due-diligence-for-land-purchase.jpg')" }} />
+          style={{ backgroundImage: "url('/images/due-diligence-for-land-purchase.jpg')" }} />
         <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent pointer-events-none" />
 
         {/* Dynamic slow particle/node live background */}
@@ -404,7 +404,7 @@ export default function Home() {
             <div className="lg:col-span-5 relative py-8 flex justify-center lg:justify-end">
               <div className="relative w-full max-w-[490px] transition-transform hover:scale-[1.01] duration-300">
                 <img
-                  src="/assets/land-registry-hero-removebg-preview.png"
+                  src="/images/land-registry-hero-removebg-preview.png"
                   alt="UK Land Registry search and property documentation portal collage"
                   className="w-full h-auto"
                 />
@@ -460,7 +460,7 @@ export default function Home() {
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: "url('/assets/modern-office-blurred-background.jpg')" }}
+          style={{ backgroundImage: "url('/images/modern-office-blurred-background.jpg')" }}
         />
         {/* Semi-transparent dark overlay for text readability */}
         <div className="absolute inset-0 bg-slate-900/60 pointer-events-none" />
@@ -613,7 +613,7 @@ export default function Home() {
         {/* Background Image (full, reduced overlays) */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.95] pointer-events-none"
-          style={{ backgroundImage: "url('/assets/conveyancing.jpeg')" }}
+          style={{ backgroundImage: "url('/images/conveyancing.jpeg')" }}
         />
 
         {/* Dark overlay to improve text contrast (increased per request) */}
