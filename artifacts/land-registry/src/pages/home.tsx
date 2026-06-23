@@ -392,7 +392,7 @@ export default function Home() {
                     }
                   }}
                   size="lg"
-                  className="w-full sm:w-auto bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold h-14 px-8 rounded-full shadow-md hover:shadow-lg transition-all text-[0.9375rem]"
+                  className="w-full sm:w-auto bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold min-h-14 h-auto py-3.5 px-5 sm:px-8 rounded-full shadow-md hover:shadow-lg transition-all text-[0.8rem] sm:text-[0.9375rem] whitespace-normal leading-snug text-center flex items-center justify-center"
                 >
                   Need help with Conveyancing matters? Book a free call
                 </Button>
@@ -508,16 +508,16 @@ export default function Home() {
               {services?.map((service, idx) => (
                 <motion.div
                   key={service.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: idx * 0.08 }}
-                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true, margin: "-20px" }}
+                  transition={{ duration: 0.25, ease: "linear" }}
+                  whileHover={{ y: -2, transition: { duration: 0.15 } }}
                   className="h-full flex w-[calc(33.333%-8px)] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
                 >
                   <Link
                     href={`/order?service=${service.slug}`}
-                    className="group relative w-full h-full p-[1px] rounded-2xl bg-gradient-to-br from-amber-500/20 via-slate-200/50 to-transparent hover:from-amber-400 hover:via-yellow-300 hover:to-amber-500 transition-all duration-500 flex flex-col justify-between overflow-hidden shadow-lg shadow-black/30 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.2)]"
+                    className="group relative w-full h-full p-[1px] rounded-2xl bg-gradient-to-br from-amber-500/20 via-slate-200/50 to-transparent hover:from-amber-400/60 hover:via-yellow-300/40 hover:to-amber-500/60 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-lg shadow-black/30 hover:shadow-[0_8px_20px_-10px_rgba(245,158,11,0.15)]"
                   >
                     {/* Inner White Box */}
                     <div className="bg-white/95 group-hover:bg-white rounded-[15px] p-3 sm:p-7 h-full w-full flex flex-col justify-between overflow-hidden relative transition-colors duration-500 backdrop-blur-sm">
@@ -604,6 +604,16 @@ export default function Home() {
             </Link>
           </div>
         </div>
+
+        {/* Elegant Section Divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] z-20 pointer-events-none">
+          <svg className="relative block w-[calc(100%+1.3px)] h-[50px] md:h-[70px]" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Wave 1 - Glowing Gold Under-layer */}
+            <path d="M0,20 C300,70 600,10 900,80 C1050,115 1150,90 1200,80 L1200,120 L0,120 Z" className="fill-amber-500/30"></path>
+            {/* Wave 2 - Main Slate Dark Top-layer */}
+            <path d="M0,40 C300,90 600,30 900,100 C1050,135 1150,110 1200,100 L1200,120 L0,120 Z" className="fill-[#0b1329]"></path>
+          </svg>
+        </div>
       </section>
 
       {/* ══════════════════════════════════════
@@ -643,11 +653,11 @@ export default function Home() {
             {CONVEYANCING_SERVICES.map((s, idx) => (
               <motion.div
                 key={s.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: idx * 0.05 }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, margin: "-20px" }}
+                transition={{ duration: 0.25, ease: "linear" }}
+                whileHover={{ y: -2, transition: { duration: 0.15 } }}
                 onClick={() => {
                   const url = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/landregistrytransfers/30min";
                   if ((window as any).Calendly) {
@@ -656,7 +666,7 @@ export default function Home() {
                     window.open(url, "_blank");
                   }
                 }}
-                className="group relative cursor-pointer p-[1px] rounded-xl bg-gradient-to-br from-amber-500/20 via-slate-200/50 to-transparent hover:from-amber-400 hover:via-yellow-300 hover:to-amber-500 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-md shadow-black/25 hover:shadow-[0_15px_30px_-10px_rgba(245,158,11,0.15)] w-[calc(33.333%-8px)] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
+                className="group relative cursor-pointer p-[1px] rounded-xl bg-gradient-to-br from-amber-500/20 via-slate-200/50 to-transparent hover:from-amber-400/60 hover:via-yellow-300/40 hover:to-amber-500/60 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-md shadow-black/25 hover:shadow-[0_8px_15px_-10px_rgba(245,158,11,0.1)] w-[calc(33.333%-8px)] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
               >
                 {/* Inner White Box */}
                 <div className="bg-white/95 group-hover:bg-white rounded-[11px] p-3 sm:p-6 w-full h-full flex flex-col justify-between overflow-hidden relative transition-colors duration-300 backdrop-blur-sm">
