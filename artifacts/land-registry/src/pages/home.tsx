@@ -59,13 +59,6 @@ const REVIEWS = [
     date: "1 week ago"
   },
   {
-    name: "Maureen C.",
-    title: "DJP Transfer made simple",
-    rating: 5,
-    text: "I was quite daunted by the procedure of removing my deceased husband from the registry. The DJP application service took all the stress away. Fantastic job.",
-    date: "2 weeks ago"
-  },
-  {
     name: "Carol Fennell",
     title: "Simple & stress-free",
     rating: 5,
@@ -99,14 +92,14 @@ const CONVEYANCING_SERVICES = [
     ],
   },
   {
-    id: "removal-of-restriction",
-    title: "Removal of a Restriction",
-    desc: "Clear outdated charges, restrictions, or cautions from your property title.",
-    gif: "/gifs/tennant.gif",
+    id: "death-of-joint-proprietor",
+    title: "Death of a Joint Proprietor",
+    desc: "Remove a deceased joint owner from the land registry title with care and precision.",
+    gif: "/gifs/death.gif",
     bullets: [
-      "Restriction assessment included",
-      "RX3 / RX4 form preparation",
-      "Outdated charge or caveat cleared",
+      "Preparation of Form DJP",
+      "Removal of deceased owner",
+      "Official title register update",
     ],
   },
   {
@@ -121,14 +114,14 @@ const CONVEYANCING_SERVICES = [
     ],
   },
   {
-    id: "applying-for-restriction",
-    title: "Applying for a Restriction",
-    desc: "Protect your interest or trust ownership to prevent unauthorized property sale.",
+    id: "tenants-in-common",
+    title: "Tenants in Common",
+    desc: "Change your ownership structure to Tenants in Common to protect your specific share.",
     gif: "/gifs/tennant.gif",
     bullets: [
-      "RX1 restriction application",
-      "Protects trust / joint ownership",
-      "Prevents unauthorised sale",
+      "Severance of joint tenancy",
+      "Form SEV preparation & filing",
+      "Official title register update",
     ],
   },
   {
@@ -142,6 +135,17 @@ const CONVEYANCING_SERVICES = [
       "Official title register created",
     ],
   },
+  {
+    id: "additional-services",
+    title: "Additional Services",
+    desc: "Need something more specific? Our conveyancers support a wide range of property and registry matters—tell us what you are trying to achieve.",
+    gif: "/gifs/support.gif",
+    bullets: [
+      "Tailored conveyancing support",
+      "Complex registry matters handled",
+      "Expert legal advice available",
+    ],
+  }
 ];
 
 
@@ -250,15 +254,16 @@ export default function Home() {
   const desiredOrder = [
     "title-register",
     "title-plan",
-    "ownership-bundle",
     "deed-search",
     "map-land-search",
-    "property-alert",
-    "deceased-joint-proprietor"
+    "ownership-bundle",
+    "property-alert"
   ];
 
   const services = Array.isArray(apiServices)
-    ? [...apiServices].sort((a, b) => {
+    ? [...apiServices]
+        .filter(s => s.slug !== "deceased-joint-proprietor")
+        .sort((a, b) => {
         const aIdx = desiredOrder.indexOf(a.slug);
         const bIdx = desiredOrder.indexOf(b.slug);
         if (aIdx === -1 && bIdx === -1) return 0;
@@ -558,12 +563,12 @@ export default function Home() {
                         <h3 className="font-extrabold text-slate-900 font-heading text-[1.125rem] leading-snug mb-2.5 group-hover:text-amber-600 transition-colors duration-300">
                           {service.name}
                         </h3>
-                        <p className="text-[0.875rem] text-slate-650 leading-relaxed line-clamp-2 mb-6 group-hover:text-slate-700 transition-colors duration-300">
+                        <p className="text-[0.875rem] text-slate-650 leading-relaxed mb-6 group-hover:text-slate-700 transition-colors duration-300">
                           {service.description}
                         </p>
 
                         {/* Deliverables tags */}
-                        {(service.slug === "title-register" || service.slug === "title-plan" || service.slug === "ownership-bundle") && (
+                        {(service.slug === "title-register" || service.slug === "title-plan" || service.slug === "deed-search" || service.slug === "map-land-search") && (
                           <div className="flex flex-wrap gap-2 mb-6">
                             {service.deliverables?.split(",").map((d: string) => (
                               <span

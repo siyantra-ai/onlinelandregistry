@@ -37,11 +37,7 @@ const FAQS = [
   {
     q: "Do your retrieval services cover all jurisdictions within the United Kingdom?",
     a: "We cover registered properties in England and Wales via HM Land Registry, and Scotland via the Registers of Scotland (RoS) database. Scottish property searches are processed through the equivalent RoS system, which may incur minor price variations due to regional administrative structures.",
-  },
-  {
-    q: "What is a Deceased Joint Proprietor (DJP) application?",
-    a: "When a property is held in joint names and one of the registered owners passes away, the title must be formally updated. Our service assists in preparing and submitting the statutory DJP application to HM Land Registry, removing the deceased owner's name and updating the register to reflect the surviving proprietor as the sole owner.",
-  },
+  }
 ];
 
 export default function FAQPage() {

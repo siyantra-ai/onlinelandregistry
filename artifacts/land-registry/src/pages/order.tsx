@@ -100,15 +100,16 @@ export default function OrderWizard() {
   const desiredOrder = [
     "title-register",
     "title-plan",
-    "ownership-bundle",
     "deed-search",
     "map-land-search",
-    "property-alert",
-    "deceased-joint-proprietor"
+    "ownership-bundle",
+    "property-alert"
   ];
 
   const services = Array.isArray(apiServices)
-    ? [...apiServices].sort((a, b) => {
+    ? [...apiServices]
+        .filter(s => s.slug !== "deceased-joint-proprietor")
+        .sort((a, b) => {
         const aIdx = desiredOrder.indexOf(a.slug);
         const bIdx = desiredOrder.indexOf(b.slug);
         if (aIdx === -1 && bIdx === -1) return 0;
