@@ -96,7 +96,27 @@ export default function OrderWizard() {
   const { toast } = useToast();
 
   const { data: apiServices, isLoading: servicesLoading } = useListServices();
-  const services = (Array.isArray(apiServices) ? apiServices : []);
+  
+  const desiredOrder = [
+    "title-register",
+    "title-plan",
+    "ownership-bundle",
+    "deed-search",
+    "map-land-search",
+    "property-alert",
+    "deceased-joint-proprietor"
+  ];
+
+  const services = Array.isArray(apiServices)
+    ? [...apiServices].sort((a, b) => {
+        const aIdx = desiredOrder.indexOf(a.slug);
+        const bIdx = desiredOrder.indexOf(b.slug);
+        if (aIdx === -1 && bIdx === -1) return 0;
+        if (aIdx === -1) return 1;
+        if (bIdx === -1) return -1;
+        return aIdx - bIdx;
+      })
+    : [];
   const createOrder = useCreateOrder();
   const createCheckoutSession = useCreateCheckoutSession();
 
@@ -1352,7 +1372,7 @@ export default function OrderWizard() {
                               <Zap className="w-5 h-5" />
                             </div>
                             <div className="text-left space-y-0.5">
-                              <span className="font-extrabold text-[0.9375rem] text-slate-900 leading-tight block">Yes, receive faster (12 hours)</span>
+                              <span className="font-extrabold text-[0.9375rem] text-slate-900 leading-tight block">Yes, receive faster (Fast-Track)</span>
                               <span className="text-xs text-slate-500 font-medium leading-relaxed">Intermediary queue priority processing.</span>
                             </div>
                           </div>
@@ -1366,7 +1386,7 @@ export default function OrderWizard() {
                               <Clock className="w-5 h-5" />
                             </div>
                             <div className="text-left space-y-0.5">
-                              <span className="font-extrabold text-[0.9375rem] text-slate-900 leading-tight block">No, standard service (24 hours)</span>
+                              <span className="font-extrabold text-[0.9375rem] text-slate-900 leading-tight block">No, standard service (1-2 days)</span>
                               <span className="text-xs text-slate-500 font-medium leading-relaxed">Official queue processing.</span>
                             </div>
                           </div>

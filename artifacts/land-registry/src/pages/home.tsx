@@ -88,17 +88,6 @@ const CONVEYANCING_SERVICES = [
     ],
   },
   {
-    id: "death-of-joint-proprietor",
-    title: "Death of a Joint Proprietor",
-    desc: "Remove a deceased joint owner from the land registry title with care and precision.",
-    gif: "/gifs/death.gif",
-    bullets: [
-      "Death certificate registration",
-      "Survivorship application (DJP)",
-      "Title register updated in your name",
-    ],
-  },
-  {
     id: "name-change",
     title: "Name Change on Deeds",
     desc: "Update your legal name on property records due to marriage, divorce, or deed poll.",
@@ -257,7 +246,27 @@ function LiveBackground() {
 
 export default function Home() {
   const { data: apiServices, isLoading } = useListServices();
-  const services = Array.isArray(apiServices) ? apiServices : [];
+  
+  const desiredOrder = [
+    "title-register",
+    "title-plan",
+    "ownership-bundle",
+    "deed-search",
+    "map-land-search",
+    "property-alert",
+    "deceased-joint-proprietor"
+  ];
+
+  const services = Array.isArray(apiServices)
+    ? [...apiServices].sort((a, b) => {
+        const aIdx = desiredOrder.indexOf(a.slug);
+        const bIdx = desiredOrder.indexOf(b.slug);
+        if (aIdx === -1 && bIdx === -1) return 0;
+        if (aIdx === -1) return 1;
+        if (bIdx === -1) return -1;
+        return aIdx - bIdx;
+      })
+    : [];
 
   const homeSchema = {
     "@context": "https://schema.org",
@@ -540,13 +549,8 @@ export default function Home() {
                       <div className="hidden sm:block">
                         {/* Top line with Icon */}
                         <div className="flex items-start justify-between mb-6 relative z-10">
-                          <div className="relative">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/15 to-yellow-400/5 border border-amber-500/30 group-hover:border-amber-400 group-hover:shadow-[0_0_15px_rgba(245,158,11,0.25)] flex items-center justify-center transition-all duration-300">
-                              <FileText className="w-5 h-5 text-amber-500 group-hover:text-amber-600 group-hover:scale-110 transition-all duration-300" />
-                            </div>
-                            <span className="absolute -top-1.5 -right-1.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 text-slate-950 text-[10px] font-black tracking-wider shadow-md shadow-amber-500/40">
-                              {String(idx + 1).padStart(2, "0")}
-                            </span>
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/15 to-yellow-400/5 border border-amber-500/30 group-hover:border-amber-400 group-hover:shadow-[0_0_15px_rgba(245,158,11,0.25)] flex items-center justify-center transition-all duration-300">
+                            <FileText className="w-5 h-5 text-amber-500 group-hover:text-amber-600 group-hover:scale-110 transition-all duration-300" />
                           </div>
                         </div>
 
@@ -559,26 +563,22 @@ export default function Home() {
                         </p>
 
                         {/* Deliverables tags */}
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {service.deliverables?.split(",").slice(0, 3).map((d: string) => (
-                            <span
-                              key={d}
-                              className="inline-flex items-center text-[0.7rem] font-bold text-amber-700 bg-amber-500/5 group-hover:bg-amber-500/10 px-3 py-1 rounded-lg transition-all duration-300 border border-amber-500/20 group-hover:border-amber-400/30"
-                            >
-                              {d.trim()}
-                            </span>
-                          ))}
-                        </div>
+                        {(service.slug === "title-register" || service.slug === "title-plan" || service.slug === "ownership-bundle") && (
+                          <div className="flex flex-wrap gap-2 mb-6">
+                            {service.deliverables?.split(",").map((d: string) => (
+                              <span
+                                key={d}
+                                className="inline-flex items-center text-[0.7rem] font-bold text-amber-700 bg-amber-500/5 group-hover:bg-amber-500/10 px-3 py-1 rounded-lg transition-all duration-300 border border-amber-500/20 group-hover:border-amber-400/30"
+                              >
+                                {d.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
 
                       {/* Card Footer info — desktop only */}
-                      <div className="hidden sm:flex items-center justify-between pt-4 border-t border-slate-100 group-hover:border-amber-500/20 transition-colors mt-auto relative z-10">
-                        {service.turnaround ? (
-                          <div className="flex items-center gap-1.5 text-[0.75rem] font-bold text-slate-500 group-hover:text-slate-700 transition-colors">
-                            <Clock className="w-3.5 h-3.5 shrink-0 text-amber-500 group-hover:text-amber-600" />
-                            {service.turnaround}
-                          </div>
-                        ) : <span />}
+                      <div className="hidden sm:flex items-center justify-end pt-4 border-t border-slate-100 group-hover:border-amber-500/20 transition-colors mt-auto relative z-10">
                         <span className="flex items-center gap-1 text-[0.875rem] font-bold text-amber-600 group-hover:text-amber-700 transition-all duration-300">
                           Order Now
                           <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300" />
@@ -675,7 +675,6 @@ export default function Home() {
 
                   {/* ── Mobile compact view ── */}
                   <div className="flex flex-col items-center text-center gap-1.5 sm:hidden relative z-10">
-                    <span className="text-[0.6rem] font-black text-amber-500 font-mono">{String(idx + 1).padStart(2, "0")}</span>
                     <p className="text-[0.65rem] font-extrabold text-slate-900 leading-tight line-clamp-3">{s.title}</p>
                     <span className="text-[0.6rem] font-bold text-amber-600">Book now →</span>
                   </div>
@@ -690,10 +689,7 @@ export default function Home() {
                     </p>
                   </div>
 
-                  <div className="hidden sm:flex items-center justify-between pt-4 mt-4 border-t border-slate-100 group-hover:border-amber-500/20 transition-colors relative z-10">
-                    <span className="text-[10px] font-mono font-bold text-slate-400">
-                      {String(idx + 1).padStart(2, "0")}
-                    </span>
+                  <div className="hidden sm:flex items-center justify-end pt-4 mt-4 border-t border-slate-100 group-hover:border-amber-500/20 transition-colors relative z-10">
                     <span className="flex items-center gap-1 text-xs font-bold text-amber-600 group-hover:text-amber-700 transition-all duration-300">
                       Book now
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-300" />

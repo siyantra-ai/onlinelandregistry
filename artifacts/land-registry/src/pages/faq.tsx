@@ -23,10 +23,6 @@ const FAQS = [
     a: "The Title Register is the primary text document detailing ownership and legal status. The Title Plan is the official map illustrating the general boundaries of the property, outlined in red, based on Ordnance Survey mapping. These documents share the same title number and are typically required together to form a complete legal view of the property.",
   },
   {
-    q: "What are the fees associated with retrieving Land Registry documents?",
-    a: "The statutory fee charged by HM Land Registry is £7.00 per document. Our portal provides a managed document retrieval service, which includes manual postcode verification, official title matching, document verification, and priority digital delivery. Our service charge is itemized separately from the HMLR statutory fee, with standard packages starting from £36.00 (inclusive of VAT).",
-  },
-  {
     q: "What are the standard and expedited delivery times?",
     a: "Standard orders are processed and delivered within one working day. We offer priority processing options: Fast Track orders are delivered within 4 working hours, and Super-Fast Track orders are delivered within 1 working hour. Processing hours are Monday to Friday, 9:00 AM to 5:30 PM (excluding UK Bank Holidays).",
   },

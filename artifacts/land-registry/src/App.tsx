@@ -1,4 +1,4 @@
-﻿import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +12,10 @@ import FAQPage from "@/pages/faq";
 import ContactPage from "@/pages/contact";
 import Blogs from "@/pages/Blogs";
 import BlogPost from "@/pages/BlogPost";
+import PrivacyPage from "@/pages/privacy";
+import TermsPage from "@/pages/terms";
+import CookiesPage from "@/pages/cookies";
+import RefundPage from "@/pages/refund-policy";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,6 +66,26 @@ function Router() {
             <BlogPost slug={params.slug} />
           </PublicLayout>
         )}
+      </Route>
+      <Route path="/privacy">
+        <PublicLayout>
+          <PrivacyPage />
+        </PublicLayout>
+      </Route>
+      <Route path="/terms">
+        <PublicLayout>
+          <TermsPage />
+        </PublicLayout>
+      </Route>
+      <Route path="/cookies">
+        <PublicLayout>
+          <CookiesPage />
+        </PublicLayout>
+      </Route>
+      <Route path="/refund-policy">
+        <PublicLayout>
+          <RefundPage />
+        </PublicLayout>
       </Route>
 
       {/* Fallback */}

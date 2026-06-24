@@ -115,8 +115,8 @@ CREATE TABLE IF NOT EXISTS activity_logs (
 
 -- 6. Insert Default Services
 INSERT INTO services (name, slug, base_price, description, deliverables, category, turnaround, popular) VALUES
-('Title Register', 'title-register', 36.00, 'Official record confirming the registered owners, tenure type (Freehold/Leasehold), purchase price, mortgages, and charges.', 'Official Copy, Register Details, Owner Info', 'property_document', 'From 1 hour', TRUE),
-('Title Plan', 'title-plan', 36.00, 'Detailed geographic representation of the property boundaries, drawn by HM Land Registry.', 'Official Title Plan, Boundary Map', 'property_document', 'From 1 hour', FALSE),
+('Title Register', 'title-register', 36.00, 'Official record confirming the registered owners, tenure type (Freehold/Leasehold), purchase price, mortgages, and charges.', 'Title number, Owner, Tenure (freehold or leasehold), Purchase price/value', 'property_document', 'From 1 hour', TRUE),
+('Title Plan', 'title-plan', 36.00, 'Detailed geographic representation of the property boundaries, drawn by HM Land Registry.', 'Extent of property owned, General boundaries, Title number, Orientation & scale', 'property_document', 'From 1 hour', FALSE),
 ('Property Ownership (Register + Plan)', 'ownership-bundle', 60.00, 'A comprehensive bundle containing both the Title Register and Title Plan for complete property verification.', 'Title Register, Title Plan, Owner Info', 'property_bundle', 'From 1 hour', TRUE),
 ('Deed Search', 'deed-search', 41.00, 'Historical transfers (TR1 forms), original leasehold contracts, and historic boundary plans.', 'Historic Deeds, Original TR1, Covenants', 'deed_search', '4 hours Fast-Track', FALSE),
 ('Map / Land Search (no address)', 'map-land-search', 53.00, 'GIS coordinate-based lookup for plots, fields, verges, or forests lacking a standard postal address.', 'GIS Coordinate Map, Parcel Boundary', 'land_search', '4 hours Fast-Track', FALSE),
