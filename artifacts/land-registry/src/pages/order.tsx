@@ -1372,7 +1372,7 @@ export default function OrderWizard() {
                               <Zap className="w-5 h-5" />
                             </div>
                             <div className="text-left space-y-0.5">
-                              <span className="font-extrabold text-[0.9375rem] text-slate-900 leading-tight block">Yes, receive faster (Fast-Track)</span>
+                              <span className="font-extrabold text-[0.9375rem] text-slate-900 leading-tight block">Yes, receive faster (4 hours)</span>
                               <span className="text-xs text-slate-500 font-medium leading-relaxed">Intermediary queue priority processing.</span>
                             </div>
                           </div>
