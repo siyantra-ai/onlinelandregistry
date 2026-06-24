@@ -1,15 +1,42 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
-import { allBlogPosts } from '../data/blogPosts';
+import { supabase } from '../db/supabase';
+import { allBlogPosts as fallbackPosts } from '../data/blogPosts';
 import './Blogs.css';
 
 export default function Blogs() {
-  const [posts, setPosts] = useState(allBlogPosts);
+  const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
 
   useEffect(() => {
-    setPosts(allBlogPosts);
+    async function fetchBlogs() {
+      if (!supabase) {
+        setPosts(fallbackPosts);
+        return;
+      }
+      
+      try {
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('*')
+          .eq('is_published', true)
+          .order('created_at', { ascending: false });
+          
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          setPosts(data);
+        } else {
+          setPosts(fallbackPosts);
+        }
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+        setPosts(fallbackPosts);
+      }
+    }
+    
+    fetchBlogs();
   }, []);
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -34,11 +61,15 @@ export default function Blogs() {
                 href={'/blog/post/' + post.slug}
                 className="blog-card"
               >
-                {post.image && (
+                {post.image_url ? (
+                  <div className="blog-card-image">
+                    <img src={post.image_url} alt={post.title} loading="lazy" />
+                  </div>
+                ) : post.image ? (
                   <div className="blog-card-image">
                     <img src={post.image} alt={post.title} loading="lazy" />
                   </div>
-                )}
+                ) : null}
                 <div className="blog-card-content">
                   <h2 className="blog-card-title">{post.title}</h2>
                   <p className="blog-card-excerpt">{post.excerpt}</p>

@@ -193,6 +193,9 @@ importers:
 
   artifacts/land-registry:
     dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.108.1
+        version: 2.108.1
       '@types/leaflet':
         specifier: ^1.9.21
         version: 1.9.21

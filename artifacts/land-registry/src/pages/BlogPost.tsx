@@ -1,6 +1,7 @@
-﻿import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
-import { blogPosts } from '../data/blogPosts';
+import { supabase } from '../db/supabase';
+import { blogPosts as fallbackPosts } from '../data/blogPosts';
 import './BlogPost.css';
 
 interface BlogPostProps {
@@ -8,14 +9,61 @@ interface BlogPostProps {
 }
 
 export default function BlogPost({ slug }: BlogPostProps) {
-  const [, setLocation] = useLocation();
-  const post = blogPosts.find(p => p.slug === slug);
+  const [post, setPost] = useState<any>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [_, setLocation] = useLocation();
 
   useEffect(() => {
-    if (!post) {
+    async function fetchPost() {
+      if (!supabase) {
+        const foundPost = fallbackPosts.find(p => p.slug === slug);
+        if (foundPost) {
+          setPost(foundPost);
+          setNotFound(false);
+        } else {
+          setNotFound(true);
+        }
+        return;
+      }
+      
+      try {
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('*')
+          .eq('slug', slug)
+          .single();
+          
+        if (error || !data) {
+          const foundPost = fallbackPosts.find(p => p.slug === slug);
+          if (foundPost) {
+            setPost(foundPost);
+            setNotFound(false);
+          } else {
+            setNotFound(true);
+          }
+        } else {
+          setPost(data);
+          setNotFound(false);
+        }
+      } catch (err) {
+        const foundPost = fallbackPosts.find(p => p.slug === slug);
+        if (foundPost) {
+          setPost(foundPost);
+          setNotFound(false);
+        } else {
+          setNotFound(true);
+        }
+      }
+    }
+    
+    fetchPost();
+  }, [slug]);
+
+  useEffect(() => {
+    if (notFound) {
       setLocation('/blog');
     }
-  }, [post, setLocation]);
+  }, [notFound, setLocation]);
 
   if (!post) {
     return (
@@ -34,11 +82,15 @@ export default function BlogPost({ slug }: BlogPostProps) {
             <span className="blog-post-date">{post.date}</span>
           </div>
           <h1 className="blog-post-title">{post.title}</h1>
-          {post.image && (
+          {post.image_url ? (
+            <div className="blog-post-featured-image">
+              <img src={post.image_url} alt={post.title} />
+            </div>
+          ) : post.image ? (
             <div className="blog-post-featured-image">
               <img src={post.image} alt={post.title} />
             </div>
-          )}
+          ) : null}
           <div 
             className="blog-post-content"
             dangerouslySetInnerHTML={{ __html: post.content || '' }}
