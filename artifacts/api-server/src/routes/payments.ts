@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { supabase } from "@workspace/db";
 import { logger } from "../lib/logger";
 import Stripe from "stripe";
+import { sendBookingConfirmationEmail } from "../lib/email";
 
 const router: IRouter = Router();
 
@@ -73,6 +74,47 @@ router.post("/webhooks/stripe", async (req, res): Promise<void> => {
       });
 
       req.log.info({ orderId }, "Payment recorded for order");
+
+      // Fetch order details to trigger confirmation email
+      const { data: orderData, error: orderErr } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('id', orderId)
+        .maybeSingle();
+
+      if (orderErr || !orderData) {
+        req.log.error({ orderId, orderErr }, "Failed to fetch order for sending confirmation email");
+      } else {
+        // Fetch service details for turnaround and deliverables description
+        const { data: serviceData } = await supabase
+          .from('services')
+          .select('*')
+          .eq('id', orderData.service_id)
+          .maybeSingle();
+
+        // Send booking confirmation email asynchronously (so it doesn't block the webhook response)
+        sendBookingConfirmationEmail({
+          customerName: orderData.customer_name,
+          customerEmail: orderData.customer_email,
+          orderNumber: orderData.order_number,
+          serviceName: orderData.service_name,
+          totalAmount: Number(orderData.total_amount),
+          propertyCount: orderData.property_count,
+          country: orderData.country,
+          propertyAddress: orderData.property_address,
+          turnaround: serviceData?.turnaround ?? "From 1 hour",
+          deliverables: serviceData?.deliverables ?? "",
+        }).then(async () => {
+          // Log email activity in DB
+          await supabase.from('activity_logs').insert({
+            order_id: orderId,
+            action: "email_sent",
+            detail: `Booking confirmation email sent to ${orderData.customer_email}`,
+          });
+        }).catch((emailErr) => {
+          req.log.error({ orderId, emailErr }, "Error sending booking confirmation email");
+        });
+      }
     }
   }
 
