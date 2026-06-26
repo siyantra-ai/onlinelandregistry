@@ -64,8 +64,14 @@ export default function TermsPage() {
             </ul>
 
             <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4">4. Refunds and Cancellations</h2>
+            <p className="text-slate-600 leading-relaxed mb-4">
+              Due to the digital and automated nature of the search requests, official fees cannot be refunded once a search query has been submitted to HMLR.
+            </p>
+            <p className="text-slate-600 leading-relaxed mb-4">
+              <strong>Consent to Immediate Performance &amp; Waiver:</strong> When placing an order for documents through our service, you request and explicitly consent to the immediate performance of the contract. You agree and acknowledge that once the official documents are successfully retrieved and delivered, the service is fully performed. Consequently, you explicitly agree that you waive your statutory 14-day right of cancellation or refund under the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013.
+            </p>
             <p className="text-slate-600 leading-relaxed mb-6">
-              Due to the digital and automated nature of the search requests, official fees cannot be refunded once a search query has been submitted to HMLR. Please review our complete <Link href="/refund-policy" className="text-amber-600 hover:text-amber-700 underline font-semibold">Refund Policy</Link> for exceptions and details on administrative fee refunds.
+              Please review our complete <Link href="/refund-policy" className="text-amber-600 hover:text-amber-700 underline font-semibold">Refund Policy</Link> for exceptions and details on administrative fee refunds.
             </p>
 
             <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4">5. Limitation of Liability</h2>

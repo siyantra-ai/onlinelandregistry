@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { motion, AnimatePresence } from "framer-motion";
@@ -147,7 +146,7 @@ export default function OrderWizard() {
     deliveryType: "pdf_only",
     notificationType: "email",
 
-    agreedToWaiveCancel: false,
+    agreedToWaiveCancel: true,
     
     properties: [createDefaultProperty()],
   });
@@ -322,12 +321,6 @@ export default function OrderWizard() {
           return;
         }
       }
-      if (step === 3) {
-        if (!state.agreedToWaiveCancel) {
-          toast({ title: "Required", description: "You must agree to waive the 14-day cancellation period to proceed.", variant: "destructive" });
-          return;
-        }
-      }
     } else {
       if (step === 1) {
         if (!state.serviceId) {
@@ -393,11 +386,6 @@ export default function OrderWizard() {
   }, [step, isCustomWizard, state.serviceId, state.propertyCount, state.country, state.trackingType, state.deliveryType, state.notificationType, state.addons, state.properties]);
 
   const handleSubmit = async () => {
-    if (!state.agreedToWaiveCancel) {
-      toast({ title: "Required", description: "You must agree to waive the 14-day cancellation period to proceed.", variant: "destructive" });
-      return;
-    }
-
     try {
       const formattedAddress = isCustomWizard
         ? state.properties?.map((p, idx) => {
@@ -1749,27 +1737,6 @@ export default function OrderWizard() {
                         </div>
                       )}
                     </div>
-
-                    {/* Immediate waive tickbox */}
-                    <div className="flex items-start space-x-3.5 p-5 bg-amber-50/40 border border-amber-200/60 rounded-xl text-left">
-                      <Checkbox 
-                        id="terms" 
-                        checked={state.agreedToWaiveCancel}
-                        onCheckedChange={(checked) => updateState({ agreedToWaiveCancel: checked as boolean })}
-                        className="mt-1 border-amber-300 data-[state=checked]:bg-amber-600 data-[state=checked]:border-amber-600"
-                      />
-                      <div className="grid gap-1">
-                        <label
-                          htmlFor="terms"
-                          className="text-sm font-bold leading-snug cursor-pointer text-amber-900"
-                        >
-                          Consent to Immediate Processing (Waive 14-Day Cancellation)
-                        </label>
-                        <p className="text-[11px] text-amber-800/80 leading-relaxed mt-0.5">
-                          I explicitly request Onlinelandregistry to retrieve my documents immediately. I understand and agree that once my official copies are retrieved and delivered, I waive my statutory right to cancel or obtain a refund for the service.
-                        </p>
-                      </div>
-                    </div>
                   </div>
                 ) : (
                   <div className="space-y-8">
@@ -1906,7 +1873,7 @@ export default function OrderWizard() {
                         <Button 
                           onClick={handleSubmit} 
                           className="bg-accent hover:bg-accent/90 text-white h-12 px-10 font-extrabold shadow-lg shadow-accent/25 rounded-lg text-[0.9375rem] transition-all hover:shadow-accent/45 hover:-translate-y-px flex-1"
-                          disabled={createOrder.isPending || createCheckoutSession.isPending || priceCalculating || !state.agreedToWaiveCancel}
+                          disabled={createOrder.isPending || createCheckoutSession.isPending || priceCalculating}
                         >
                           {(createOrder.isPending || createCheckoutSession.isPending) ? (
                             <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Preparing Stripe Checkout...</>
@@ -1994,27 +1961,6 @@ export default function OrderWizard() {
                           </div>
                         </div>
 
-                        {/* Immediate waive tickbox */}
-                        <div className="flex items-start space-x-3.5 p-5 bg-amber-50/40 border border-amber-200/60 rounded-xl text-left">
-                          <Checkbox 
-                            id="terms" 
-                            checked={state.agreedToWaiveCancel}
-                            onCheckedChange={(checked) => updateState({ agreedToWaiveCancel: checked as boolean })}
-                            className="mt-1 border-amber-300 data-[state=checked]:bg-amber-600 data-[state=checked]:border-amber-600"
-                          />
-                          <div className="grid gap-1">
-                            <label
-                              htmlFor="terms"
-                              className="text-sm font-bold leading-snug cursor-pointer text-amber-900"
-                            >
-                              Consent to Immediate Processing (Waive 14-Day Cancellation)
-                            </label>
-                            <p className="text-[11px] text-amber-800/80 leading-relaxed mt-0.5">
-                              I explicitly request Onlinelandregistry to retrieve my documents immediately. I understand and agree that once my official copies are retrieved and delivered, I waive my statutory right to cancel or obtain a refund for the service.
-                            </p>
-                          </div>
-                        </div>
-                        
                         {/* Secure Stripe lock row */}
                         <div className="flex items-center gap-2 justify-center text-xs text-slate-450 py-1 font-semibold border-t border-slate-150 pt-4">
                           <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -2045,7 +1991,7 @@ export default function OrderWizard() {
               <Button 
                 onClick={handleSubmit} 
                 className="bg-accent hover:bg-accent/90 text-white h-12 px-12 font-extrabold shadow-lg shadow-accent/25 rounded-lg text-[0.9375rem] transition-all hover:shadow-accent/45 hover:-translate-y-px"
-                disabled={createOrder.isPending || createCheckoutSession.isPending || priceCalculating || !state.agreedToWaiveCancel}
+                disabled={createOrder.isPending || createCheckoutSession.isPending || priceCalculating}
               >
                 {(createOrder.isPending || createCheckoutSession.isPending) ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Preparing Stripe Checkout...</>

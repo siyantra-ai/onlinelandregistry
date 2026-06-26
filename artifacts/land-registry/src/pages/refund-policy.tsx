@@ -62,6 +62,7 @@ export default function RefundPage() {
               <li>The official documents were successfully retrieved but you no longer require them (e.g., a sale fell through or you changed conveyancers).</li>
               <li>You supplied incorrect postcode, address, or boundary details, resulting in the retrieval of the correct documents for the wrong address provided.</li>
               <li>The information on the official Title Register or Title Plan is outdated because a previous owner or conveyancer failed to register updates with HM Land Registry. (We provide the records exactly as they exist in the official HMLR database).</li>
+              <li><strong>Completed Services &amp; Waiver of Cancellation Right:</strong> Under the Consumer Contracts Regulations, you explicitly request immediate processing of your order. Once the official documents are retrieved and delivered, the service is fully completed, and you waive your statutory 14-day right of cancellation or refund.</li>
             </ul>
 
             <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4">4. Requesting a Refund</h2>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail, MapPin, Clock, Shield, Send, CheckCircle } from "lucide-react";
+import { Phone, Mail, Clock, Shield, Send, CheckCircle } from "lucide-react";
 import SEO from "@/components/SEO";
 import { useToast } from "@/hooks/use-toast";
 
@@ -273,17 +273,6 @@ export default function ContactPage() {
                         <a href="mailto:Sales@onlinelandregistry.uk" className="font-semibold text-slate-700 hover:text-accent text-sm transition-colors">Sales@onlinelandregistry.uk</a>
                       </div>
                       <p className="text-slate-500 text-xs mt-2">Send documents and scans for file audits.</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
-                      <MapPin size={18} />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-slate-900 text-sm">Office Address</h4>
-                      <p className="font-semibold text-slate-700 text-sm mt-1">Swift Task Services Ltd</p>
-                      <p className="text-slate-500 text-xs mt-1">1 Limbrick, Blackburn, BB1 8AB</p>
                     </div>
                   </div>
 
