@@ -582,6 +582,15 @@ export default function OrderWizard() {
                       </div>
                     </div>
 
+                    {/* Deed Search Description Banner */}
+                    {isDeedSearch && (
+                      <div className="rounded-2xl p-6 shadow-sm" style={{ backgroundColor: '#6b3fa0' }}>
+                        <p className="text-white text-sm sm:text-base leading-relaxed font-medium">
+                          Our Deed search will provide you with a copy of individual Deeds ranging from Conveyance, Lease, Transfer, Charge and many more.
+                        </p>
+                      </div>
+                    )}
+
                     {/* Property Count Selector */}
                     <div className="space-y-2 max-w-xs">
                       <Label htmlFor="property-count" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
