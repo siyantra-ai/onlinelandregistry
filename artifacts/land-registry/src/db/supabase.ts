@@ -8,15 +8,15 @@ const isConfigured = supabaseUrl && supabaseAnonKey &&
                      supabaseUrl !== 'YOUR_SUPABASE_URL' && 
                      supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY';
 
-export const supabase = isConfigured ? createClient(supabaseUrl, supabaseAnonKey) : null;
+export const supabase = isConfigured ? createClient(supabaseUrl!, supabaseAnonKey!) : null;
 
 /**
  * Save an enquiry to Supabase, falling back to LocalStorage if not configured.
- * @param {Object} enquiryData - The details of the enquiry
- * @returns {Promise<{success: boolean, data?: any, error?: any}>}
+ * @param {any} enquiryData - The details of the enquiry
+ * @returns {Promise<{success: boolean, data?: any, error?: any, warning?: string}>}
  */
-export async function saveEnquiry(enquiryData) {
-  const payload = {
+export async function saveEnquiry(enquiryData: any) {
+  const payload: any = {
     ...enquiryData,
     created_at: new Date().toISOString(),
   };
@@ -36,7 +36,7 @@ export async function saveEnquiry(enquiryData) {
       // Attempt to mock email/WhatsApp trigger endpoint (if defined)
       try {
         await triggerNotification(payload);
-      } catch (notifyErr) {
+      } catch (notifyErr: any) {
         console.warn('Notification trigger skipped or failed:', notifyErr.message);
       }
 
@@ -61,7 +61,7 @@ export async function saveEnquiry(enquiryData) {
   }
 }
 
-function saveToFallback(payload) {
+function saveToFallback(payload: any) {
   try {
     const existing = JSON.parse(localStorage.getItem('landregistry_enquiries') || '[]');
     existing.push(payload);
@@ -73,7 +73,7 @@ function saveToFallback(payload) {
 }
 
 // Simulates sending notification emails/WhatsApp to team
-async function triggerNotification(payload) {
+async function triggerNotification(payload: any) {
   console.log('[Notification Alert] Dispatching alert to conveyancing team...', {
     recipient: 'team@landregistrytransfers.com',
     subject: `New ${payload.service || 'General'} Enquiry - ${payload.name}`,
@@ -84,7 +84,7 @@ async function triggerNotification(payload) {
 /**
  * Save a help request/contact enquiry to Supabase help_requests table.
  */
-export async function saveHelpRequest(helpRequestData) {
+export async function saveHelpRequest(helpRequestData: any) {
   const payload = {
     name: helpRequestData.name,
     email: helpRequestData.email,

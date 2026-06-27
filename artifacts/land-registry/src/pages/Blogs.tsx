@@ -5,7 +5,7 @@ import { allBlogPosts as fallbackPosts } from '../data/blogPosts';
 import './Blogs.css';
 
 export default function Blogs() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
 
