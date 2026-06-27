@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, ArrowRight, ArrowLeft, Check, ShieldCheck, Map, Bell, Clock, Zap, FileText, Mail, Building2, Flame } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -24,6 +25,7 @@ interface PropertyDetails {
   tenure: string;
   titleNumber: string;
   preferredDeed?: string;
+  deedSearchReason?: string;
   postcode: string;
   postcodeSearch: string;
   postcodeAddresses: string[];
@@ -45,6 +47,7 @@ const createDefaultProperty = (): PropertyDetails => ({
   tenure: "unsure",
   titleNumber: "",
   preferredDeed: "Select Preference",
+  deedSearchReason: "Select Reason",
   postcode: "",
   postcodeSearch: "",
   postcodeAddresses: [],
@@ -401,6 +404,9 @@ export default function OrderWizard() {
             let val = `Property ${idx + 1}: ${p.tenure}`;
             if (isDeedSearch && p.preferredDeed && p.preferredDeed !== "Select Preference") {
               val += ` (Preferred Deed: ${p.preferredDeed})`;
+            }
+            if (isDeedSearch && p.deedSearchReason && p.deedSearchReason !== "Select Reason") {
+              val += ` (Reason: ${p.deedSearchReason})`;
             }
             return val;
           }).join(" | ")
@@ -834,6 +840,37 @@ export default function OrderWizard() {
                               className="h-11 border-slate-200"
                             />
                           </div>
+
+                          {/* What information are you looking for? - Deed Search */}
+                          {isDeedSearch && (
+                            <div className="space-y-2">
+                              <Label htmlFor={`deedSearchReason-${idx}`} className="text-xs font-bold text-slate-600 uppercase tracking-wider">What information are you looking for?</Label>
+                              <Select 
+                                value={prop.deedSearchReason} 
+                                onValueChange={(val) => updateProperty(idx, { deedSearchReason: val })}
+                              >
+                                <SelectTrigger id={`deedSearchReason-${idx}`} className="h-11 bg-white border-slate-200 text-xs sm:text-sm">
+                                  <SelectValue placeholder="Select Reason" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Select Reason">Select Reason</SelectItem>
+                                  <SelectItem value="Ownership history">Ownership history</SelectItem>
+                                  <SelectItem value="Boundary information">Boundary information</SelectItem>
+                                  <SelectItem value="Transfer of ownership details">Transfer of ownership details</SelectItem>
+                                  <SelectItem value="Property description">Property description</SelectItem>
+                                  <SelectItem value="Charges on the property">Charges on the property</SelectItem>
+                                  <SelectItem value="Confirmation mortgage has been paid off">Confirmation mortgage has been paid off</SelectItem>
+                                  <SelectItem value="Check if my property is registered">Check if my property is registered</SelectItem>
+                                  <SelectItem value="Dispute with council over road or land">Dispute with council over road or land</SelectItem>
+                                  <SelectItem value="Tenancy/lease agreement">Tenancy/lease agreement</SelectItem>
+                                  <SelectItem value="Restrictions on property">Restrictions on property</SelectItem>
+                                  <SelectItem value="Proof of ownership">Proof of ownership</SelectItem>
+                                  <SelectItem value="Purchase price history">Purchase price history</SelectItem>
+                                  <SelectItem value="Other">Other</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          )}
 
                           {/* Preferred Deed for Deed Search */}
                           {isDeedSearch && (
