@@ -1,0 +1,426 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Onlinelandregistry.uk API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: services
+    description: Land registry services
+  - name: orders
+    description: Order management
+  - name: payments
+    description: Payment processing
+  - name: checkout
+    description: Checkout flow
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /services:
+    get:
+      operationId: listServices
+      tags: [services]
+      summary: List all available land registry services
+      responses:
+        "200":
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+
+  /services/{id}:
+    get:
+      operationId: getService
+      tags: [services]
+      summary: Get a specific service
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Service details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        "404":
+          description: Not found
+
+  /orders:
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Create a new order (draft from checkout)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get order by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Not found
+
+  /checkout/session:
+    post:
+      operationId: createCheckoutSession
+      tags: [checkout]
+      summary: Create a Stripe checkout session (server-side price calculation)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckoutSessionInput"
+      responses:
+        "200":
+          description: Stripe checkout session URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutSession"
+        "400":
+          description: Invalid request
+
+  /checkout/price:
+    post:
+      operationId: calculatePrice
+      tags: [checkout]
+      summary: Calculate the price for a given order configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PriceCalculationInput"
+      responses:
+        "200":
+          description: Price breakdown
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PriceBreakdown"
+
+  /postcode/lookup:
+    get:
+      operationId: lookupPostcode
+      tags: [checkout]
+      summary: Look up addresses by postcode
+      parameters:
+        - in: query
+          name: postcode
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Address results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostcodeLookupResult"
+
+  /webhooks/stripe:
+    post:
+      operationId: stripeWebhook
+      tags: [payments]
+      summary: Stripe webhook endpoint
+      responses:
+        "200":
+          description: Webhook processed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookAck"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+
+    Service:
+      type: object
+      required: [id, name, slug, basePrice, description, deliverables]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        basePrice:
+          type: number
+        description:
+          type: string
+        deliverables:
+          type: string
+        category:
+          type: ["string", "null"]
+        turnaround:
+          type: ["string", "null"]
+        popular:
+          type: boolean
+
+    Order:
+      type: object
+      required: [id, orderNumber, status, serviceId, serviceName, customerName, customerEmail, totalAmount, createdAt]
+      properties:
+        id:
+          type: integer
+        orderNumber:
+          type: string
+        status:
+          type: string
+          enum: [new, in_progress, awaiting_docs, completed, refunded]
+        serviceId:
+          type: integer
+        serviceName:
+          type: string
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: ["string", "null"]
+        customerAddress:
+          type: ["string", "null"]
+        propertyCount:
+          type: integer
+        country:
+          type: string
+          enum: [england_wales, scotland]
+        tenure:
+          type: ["string", "null"]
+        titleNumber:
+          type: ["string", "null"]
+        postcode:
+          type: ["string", "null"]
+        propertyAddress:
+          type: ["string", "null"]
+        addons:
+          type: array
+          items:
+            type: string
+        trackingType:
+          type: string
+          enum: [standard, fast_track, super_fast_track]
+        deliveryType:
+          type: string
+          enum: [pdf_only, pdf_printed]
+        notificationType:
+          type: string
+          enum: [email, sms, both]
+        documentFee:
+          type: number
+        serviceFee:
+          type: number
+        vatAmount:
+          type: number
+        totalAmount:
+          type: number
+        stripeSessionId:
+          type: ["string", "null"]
+        paidAt:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        staffNotes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+
+    OrderInput:
+      type: object
+      required: [serviceId, customerName, customerEmail, propertyCount, country, trackingType, deliveryType, notificationType, addons]
+      properties:
+        serviceId:
+          type: integer
+        customerTitle:
+          type: string
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerEmailConfirm:
+          type: string
+        customerPhone:
+          type: string
+        customerAddress:
+          type: string
+        propertyCount:
+          type: integer
+        country:
+          type: string
+          enum: [england_wales, scotland]
+        tenure:
+          type: string
+        titleNumber:
+          type: string
+        postcode:
+          type: string
+        propertyAddress:
+          type: string
+        lat:
+          type: ["number", "null"]
+        lng:
+          type: ["number", "null"]
+        addons:
+          type: array
+          items:
+            type: string
+        trackingType:
+          type: string
+          enum: [standard, fast_track, super_fast_track]
+        deliveryType:
+          type: string
+          enum: [pdf_only, pdf_printed]
+        notificationType:
+          type: string
+          enum: [email, sms, both]
+        agreedToWaiveCancel:
+          type: boolean
+
+
+    CheckoutSessionInput:
+      type: object
+      required: [orderId]
+      properties:
+        orderId:
+          type: integer
+
+    CheckoutSession:
+      type: object
+      required: [url, sessionId]
+      properties:
+        url:
+          type: string
+        sessionId:
+          type: string
+
+    PriceCalculationInput:
+      type: object
+      required: [serviceId, propertyCount, country, trackingType, deliveryType, notificationType, addons]
+      properties:
+        serviceId:
+          type: integer
+        propertyCount:
+          type: integer
+        country:
+          type: string
+          enum: [england_wales, scotland]
+        trackingType:
+          type: string
+          enum: [standard, fast_track, super_fast_track]
+        deliveryType:
+          type: string
+          enum: [pdf_only, pdf_printed]
+        notificationType:
+          type: string
+          enum: [email, sms, both]
+        addons:
+          type: array
+          items:
+            type: string
+
+    PriceBreakdown:
+      type: object
+      required: [documentFee, serviceFee, vatAmount, totalAmount, lineItems]
+      properties:
+        documentFee:
+          type: number
+        serviceFee:
+          type: number
+        vatAmount:
+          type: number
+        totalAmount:
+          type: number
+        lineItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/LineItem"
+
+    LineItem:
+      type: object
+      required: [label, amount]
+      properties:
+        label:
+          type: string
+        amount:
+          type: number
+        note:
+          type: ["string", "null"]
+
+    PostcodeLookupResult:
+      type: object
+      required: [addresses]
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+        postcode:
+          type: string
+
+
+    WebhookAck:
+      type: object
+      required: [received]
+      properties:
+        received:
+          type: boolean
+
+
