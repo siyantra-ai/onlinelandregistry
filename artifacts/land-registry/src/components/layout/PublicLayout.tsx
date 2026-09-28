@@ -34,15 +34,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2.5 shrink-0" onClick={() => setMenuOpen(false)}>
-              <div className="bg-[#121f35] p-1.5 rounded-md">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-              </div>
-              <span className="font-heading font-bold text-[1.0625rem] tracking-tight text-slate-900">
-                Onlinelandregistry
-              </span>
+            <Link href="/" className="flex items-center shrink-0" onClick={() => setMenuOpen(false)}>
+              <img src="/images/OLR.jpeg" alt="Online Land Registry" className="h-9 w-auto max-w-[170px] object-contain" />
             </Link>
           </div>
 
@@ -120,13 +113,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
             {/* Col 1 â€” Brand */}
             <div className="sm:col-span-1 space-y-5">
-              <Link href="/" className="flex items-center gap-2.5">
-                <div className="bg-[#121f35] p-2 rounded-lg shrink-0">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                </div>
-                <span className="font-heading font-bold text-[1rem] tracking-tight text-slate-900">Online Land Registry</span>
+              <Link href="/" className="flex items-center">
+                <img src="/images/OLR.jpeg" alt="Online Land Registry" className="h-10 w-auto max-w-[180px] object-contain" />
               </Link>
               <p className="text-sm text-slate-500 leading-relaxed">
                 Fast, reliable access to official HM Land Registry documents — delivered online in minutes.
