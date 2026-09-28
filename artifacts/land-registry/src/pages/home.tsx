@@ -6,8 +6,8 @@ import { Link } from "wouter";
 import {
   FileText, ArrowRight, Building2, Globe, Lock,
   Search, FileCheck, BadgeCheck, ChevronRight,
-  Users, Award, Zap, Clock, Star, Sparkles, Check, PhoneCall,
-  CheckCircle
+  Users, Award, Zap, Clock, Sparkles, Check, PhoneCall,
+  CheckCircle, Shield
 } from "lucide-react";
 import { motion } from "framer-motion";
 import BookingSteps from "@/components/BookingSteps";
@@ -40,28 +40,24 @@ const REVIEWS = [
   {
     name: "John Kinghorn",
     title: "Fast & Professional",
-    rating: 5,
     text: "Ordered standard HMLR documents and they arrived in my inbox in under 2 hours. Extremely happy with the speed and accuracy of the service. Highly recommended!",
     date: "1 day ago"
   },
   {
     name: "Alastair M.",
     title: "Super-Fast delivery",
-    rating: 5,
     text: "Had a tight conveyancing deadline and selected Super-Fast Track. The documents arrived within 40 minutes. Worth every penny to keep the process moving.",
     date: "3 days ago"
   },
   {
     name: "Firebladeboy",
     title: "Outstanding support",
-    rating: 5,
     text: "This is an excellent service! Clear, logical website, but what impressed me most was the support. Had a query and a real person got back to me in minutes.",
     date: "1 week ago"
   },
   {
     name: "Carol Fennell",
     title: "Simple & stress-free",
-    rating: 5,
     text: "I wish I had found this sooner! Saved me the struggle of figuring out the government forms on my own. Excellent interface, clean and extremely simple.",
     date: "3 weeks ago"
   }
@@ -429,43 +425,37 @@ export default function Home() {
         </div>
 
         {/* ══════════════════════════════════════
-            ANIMATED MARQUEE - CORE SERVICES WITH PRICES (Dynamic from DB)
+            ANIMATED MARQUEE - MARKETING MESSAGES
         ══════════════════════════════════════ */}
-        {!isLoading && services && services.length > 0 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-[#0a1628]/95 py-4 overflow-hidden border-t border-slate-700/50 backdrop-blur-sm z-30">
-            {/* Moving text container */}
-            <div className="flex whitespace-nowrap" style={{ animation: 'marquee 40s linear infinite' }}>
-              {/* First set of services from DB */}
-              <div className="flex items-center space-x-12 px-6">
-                {services.map((service, idx) => (
-                  <div key={`service-1-${service.id}`} className="flex items-center space-x-12">
-                    <span className="text-amber-400 text-base font-bold flex items-center gap-2">
-                      <FileText className="w-5 h-5" /> {service.name}
-                    </span>
-                    {idx < services.length - 1 && <span className="text-slate-500 text-xl">•</span>}
-                  </div>
-                ))}
-                <span className="text-slate-500 text-xl ml-12">•</span>
-              </div>
-
-              {/* Duplicate set for seamless loop */}
-              <div className="flex items-center space-x-12 px-6">
-                {services.map((service, idx) => (
-                  <div key={`service-2-${service.id}`} className="flex items-center space-x-12">
-                    <span className="text-amber-400 text-base font-bold flex items-center gap-2">
-                      <FileText className="w-5 h-5" /> {service.name}
-                    </span>
-                    {idx < services.length - 1 && <span className="text-slate-500 text-xl">•</span>}
-                  </div>
-                ))}
-                <span className="text-slate-500 text-xl ml-12">•</span>
-              </div>
+        <div className="absolute bottom-0 left-0 right-0 bg-[#0a1628]/95 py-4 overflow-hidden border-t border-slate-700/50 backdrop-blur-sm z-30">
+          <div className="flex whitespace-nowrap" style={{ animation: "marquee 40s linear infinite" }}>
+            <div className="flex items-center space-x-12 px-6">
+              <span className="text-white text-base font-bold flex items-center gap-2"><Zap className="w-5 h-5" />Fast Track Processing - From 1 Hour</span>
+              <span className="text-slate-500 text-xl">•</span>
+              <span className="text-white text-base font-bold flex items-center gap-2"><Shield className="w-5 h-5" />Secure Digital Delivery</span>
+              <span className="text-slate-500 text-xl">•</span>
+              <span className="text-white text-base font-bold flex items-center gap-2"><Clock className="w-5 h-5" />Same Day Service Available</span>
+              <span className="text-slate-500 text-xl">•</span>
+              <span className="text-white text-base font-bold flex items-center gap-2"><CheckCircle className="w-5 h-5" />Official Land Registry Documents</span>
+              <span className="text-slate-500 text-xl">•</span>
+              <span className="text-white text-base font-bold flex items-center gap-2"><FileText className="w-5 h-5" />Professional Document Retrieval</span>
+              <span className="text-slate-500 text-xl">•</span>
+            </div>
+            <div aria-hidden="true" className="flex items-center space-x-12 px-6">
+              <span className="text-white text-base font-bold flex items-center gap-2"><Zap className="w-5 h-5" />Fast Track Processing - From 1 Hour</span>
+              <span className="text-slate-500 text-xl">•</span>
+              <span className="text-white text-base font-bold flex items-center gap-2"><Shield className="w-5 h-5" />Secure Digital Delivery</span>
+              <span className="text-slate-500 text-xl">•</span>
+              <span className="text-white text-base font-bold flex items-center gap-2"><Clock className="w-5 h-5" />Same Day Service Available</span>
+              <span className="text-slate-500 text-xl">•</span>
+              <span className="text-white text-base font-bold flex items-center gap-2"><CheckCircle className="w-5 h-5" />Official Land Registry Documents</span>
+              <span className="text-slate-500 text-xl">•</span>
+              <span className="text-white text-base font-bold flex items-center gap-2"><FileText className="w-5 h-5" />Professional Document Retrieval</span>
+              <span className="text-slate-500 text-xl">•</span>
             </div>
           </div>
-        )}
+        </div>
       </section>
-
-      {/* Testimonials and marketing bars removed for clean corporate style */}
 
       {/* ══════════════════════════════════════
           SERVICES SECTION (Dark Blue BG & Gold Cards)
@@ -729,15 +719,46 @@ export default function Home() {
 
 
       {/* Steps / Booking section */}
-      <section className="py-12 bg-slate-50">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center mb-8">
-            <h2 className="text-3xl font-extrabold text-slate-900">Ready to Start?</h2>
-            <p className="mt-2 text-slate-500">Retrieve official copies of registers, deed plans, and historic transfers. Simple, fast checkout via Stripe.</p>
-          </div>
+      <section className="py-9 sm:py-12 bg-slate-50">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14">
+            <div className="max-w-xl">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-600">Simple, secure ordering</p>
+              <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold leading-tight text-slate-900">Ready to Start?</h2>
+              <p className="mt-4 max-w-lg text-base leading-relaxed text-slate-600">
+                Retrieve official copies of registers, deed plans, and historic transfers with a simple, secure checkout via Stripe.
+              </p>
+              <Link href="/order">
+                <Button className="mt-7 h-11 px-6 bg-[#121f35] hover:bg-[#1a2c4b] text-white font-bold rounded-lg shadow-sm">
+                  Start your order <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
 
-          <div className="max-w-6xl mx-auto">
-            <BookingSteps />
+            <div className="w-full max-w-[760px] justify-self-center lg:justify-self-end">
+              <BookingSteps />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 sm:py-20 bg-white border-t border-slate-100">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <h2 className="text-3xl font-extrabold text-slate-900">What Our Customers Say</h2>
+            <p className="mt-3 text-slate-500">Trusted by property professionals and homeowners across the UK.</p>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {REVIEWS.map((review) => (
+              <article key={review.name} className="flex flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="mt-4 font-bold text-slate-900">{review.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">“{review.text}”</p>
+                <div className="mt-5 border-t border-slate-100 pt-4">
+                  <p className="font-semibold text-slate-900">{review.name}</p>
+                  <p className="mt-1 text-xs text-slate-500">{review.date}</p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>

@@ -83,7 +83,7 @@ export default function ContactPage() {
     <div className="bg-slate-50 min-h-screen font-sans">
       <SEO
         title="Contact Us - Property Detailer"
-        description="Get in touch with us. Call 0333 577 0077, email support@onlinelandregistry.uk, or visit our office."
+        description="Get in touch with us by email or visit our office."
       />
 
       {/* Hero Section */}
@@ -251,17 +251,6 @@ export default function ContactPage() {
                 <h3 className="text-xl font-extrabold text-slate-900 mb-6">Our Contact Details</h3>
 
                 <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
-                      <Phone size={18} />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-slate-900 text-sm">Phone Support</h4>
-                      <p className="font-bold text-accent text-lg mt-0.5">0333 577 0077</p>
-                      <p className="text-slate-500 text-xs mt-1">Speak directly to a property conveyancing expert.</p>
-                    </div>
-                  </div>
-
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
                       <Mail size={18} />
