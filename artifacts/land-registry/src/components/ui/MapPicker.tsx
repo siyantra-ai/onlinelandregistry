@@ -1,31 +1,24 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search, MapPin, LocateFixed, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import GoogleAddressInput, { type GoogleAddressSelection } from "@/components/ui/GoogleAddressInput";
+import { loadGoogleMaps } from "@/lib/google-maps";
 
-// Dynamically load leaflet CSS
-const LEAFLET_CSS = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+interface GoogleGeocodeResult {
+  formatted_address: string;
+  geometry: {
+    location: {
+      lat: () => number;
+      lng: () => number;
+    };
+  };
+}
 
 interface MapPickerProps {
   onLocationSelect: (lat: number, lng: number, address: string) => void;
   initialLat?: number | null;
   initialLng?: number | null;
   initialAddress?: string;
-}
-
-interface NominatimResult {
-  display_name: string;
-  lat: string;
-  lon: string;
-  address?: {
-    road?: string;
-    house_number?: string;
-    suburb?: string;
-    city?: string;
-    county?: string;
-    postcode?: string;
-    country?: string;
-  };
 }
 
 export default function MapPicker({
@@ -35,176 +28,154 @@ export default function MapPicker({
   initialAddress = "",
 }: MapPickerProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const leafletMapRef = useRef<any>(null);
+  const googleMapsRef = useRef<any>(null);
+  const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
+  const onLocationSelectRef = useRef(onLocationSelect);
+  onLocationSelectRef.current = onLocationSelect;
   const [searchQuery, setSearchQuery] = useState(initialAddress);
-  const [searchResults, setSearchResults] = useState<NominatimResult[]>([]);
+  const [searchResults, setSearchResults] = useState<GoogleGeocodeResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(initialAddress);
   const [showResults, setShowResults] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [mapError, setMapError] = useState("");
   const [locating, setLocating] = useState(false);
-
-  // Inject Leaflet CSS once
-  useEffect(() => {
-    if (!document.querySelector(`link[href="${LEAFLET_CSS}"]`)) {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = LEAFLET_CSS;
-      document.head.appendChild(link);
-    }
-  }, []);
-
-  const placeMarker = useCallback((lat: number, lng: number, L: any) => {
-    if (!leafletMapRef.current) return;
-
-    const customIcon = L.divIcon({
-      className: "",
-      html: `
-        <div style="
-          position:relative;
-          display:flex;
-          flex-direction:column;
-          align-items:center;
-        ">
-          <div style="
-            width:36px;height:36px;
-            background:#C8861A;
-            border-radius:50% 50% 50% 0;
-            transform:rotate(-45deg);
-            border:3px solid #fff;
-            box-shadow:0 2px 8px rgba(0,0,0,0.35);
-          "></div>
-          <div style="
-            width:8px;height:8px;
-            background:#C8861A;
-            border-radius:50%;
-            margin-top:2px;
-            box-shadow:0 1px 4px rgba(0,0,0,0.25);
-          "></div>
-        </div>
-      `,
-      iconSize: [36, 48],
-      iconAnchor: [18, 48],
-      popupAnchor: [0, -52],
-    });
-
-    if (markerRef.current) {
-      markerRef.current.setLatLng([lat, lng]);
-    } else {
-      markerRef.current = L.marker([lat, lng], {
-        icon: customIcon,
-        draggable: true,
-      }).addTo(leafletMapRef.current);
-
-      markerRef.current.on("dragend", async () => {
-        const pos = markerRef.current.getLatLng();
-        const addr = await reverseGeocode(pos.lat, pos.lng);
-        setSelectedAddress(addr);
-        onLocationSelect(pos.lat, pos.lng, addr);
-      });
-    }
-  }, [onLocationSelect]);
-
-  // Initialise map
-  useEffect(() => {
-    if (!mapRef.current || leafletMapRef.current) return;
-
-    let cancelled = false;
-
-    import("leaflet").then((L) => {
-      if (cancelled || !mapRef.current || leafletMapRef.current) return;
-
-      const startLat = initialLat ?? 51.505;
-      const startLng = initialLng ?? -0.09;
-      const startZoom = initialLat ? 15 : 6;
-
-      const map = L.map(mapRef.current, {
-        center: [startLat, startLng],
-        zoom: startZoom,
-        zoomControl: false,
-      });
-
-      leafletMapRef.current = map;
-
-      L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-          maxZoom: 19,
-        }
-      ).addTo(map);
-
-      L.control.zoom({ position: "bottomright" }).addTo(map);
-
-      if (initialLat && initialLng) {
-        placeMarker(initialLat, initialLng, L);
-      }
-
-      map.on("click", async (e: any) => {
-        const { lat, lng } = e.latlng;
-        placeMarker(lat, lng, L);
-        const addr = await reverseGeocode(lat, lng);
-        setSelectedAddress(addr);
-        setSearchQuery(addr);
-        onLocationSelect(lat, lng, addr);
-      });
-
-      setMapReady(true);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
-        { headers: { "Accept-Language": "en" } }
-      );
-      const data = await res.json();
-      return data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      const google = googleMapsRef.current ?? await loadGoogleMaps();
+      const { results } = await new google.maps.Geocoder().geocode({ location: { lat, lng } });
+      return results[0]?.formatted_address || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
     } catch {
       return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
     }
   };
+
+  const placeMarker = (lat: number, lng: number) => {
+    if (!mapInstanceRef.current || !googleMapsRef.current) return;
+
+    const position = { lat, lng };
+    if (markerRef.current) {
+      markerRef.current.setPosition(position);
+      return;
+    }
+
+    markerRef.current = new googleMapsRef.current.maps.Marker({
+      position,
+      map: mapInstanceRef.current,
+      draggable: true,
+    });
+    markerRef.current.addListener("dragend", async () => {
+      const draggedPosition = markerRef.current.getPosition();
+      if (!draggedPosition) return;
+      const nextLat = draggedPosition.lat();
+      const nextLng = draggedPosition.lng();
+      const address = await reverseGeocode(nextLat, nextLng);
+      setSelectedAddress(address);
+      setSearchQuery(address);
+      onLocationSelectRef.current(nextLat, nextLng, address);
+    });
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    loadGoogleMaps().then((google) => {
+      if (cancelled || !mapRef.current) return;
+
+      googleMapsRef.current = google;
+      const hasInitialLocation = initialLat != null && initialLng != null;
+      const map = new google.maps.Map(mapRef.current, {
+        center: {
+          lat: hasInitialLocation ? initialLat : 51.505,
+          lng: hasInitialLocation ? initialLng : -0.09,
+        },
+        zoom: hasInitialLocation ? 15 : 6,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+      });
+
+      mapInstanceRef.current = map;
+      if (hasInitialLocation) placeMarker(initialLat!, initialLng!);
+
+      map.addListener("click", async (event: any) => {
+        if (!event.latLng) return;
+        const lat = event.latLng.lat();
+        const lng = event.latLng.lng();
+        placeMarker(lat, lng);
+        const address = await reverseGeocode(lat, lng);
+        setSelectedAddress(address);
+        setSearchQuery(address);
+        onLocationSelectRef.current(lat, lng, address);
+      });
+
+      setMapReady(true);
+    }).catch((error: Error) => {
+      if (!cancelled) setMapError(error.message);
+    });
+
+    return () => {
+      cancelled = true;
+      if (mapInstanceRef.current && googleMapsRef.current) {
+        googleMapsRef.current.maps.event.clearInstanceListeners(mapInstanceRef.current);
+      }
+      if (markerRef.current) {
+        markerRef.current.setMap(null);
+        markerRef.current = null;
+      }
+      mapInstanceRef.current = null;
+    };
+  }, []);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     setIsSearching(true);
     setShowResults(false);
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&countrycodes=gb&format=json&addressdetails=1&limit=6`,
-        { headers: { "Accept-Language": "en" } }
-      );
-      const data: NominatimResult[] = await res.json();
-      setSearchResults(data);
+      const google = googleMapsRef.current ?? await loadGoogleMaps();
+      const { results } = await new google.maps.Geocoder().geocode({
+        address: searchQuery,
+        componentRestrictions: { country: "GB" },
+      });
+      setSearchResults(results.slice(0, 6));
       setShowResults(true);
     } catch {
       setSearchResults([]);
+      setShowResults(true);
     } finally {
       setIsSearching(false);
     }
   };
 
-  const flyTo = async (result: NominatimResult) => {
-    const lat = parseFloat(result.lat);
-    const lng = parseFloat(result.lon);
+  const flyTo = (result: GoogleGeocodeResult) => {
+    const lat = result.geometry.location.lat();
+    const lng = result.geometry.location.lng();
     setShowResults(false);
-    setSearchQuery(result.display_name);
-    setSelectedAddress(result.display_name);
+    setSearchQuery(result.formatted_address);
+    setSelectedAddress(result.formatted_address);
 
-    if (leafletMapRef.current) {
-      leafletMapRef.current.flyTo([lat, lng], 17, { duration: 1.2 });
-      const L = await import("leaflet");
-      placeMarker(lat, lng, L);
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.panTo({ lat, lng });
+      mapInstanceRef.current.setZoom(17);
+      placeMarker(lat, lng);
     }
 
-    onLocationSelect(lat, lng, result.display_name);
+    onLocationSelectRef.current(lat, lng, result.formatted_address);
+  };
+
+  const handlePlaceSelect = (selection: GoogleAddressSelection) => {
+    const { formattedAddress, lat, lng } = selection;
+    setSearchQuery(formattedAddress);
+    setSelectedAddress(formattedAddress);
+    setShowResults(false);
+    if (lat != null && lng != null) {
+      mapInstanceRef.current?.panTo({ lat, lng });
+      mapInstanceRef.current?.setZoom(17);
+      placeMarker(lat, lng);
+      onLocationSelectRef.current(lat, lng, formattedAddress);
+    }
   };
 
   const handleLocateMe = () => {
@@ -213,15 +184,15 @@ export default function MapPicker({
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
-        if (leafletMapRef.current) {
-          leafletMapRef.current.flyTo([lat, lng], 17, { duration: 1.2 });
-          const L = await import("leaflet");
-          placeMarker(lat, lng, L);
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.panTo({ lat, lng });
+          mapInstanceRef.current.setZoom(17);
+          placeMarker(lat, lng);
         }
         const addr = await reverseGeocode(lat, lng);
         setSelectedAddress(addr);
         setSearchQuery(addr);
-        onLocationSelect(lat, lng, addr);
+        onLocationSelectRef.current(lat, lng, addr);
         setLocating(false);
       },
       () => setLocating(false),
@@ -234,27 +205,28 @@ export default function MapPicker({
       {/* Search bar */}
       <div className="relative">
         <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            <Input
-              className="pl-9 h-11 pr-8"
-              placeholder="Search an address or postcode in Great Britain…"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                if (!e.target.value) setShowResults(false);
-              }}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            />
-            {searchQuery && (
+          <GoogleAddressInput
+            className="flex-1"
+            inputClassName="pl-9 h-11 pr-8"
+            placeholder="Search an address or postcode in Great Britain…"
+            value={searchQuery}
+            onChange={(value) => {
+              setSearchQuery(value);
+              if (!value) setShowResults(false);
+            }}
+            onSelect={handlePlaceSelect}
+            onEnter={handleSearch}
+            leading={<Search className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground" />}
+            trailing={searchQuery ? (
               <button
+                type="button"
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 onClick={() => { setSearchQuery(""); setShowResults(false); }}
               >
                 <X className="w-3.5 h-3.5" />
               </button>
-            )}
-          </div>
+            ) : null}
+          />
           <Button
             type="button"
             onClick={handleSearch}
@@ -286,7 +258,7 @@ export default function MapPicker({
                 className="w-full text-left px-4 py-2.5 hover:bg-primary/5 flex items-start gap-2.5 border-b border-border/40 last:border-0 transition-colors"
               >
                 <MapPin className="w-3.5 h-3.5 text-accent mt-0.5 shrink-0" />
-                <span className="text-sm text-foreground line-clamp-2">{r.display_name}</span>
+                <span className="text-sm text-foreground line-clamp-2">{r.formatted_address}</span>
               </button>
             ))}
           </div>
@@ -301,6 +273,12 @@ export default function MapPicker({
       {/* Map container */}
       <div className="relative rounded-xl overflow-hidden border border-border/60 shadow-sm" style={{ height: "min(400px, 60vw)" }}>
         <div ref={mapRef} className="w-full h-full" />
+
+        {mapError && (
+          <div role="alert" className="absolute inset-0 flex items-center justify-center bg-slate-50 px-6 text-center text-sm text-muted-foreground">
+            {mapError}
+          </div>
+        )}
 
         {/* Hint overlay — only before any pin is placed */}
         {mapReady && !selectedAddress && (

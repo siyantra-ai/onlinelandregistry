@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, ArrowRight, ArrowLeft, Check, ShieldCheck, Map, Bell, Clock, Zap, FileText, Mail, Building2, Flame } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import GoogleAddressInput, { type GoogleAddressSelection } from "@/components/ui/GoogleAddressInput";
 
 const MapPicker = lazy(() => import("@/components/ui/MapPicker"));
 
@@ -60,6 +61,23 @@ const createDefaultProperty = (): PropertyDetails => ({
   lat: null,
   lng: null,
 });
+
+const getAddressComponent = (selection: GoogleAddressSelection, ...types: string[]) =>
+  selection.addressComponents.find((component) => types.some((type) => component.types.includes(type)))?.longText ?? "";
+
+const getPropertyAddressFields = (selection: GoogleAddressSelection) => {
+  const street = [getAddressComponent(selection, "street_number"), getAddressComponent(selection, "route")]
+    .filter(Boolean)
+    .join(" ");
+
+  return {
+    addressLine1: street || selection.formattedAddress,
+    addressLine2: "",
+    city: getAddressComponent(selection, "postal_town", "locality", "administrative_area_level_3"),
+    county: getAddressComponent(selection, "administrative_area_level_2", "administrative_area_level_1"),
+    postcodeManual: getAddressComponent(selection, "postal_code"),
+  };
+};
 
 interface OrderState {
   serviceId: number | null;
@@ -926,11 +944,20 @@ export default function OrderWizard() {
                               <Label className="text-xs font-bold text-slate-505 uppercase tracking-wider block">Property Address Lookup</Label>
                               
                               <div className="flex gap-2">
-                                <Input
-                                  placeholder="Enter Property Postcode (e.g. SW19 1QT)"
+                                <GoogleAddressInput
+                                  className="flex-1"
+                                  inputClassName="h-11 border-slate-200 shadow-sm"
+                                  placeholder="Search a property address or postcode"
                                   value={prop.postcodeSearch}
-                                  onChange={(e) => updateProperty(idx, { postcodeSearch: e.target.value })}
-                                  className="h-11 border-slate-200 shadow-sm"
+                                  onChange={(value) => updateProperty(idx, { postcodeSearch: value })}
+                                  onEnter={() => handlePropertyPostcodeLookup(idx)}
+                                  onSelect={(selection) => {
+                                    updateProperty(idx, {
+                                      ...getPropertyAddressFields(selection),
+                                      postcodeSearch: selection.formattedAddress,
+                                      postcodeAddresses: [],
+                                    });
+                                  }}
                                 />
                                 <Button 
                                   onClick={() => handlePropertyPostcodeLookup(idx)} 
@@ -1255,11 +1282,19 @@ export default function OrderWizard() {
                       <div className="space-y-4">
                         <Label className="text-sm font-extrabold uppercase tracking-wider text-slate-400 block">Find Address</Label>
                         <div className="flex gap-2">
-                          <Input
-                            placeholder="Postcode lookup (e.g. SW19 1QT)"
+                          <GoogleAddressInput
+                            className="flex-1"
+                            inputClassName="h-12 border-slate-200 shadow-sm"
+                            placeholder="Search a property address or postcode"
                             value={postcodeSearch}
-                            onChange={(e) => setPostcodeSearch(e.target.value)}
-                            className="h-12 border-slate-200 shadow-sm"
+                            onChange={(value) => setPostcodeSearch(value)}
+                            onEnter={() => searchPostcode()}
+                            onSelect={(selection) => {
+                              updateState({
+                                postcodeSearch: selection.formattedAddress,
+                                propertyAddress: selection.formattedAddress,
+                              });
+                            }}
                           />
                           <Button 
                             onClick={() => searchPostcode()} 
