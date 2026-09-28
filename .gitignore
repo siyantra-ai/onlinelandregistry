@@ -58,4 +58,4 @@ Thumbs.db
 
 # compiled frontend assets
 /artifacts/land-registry/public/assets
-/public/assets
+/public/
