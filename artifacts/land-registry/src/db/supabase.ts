@@ -90,11 +90,11 @@ export async function saveHelpRequest(helpRequestData: any) {
     email: helpRequestData.email,
     subject: helpRequestData.subject,
     message: helpRequestData.body,
-    source: 'LRT'
+    source: 'OLR'
   };
 
   try {
-    const response = await fetch('http://localhost:3001/api/webhooks/contact', {
+    const response = await fetch('https://kws-managementservices.online/api/webhooks/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
