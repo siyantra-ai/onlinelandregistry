@@ -7,7 +7,7 @@ import {
   FileText, ArrowRight, Building2, Globe, Lock,
   Search, FileCheck, BadgeCheck, ChevronRight,
   Users, Award, Zap, Clock, Sparkles, Check, PhoneCall,
-  CheckCircle, Shield
+  CheckCircle, Shield, Star
 } from "lucide-react";
 import { motion } from "framer-motion";
 import BookingSteps from "@/components/BookingSteps";
@@ -41,25 +41,29 @@ const REVIEWS = [
     name: "John Kinghorn",
     title: "Fast & Professional",
     text: "Ordered standard HMLR documents and they arrived in my inbox in under 2 hours. Extremely happy with the speed and accuracy of the service. Highly recommended!",
-    date: "1 day ago"
+    date: "1 day ago",
+    rating: 5
   },
   {
     name: "Alastair M.",
     title: "Super-Fast delivery",
     text: "Had a tight conveyancing deadline and selected Super-Fast Track. The documents arrived within 40 minutes. Worth every penny to keep the process moving.",
-    date: "3 days ago"
+    date: "3 days ago",
+    rating: 4
   },
   {
     name: "Firebladeboy",
     title: "Outstanding support",
     text: "This is an excellent service! Clear, logical website, but what impressed me most was the support. Had a query and a real person got back to me in minutes.",
-    date: "1 week ago"
+    date: "1 week ago",
+    rating: 3
   },
   {
     name: "Carol Fennell",
     title: "Simple & stress-free",
     text: "I wish I had found this sooner! Saved me the struggle of figuring out the government forms on my own. Excellent interface, clean and extremely simple.",
-    date: "3 weeks ago"
+    date: "3 weeks ago",
+    rating: 4
   }
 ];
 
@@ -738,22 +742,49 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 sm:py-20 bg-white border-t border-slate-100">
+      <section className="py-16 sm:py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-t border-slate-100">
         <div className="container mx-auto px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-3xl font-extrabold text-slate-900">What Our Customers Say</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-600">Client feedback</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">What Our Customers Say</h2>
             <p className="mt-3 text-slate-500">Trusted by property professionals and homeowners across the UK.</p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {REVIEWS.map((review) => (
-              <article key={review.name} className="flex flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h3 className="mt-4 font-bold text-slate-900">{review.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">“{review.text}”</p>
+              <motion.article
+                key={review.name}
+                whileHover={{ y: -6, scale: 1.01 }}
+                transition={{ type: "spring", stiffness: 220, damping: 18 }}
+                className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)] hover:shadow-[0_20px_40px_rgba(15,23,42,0.08)]"
+              >
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-400 via-amber-500 to-slate-900" />
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-700">
+                    Verified review
+                  </span>
+                  <div className="flex items-center gap-1 text-amber-500" aria-label={`${review.rating} out of 5 stars`}>
+                    {Array.from({ length: 5 }).map((_, index) => {
+                      const isFilled = index < Math.floor(review.rating);
+                      const isPartial = !isFilled && index === Math.floor(review.rating) && review.rating % 1 >= 0.5;
+
+                      return (
+                        <Star
+                          key={`${review.name}-star-${index}`}
+                          className={`h-3.5 w-3.5 ${isFilled || isPartial ? "fill-current text-amber-500" : "text-slate-200"}`}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <h3 className="mt-5 font-extrabold text-slate-900 text-base">{review.title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-600">“{review.text}”</p>
+
                 <div className="mt-5 border-t border-slate-100 pt-4">
                   <p className="font-semibold text-slate-900">{review.name}</p>
-                  <p className="mt-1 text-xs text-slate-500">{review.date}</p>
+                  <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-400">{review.date}</p>
                 </div>
-              </article>
+              </motion.article>
             ))}
           </div>
         </div>

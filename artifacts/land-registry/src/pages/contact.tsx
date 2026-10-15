@@ -20,6 +20,7 @@ export default function ContactPage() {
   const departments = [
     { value: 'enquiry', label: 'Existing Customer Enquiry' },
     { value: 'sales', label: 'Sales Enquiry' },
+    { value: 'cancellation', label: 'Cancellation / Refund Enquiry' },
     { value: 'update', label: 'Request Forms or Update/Change Your Details' }
   ];
 

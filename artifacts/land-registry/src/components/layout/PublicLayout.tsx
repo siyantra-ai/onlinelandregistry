@@ -7,7 +7,6 @@ import {
 
 
 const FOOTER_COMPANY = [
-  { label: "About Us",           href: "/about" },
   { label: "Blog",               href: "/blog" },
   { label: "Contact Support",    href: "/contact" },
   { label: "FAQs",               href: "/faqs" },

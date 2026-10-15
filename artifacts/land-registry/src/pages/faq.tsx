@@ -128,9 +128,6 @@ export default function FAQPage() {
                 </p>
 
                 <div className="space-y-2.5 pt-2">
-                  <a href="tel:03335770077" className="flex items-center justify-center gap-2 w-full text-sm font-bold text-white bg-accent hover:bg-accent/90 px-4 py-3 rounded-lg transition-colors">
-                    <PhoneCall className="w-4 h-4" /> 0333 577 0077
-                  </a>
                   <a href="mailto:support@onlinelandregistry.uk" className="flex items-center justify-center gap-2 w-full text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 px-4 py-3 rounded-lg transition-colors">
                     <Mail className="w-4 h-4" /> support@onlinelandregistry.uk
                   </a>

@@ -40,9 +40,7 @@ export default function RefundPage() {
 
             <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4">1. HM Land Registry Official Fees</h2>
             <p className="text-slate-600 leading-relaxed mb-6">
-              The official statutory fee of £7.00 per document is paid directly to HM Land Registry at the moment a search is initiated. 
-              <strong> Once search coordinates are submitted to HM Land Registry, the £7.00 statutory fee is non-refundable.</strong>
-            </p>
+              The document fee (£7.00 per document) is refundable; however, the search fee (£10.00 including VAT per document) is non-refundable, including where no registrations or matching documents are found.</p>
 
             <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4">2. Administrative Fee Refunds</h2>
             <p className="text-slate-600 leading-relaxed mb-4">
