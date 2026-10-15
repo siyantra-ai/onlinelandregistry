@@ -440,8 +440,6 @@ export default function Home() {
               <span className="text-slate-500 text-xl">•</span>
               <span className="text-white text-base font-bold flex items-center gap-2"><CheckCircle className="w-5 h-5" />Official Land Registry Documents</span>
               <span className="text-slate-500 text-xl">•</span>
-              <span className="text-white text-base font-bold flex items-center gap-2"><FileText className="w-5 h-5" />Professional Document Retrieval</span>
-              <span className="text-slate-500 text-xl">•</span>
             </div>
             <div aria-hidden="true" className="flex items-center space-x-12 px-6">
               <span className="text-white text-base font-bold flex items-center gap-2"><Zap className="w-5 h-5" />Fast Track Processing - From 1 Hour</span>
