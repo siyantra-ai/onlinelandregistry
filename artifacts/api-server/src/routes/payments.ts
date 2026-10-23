@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { supabase } from "@workspace/db";
+import { supabase, crmSupabase } from "@workspace/db";
 import { logger } from "../lib/logger";
 import Stripe from "stripe";
 import { sendBookingConfirmationEmail } from "../lib/email";
@@ -75,6 +75,20 @@ router.post("/webhooks/stripe", async (req, res): Promise<void> => {
 
       req.log.info({ orderId }, "Payment recorded for order");
 
+      // Also sync paid status to CRM
+      if (crmSupabase && session.metadata?.order_id) {
+        try {
+          await crmSupabase.from('orders').update({
+            status: 'paid',
+            stripe_payment_intent_id: session.payment_intent as string ?? session.id,
+            updated_at: new Date().toISOString(),
+          }).eq('id', session.metadata.order_id);
+          req.log.info({ crmOrderId: session.metadata.order_id }, "CRM order updated to paid");
+        } catch (crmErr) {
+          req.log.error({ crmErr }, "Error syncing paid status to CRM");
+        }
+      }
+
       // Fetch order details to trigger confirmation email
       const { data: orderData, error: orderErr } = await supabase
         .from('orders')
@@ -114,6 +128,41 @@ router.post("/webhooks/stripe", async (req, res): Promise<void> => {
         }).catch((emailErr) => {
           req.log.error({ orderId, emailErr }, "Error sending booking confirmation email");
         });
+      }
+    }
+  }
+
+
+  if (event.type === "checkout.session.expired") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const orderId = parseInt(session.metadata?.orderId ?? "0");
+    const crmOrderId = session.metadata?.order_id;
+
+    if (orderId) {
+      await supabase.from('orders').update({ status: "cancelled" }).eq('id', orderId);
+      await supabase.from('activity_logs').insert({
+        order_id: orderId,
+        action: "order_abandoned",
+        detail: "Stripe checkout session expired without payment",
+      });
+    }
+
+    if (crmSupabase && crmOrderId) {
+      try {
+        const { data: existing } = await crmSupabase.from('orders').select('status').eq('id', crmOrderId).single();
+        if (existing && existing.status !== 'paid') {
+          await crmSupabase.from('orders').update({
+            status: 'abandoned',
+            updated_at: new Date().toISOString(),
+          }).eq('id', crmOrderId);
+          await crmSupabase.from('order_notes').insert({
+            order_id: crmOrderId,
+            message: "⚠️ Checkout abandoned — Customer did not complete payment. Stripe session expired.",
+            category: "Abandoned",
+          });
+        }
+      } catch (crmErr) {
+        req.log.error({ crmErr }, "Error syncing abandoned status to CRM");
       }
     }
   }

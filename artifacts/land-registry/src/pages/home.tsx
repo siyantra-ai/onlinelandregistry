@@ -760,19 +760,7 @@ export default function Home() {
                   <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-700">
                     Verified review
                   </span>
-                  <div className="flex items-center gap-1 text-amber-500" aria-label={`${review.rating} out of 5 stars`}>
-                    {Array.from({ length: 5 }).map((_, index) => {
-                      const isFilled = index < Math.floor(review.rating);
-                      const isPartial = !isFilled && index === Math.floor(review.rating) && review.rating % 1 >= 0.5;
 
-                      return (
-                        <Star
-                          key={`${review.name}-star-${index}`}
-                          className={`h-3.5 w-3.5 ${isFilled || isPartial ? "fill-current text-amber-500" : "text-slate-200"}`}
-                        />
-                      );
-                    })}
-                  </div>
                 </div>
 
                 <h3 className="mt-5 font-extrabold text-slate-900 text-base">{review.title}</h3>

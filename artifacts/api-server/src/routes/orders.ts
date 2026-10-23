@@ -139,7 +139,7 @@ router.post("/orders", async (req, res): Promise<void> => {
           brand_id: "746c2b99-89ff-4661-9b45-f91656b62db2", // Online Land Registry brand
           business_id: "3c051ae6-e2c0-47a2-b61e-dd678f03711d", // Online Land Registry business
           form_type_id: formTypeId,
-          status: "lead",
+          status: "abandoned",
           priority: (data.trackingType === "fast_track" || data.trackingType === "super_fast_track") ? "fast_track" : "standard",
           amount_total: pricing.totalAmount,
           terms_accepted: data.agreedToWaiveCancel ?? false,

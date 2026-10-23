@@ -1769,42 +1769,31 @@ export default function OrderWizard() {
                               </div>
                             </div>
 
-                            {/* Line items invoice breakdown */}
-                            <div className="space-y-3 py-2">
+                            {/* Price Breakdown */}
+                            <div className="space-y-4 py-2 divide-y divide-slate-200/80">
                               {priceBreakdown.lineItems.map((item, idx) => (
-                                <div key={idx} className="flex justify-between items-center text-xs sm:text-sm">
+                                <div key={idx} className={`flex justify-between items-start text-sm ${idx > 0 ? "pt-3.5" : ""}`}>
                                   <div>
-                                    <span className="text-slate-650 font-bold block">{item.label}</span>
+                                    <span className="text-slate-800 font-bold block">{item.label}</span>
                                     {item.note && <span className="text-[11px] text-slate-400 block font-semibold">{item.note}</span>}
                                   </div>
-                                  <span className="font-extrabold text-slate-850">£{(item.amount).toFixed(2)}</span>
+                                  <div className="text-right">
+                                    <span className="font-extrabold text-slate-900 block text-base">£{(item.amount).toFixed(2)}</span>
+                                    <span className="text-xs text-slate-500 font-medium block">Including VAT</span>
+                                  </div>
                                 </div>
                               ))}
-                            </div>
 
-                            {/* Invoice divider */}
-                            <div className="border-t border-dashed border-slate-355 my-4 pt-4 space-y-2.5 text-xs sm:text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-550 font-semibold">Total Official Document Fees (HMLR Passthrough, No VAT)</span>
-                                <span className="font-bold text-slate-800">£{(priceBreakdown.documentFee).toFixed(2)}</span>
+                              {/* Total Fee Row */}
+                              <div className="pt-3.5 flex justify-between items-start">
+                                <div>
+                                  <span className="font-extrabold text-slate-900 text-base font-heading block">Total Fee</span>
+                                </div>
+                                <div className="text-right">
+                                  <span className="font-extrabold text-2xl text-accent font-heading block">£{(priceBreakdown.totalAmount).toFixed(2)}</span>
+                                  <span className="text-xs text-slate-500 font-medium block">Including VAT</span>
+                                </div>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-550 font-semibold">Processing Intermediary Fee (Excl. VAT)</span>
-                                <span className="font-bold text-slate-800">£{(priceBreakdown.serviceFee - priceBreakdown.vatAmount).toFixed(2)}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-550 font-semibold">VAT on Intermediary Services (20%)</span>
-                                <span className="font-bold text-slate-800">£{(priceBreakdown.vatAmount).toFixed(2)}</span>
-                              </div>
-                            </div>
-
-                            {/* Bottom Total Paid row */}
-                            <div className="border-t border-slate-200 pt-4 flex justify-between items-center">
-                              <div>
-                                <span className="font-bold text-primary text-base font-heading block leading-none">Total Amount Due</span>
-                                <span className="text-[10px] text-slate-450 mt-1 block">Includes official government fee and VAT.</span>
-                              </div>
-                              <span className="font-extrabold text-2xl text-accent font-heading">£{(priceBreakdown.totalAmount).toFixed(2)}</span>
                             </div>
                           </div>
                         </div>
@@ -1996,39 +1985,31 @@ export default function OrderWizard() {
                               </div>
                             </div>
 
-                            {/* Line items invoice breakdown */}
-                            <div className="space-y-3 py-2">
+                            {/* Price Breakdown */}
+                            <div className="space-y-4 py-2 divide-y divide-slate-200/80">
                               {priceBreakdown.lineItems.map((item, idx) => (
-                                <div key={idx} className="flex justify-between items-center text-xs sm:text-sm">
-                                  <span className="text-slate-550 font-medium">{item.label}</span>
-                                  <span className="font-bold text-slate-800">£{(item.amount).toFixed(2)}</span>
+                                <div key={idx} className={`flex justify-between items-start text-sm ${idx > 0 ? "pt-3.5" : ""}`}>
+                                  <div>
+                                    <span className="text-slate-800 font-bold block">{item.label}</span>
+                                    {item.note && <span className="text-[11px] text-slate-400 block font-semibold">{item.note}</span>}
+                                  </div>
+                                  <div className="text-right">
+                                    <span className="font-extrabold text-slate-900 block text-base">£{(item.amount).toFixed(2)}</span>
+                                    <span className="text-xs text-slate-500 font-medium block">Including VAT</span>
+                                  </div>
                                 </div>
                               ))}
-                            </div>
 
-                            {/* Invoice divider */}
-                            <div className="border-t border-dashed border-slate-350 my-4 pt-4 space-y-2.5 text-xs sm:text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-555">Total Official Document Fees (HMLR Passthrough, No VAT)</span>
-                                <span className="font-bold text-slate-800">£{(priceBreakdown.documentFee).toFixed(2)}</span>
+                              {/* Total Fee Row */}
+                              <div className="pt-3.5 flex justify-between items-start">
+                                <div>
+                                  <span className="font-extrabold text-slate-900 text-base font-heading block">Total Fee</span>
+                                </div>
+                                <div className="text-right">
+                                  <span className="font-extrabold text-2xl text-accent font-heading block">£{(priceBreakdown.totalAmount).toFixed(2)}</span>
+                                  <span className="text-xs text-slate-500 font-medium block">Including VAT</span>
+                                </div>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-555">Processing Intermediary Fee (Excl. VAT)</span>
-                                <span className="font-bold text-slate-800">£{(priceBreakdown.serviceFee - priceBreakdown.vatAmount).toFixed(2)}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-555">VAT on Intermediary Services (20%)</span>
-                                <span className="font-bold text-slate-800">£{(priceBreakdown.vatAmount).toFixed(2)}</span>
-                              </div>
-                            </div>
-
-                            {/* Bottom Total Paid row */}
-                            <div className="border-t border-slate-200 pt-4 flex justify-between items-center">
-                              <div>
-                                <span className="font-bold text-primary text-base font-heading block leading-none">Total Amount Due</span>
-                                <span className="text-[10px] text-slate-450 mt-1 block">Includes official government fee and VAT.</span>
-                              </div>
-                              <span className="font-extrabold text-2xl text-accent font-heading">£{(priceBreakdown.totalAmount).toFixed(2)}</span>
                             </div>
 
                           </div>
