@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /order/success
+Disallow: /api/
 
 Sitemap: https://onlinelandregistry.uk/sitemap.xml

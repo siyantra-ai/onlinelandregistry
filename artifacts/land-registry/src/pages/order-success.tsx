@@ -2,12 +2,27 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, FileText, ArrowRight, ShieldCheck, Clock, Check, Inbox } from "lucide-react";
 import { useLocation } from "wouter";
+import { useEffect } from "react";
 import SEO from "@/components/SEO";
 
 export default function OrderSuccess() {
   const [location] = useLocation();
   const searchParams = new URLSearchParams(window.location.search);
   const orderNumber = searchParams.get("order_number") || "OLR-PENDING";
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && (window as any).gtag && orderNumber && orderNumber !== "OLR-PENDING") {
+      (window as any).gtag("event", "purchase", {
+        transaction_id: orderNumber,
+        currency: "GBP"
+      });
+      (window as any).gtag("event", "conversion", {
+        send_to: "AW-18486663717",
+        transaction_id: orderNumber,
+        currency: "GBP"
+      });
+    }
+  }, [orderNumber]);
 
   return (
     <div className="min-h-[calc(100vh-160px)] bg-gradient-to-br from-emerald-500/[0.03] via-slate-50 to-slate-50 flex items-center justify-center py-16 px-4">
