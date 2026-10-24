@@ -3,4 +3,4 @@ Allow: /
 Disallow: /order/success
 Disallow: /api/
 
-Sitemap: https://onlinelandregistry.uk/sitemap.xml
+Sitemap: https://www.onlinelandregistry.uk/sitemap.xml
