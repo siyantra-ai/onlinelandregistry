@@ -642,7 +642,7 @@ export default function OrderWizard() {
                                     <div className="flex items-center gap-3">
                                       <Checkbox id={`req-tr-${idx}`} checked={true} disabled={true} className="border-slate-300 disabled:opacity-100 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Title Register (£30.00+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Title Register (£20.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
@@ -657,7 +657,7 @@ export default function OrderWizard() {
                                     <div className="flex items-center gap-3">
                                       <Checkbox id={`req-tp-${idx}`} checked={true} disabled={true} className="border-slate-300 disabled:opacity-100 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Title Plan (£30.00+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Title Plan (£20.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Scale boundary map outlining property.</span>
                                       </div>
                                     </div>
@@ -702,7 +702,7 @@ export default function OrderWizard() {
                                         onClick={(e) => e.stopPropagation()}
                                       />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Register (£30.00+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Register (£20.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
@@ -732,7 +732,7 @@ export default function OrderWizard() {
                                         onClick={(e) => e.stopPropagation()}
                                       />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Register (£30.00+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Register (£20.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
@@ -747,7 +747,7 @@ export default function OrderWizard() {
                                     <div className="flex items-center gap-3">
                                       <Checkbox id={`req-alert-${idx}`} checked={true} disabled={true} className="border-slate-300 disabled:opacity-100 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Property Alert Monitoring (£30.00+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Property Alert Monitoring (£20.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Real-time fraud alert monitoring and email status updates.</span>
                                       </div>
                                     </div>
@@ -762,7 +762,7 @@ export default function OrderWizard() {
                                         onClick={(e) => e.stopPropagation()}
                                       />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Register (£30.00+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Register (£20.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
@@ -792,7 +792,7 @@ export default function OrderWizard() {
                                         onClick={(e) => e.stopPropagation()}
                                       />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Register (£30.00+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Include Title Register (£20.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Official copy confirming registered ownership.</span>
                                       </div>
                                     </div>
@@ -1376,7 +1376,7 @@ export default function OrderWizard() {
                                 {state.addons.includes("title_plan") && <Check className="w-3.5 h-3.5 stroke-[3px]" />}
                               </div>
                               <div className="space-y-1">
-                                <h5 className="font-extrabold text-[0.875rem] text-slate-900">Official Title Plan Map (+£36)</h5>
+                                <h5 className="font-extrabold text-[0.875rem] text-slate-900">Official Title Plan Map (+£20)</h5>
                                 <p className="text-[11px] text-slate-505 leading-normal">Adds the official boundary plans outlined in red from ordnance maps.</p>
                               </div>
                             </div>
@@ -1404,7 +1404,7 @@ export default function OrderWizard() {
                               {state.addons.includes("flood_risk") && <Check className="w-3.5 h-3.5 stroke-[3px]" />}
                             </div>
                             <div className="space-y-1">
-                              <h5 className="font-extrabold text-[0.875rem] text-slate-900">Flood Risk Assessment (+£30)</h5>
+                              <h5 className="font-extrabold text-[0.875rem] text-slate-900">Flood Risk Assessment (+£7)</h5>
                               <p className="text-[11px] text-slate-505 leading-normal">Environmental history assessment indicating high-risk flood potentials.</p>
                             </div>
                           </div>
@@ -1438,7 +1438,7 @@ export default function OrderWizard() {
                               <span className="text-xs text-slate-500 font-medium leading-relaxed">Intermediary queue priority processing.</span>
                             </div>
                           </div>
-                          <span className="font-bold text-[0.875rem] text-primary shrink-0 ml-4">+£8.33+vat</span>
+                          <span className="font-bold text-[0.875rem] text-primary shrink-0 ml-4">+£10.00</span>
                         </Label>
 
                         <Label htmlFor="speed-standard" className="flex items-center justify-between border-2 rounded-xl p-5 cursor-pointer hover:border-slate-355 [&:has(:checked)]:border-accent [&:has(:checked)]:bg-accent/[0.02] transition-all">
@@ -1478,7 +1478,7 @@ export default function OrderWizard() {
                               <span className="text-xs text-slate-500 font-medium leading-relaxed">Emailed plus official printed copy posted via Royal Mail 1st Class.</span>
                             </div>
                           </div>
-                          <span className="font-bold text-[0.875rem] text-primary shrink-0 ml-4">+£8.29+vat</span>
+                          <span className="font-bold text-[0.875rem] text-primary shrink-0 ml-4">+£7.00</span>
                         </Label>
 
                         <Label htmlFor="del-pdf" className="flex items-center justify-between border-2 rounded-xl p-5 cursor-pointer hover:border-slate-355 [&:has(:checked)]:border-accent [&:has(:checked)]:bg-accent/[0.02] transition-all">
@@ -1518,7 +1518,7 @@ export default function OrderWizard() {
                               <span className="text-xs text-slate-500 font-medium leading-relaxed">SMS updates sent straight to your mobile.</span>
                             </div>
                           </div>
-                          <span className="font-bold text-[0.875rem] text-primary shrink-0 ml-4">+£4.13+vat</span>
+                          <span className="font-bold text-[0.875rem] text-primary shrink-0 ml-4">+£5.00</span>
                         </Label>
 
                         <Label htmlFor="notif-sms-no" className="flex items-center justify-between border-2 rounded-xl p-5 cursor-pointer hover:border-slate-355 [&:has(:checked)]:border-accent [&:has(:checked)]:bg-accent/[0.02] transition-all">
@@ -1813,7 +1813,7 @@ export default function OrderWizard() {
                         {[
                           { id: "standard", icon: Clock, title: "Standard Processing", desc: "Official queue processing, typical delivery within 1-2 working days.", price: "Free", bg: "bg-slate-100 text-slate-600" },
                           { id: "fast_track", icon: Zap, title: "Fast-Track Processing", desc: "Intermediary queue priority, delivery within 4 working hours.", price: "+£10.00", bg: "bg-amber-100 text-amber-600 border-amber-200/50" },
-                          { id: "super_fast_track", icon: Flame, title: "Super-Fast Track Processing", desc: "Instant queue bypass, document search and delivery within 1 hour.", price: "+£20.00", bg: "bg-rose-100 text-rose-600 border-rose-200/50" }
+                          { id: "super_fast_track", icon: Flame, title: "Super-Fast Track Processing", desc: "Instant queue bypass, document search and delivery within 1 hour.", price: "+£12.00", bg: "bg-rose-100 text-rose-600 border-rose-200/50" }
                         ].map((item) => (
                           <Label 
                             key={item.id}
@@ -1848,7 +1848,7 @@ export default function OrderWizard() {
                       >
                         {[
                           { id: "pdf_only", icon: FileText, title: "Digital PDF Copy Only", desc: "Sent securely to your email. Highly recommended.", price: "Free" },
-                          { id: "pdf_printed", icon: Mail, title: "PDF + Official Print Copy", desc: "Emailed plus official printed copy posted via Royal Mail 1st Class.", price: "+£9.95" }
+                          { id: "pdf_printed", icon: Mail, title: "PDF + Official Print Copy", desc: "Emailed plus official printed copy posted via Royal Mail 1st Class.", price: "+£7.00" }
                         ].map((item) => (
                           <Label 
                             key={item.id}
@@ -1902,7 +1902,7 @@ export default function OrderWizard() {
                               <span className="text-xs text-slate-500 font-medium">SMS updates to mobile.</span>
                             </div>
                           </div>
-                          <span className="font-bold text-xs text-slate-900">+£4.95</span>
+                          <span className="font-bold text-xs text-slate-900">+£5.00</span>
                         </Label>
                       </RadioGroup>
                     </div>

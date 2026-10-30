@@ -310,7 +310,7 @@ export default function Home() {
         "description": "Expedited verification and retrieval of official HM Land Registry Title Registers, Title Plans, and Deeds.",
         "url": "https://onlinelandregistry.uk/",
         "telephone": "0333 577 0077",
-        "priceRange": "£36-£65",
+        "priceRange": "£20-£35",
         "address": {
           "@type": "PostalAddress",
           "addressCountry": "GB"
