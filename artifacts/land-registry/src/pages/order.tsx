@@ -575,7 +575,7 @@ export default function OrderWizard() {
                           </h3>
                           <p className="text-xs text-slate-550 font-bold mt-0.5">{state.propertyCount} {isDJP ? "application" : isAlertService ? "title" : isMapSearch ? "parcel" : "document"}{state.propertyCount > 1 ? 's' : ''}</p>
                         </div>
-                        <span className="font-bold font-heading text-lg sm:text-xl text-primary">£{(state.propertyCount * (isOwnershipBundle ? 50.00 : isDeedSearch ? 34.17 : isMapSearch ? 44.17 : isDJP ? 54.17 : 30.00)).toFixed(2)}+vat</span>
+                        <span className="font-bold font-heading text-lg sm:text-xl text-primary">£{(state.propertyCount * (isOwnershipBundle ? 35.00 : isMapSearch ? 25.00 : isDJP ? 400.00 : 20.00)).toFixed(2)} inc. VAT</span>
                       </div>
                       
                       <div className="space-y-3 border-t border-slate-200 pt-4">
@@ -672,7 +672,7 @@ export default function OrderWizard() {
                                     <div className="flex items-center gap-3">
                                       <Checkbox id={`req-bundle-${idx}`} checked={true} disabled={true} className="border-slate-300 disabled:opacity-100 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Title Register &amp; Title Plan Bundle (£50.00+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Title Register &amp; Title Plan Bundle (£35.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Both documents compiled into a single package.</span>
                                       </div>
                                     </div>
@@ -687,7 +687,7 @@ export default function OrderWizard() {
                                     <div className="flex items-center gap-3">
                                       <Checkbox id={`req-deeds-${idx}`} checked={true} disabled={true} className="border-slate-300 disabled:opacity-100 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Official Deed Search (£34.17+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Official Deed Search (£20.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Historical transfers (TR1 forms) and leasehold deeds.</span>
                                       </div>
                                     </div>
@@ -717,7 +717,7 @@ export default function OrderWizard() {
                                     <div className="flex items-center gap-3">
                                       <Checkbox id={`req-map-${idx}`} checked={true} disabled={true} className="border-slate-300 disabled:opacity-100 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Map / Land Search (£44.17+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Map / Land Search (£25.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-450 font-medium">GIS coordinate-based boundary mapping search.</span>
                                       </div>
                                     </div>
@@ -777,7 +777,7 @@ export default function OrderWizard() {
                                     <div className="flex items-center gap-3">
                                       <Checkbox id={`req-djp-${idx}`} checked={true} disabled={true} className="border-slate-300 disabled:opacity-100 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
                                       <div>
-                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Deceased Joint Proprietor DJP (£54.17+vat)</span>
+                                        <span className="text-sm font-bold text-slate-900 block leading-tight">Deceased Joint Proprietor DJP (£400.00 inc. VAT)</span>
                                         <span className="text-[11px] text-slate-405 font-medium">Remove a deceased owner's name and update registered title.</span>
                                       </div>
                                     </div>
@@ -810,7 +810,7 @@ export default function OrderWizard() {
                                     onClick={(e) => e.stopPropagation()}
                                   />
                                   <div>
-                                    <span className="text-sm font-bold text-slate-900 block leading-tight">Include Flood Risk (£25.00+vat)</span>
+                                    <span className="text-sm font-bold text-slate-900 block leading-tight">Include Flood Risk (+£7.00)</span>
                                     <span className="text-[11px] text-slate-405 font-medium">Environmental risk assessment report.</span>
                                   </div>
                                 </div>
