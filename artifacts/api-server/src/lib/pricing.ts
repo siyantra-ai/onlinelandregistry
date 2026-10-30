@@ -117,14 +117,14 @@ export function calculatePrice(config: PriceConfig, basePrice: number): PriceRes
   // Clean 2-line itemized breakdown for customer review
   const lineItems = [
     {
-      label: 'Government / Document Fee',
+      label: 'Document Fee',
       amount: documentFeeTotal,
-      note: '£' + docFeePerProperty.toFixed(2) + ' × ' + propertyCount + ' propert' + (propertyCount === 1 ? 'y' : 'ies')
+      note: null
     },
     {
       label: 'Search & Processing Fee',
       amount: totalServiceFee,
-      note: 'Including VAT & all selected options'
+      note: null
     }
   ];
 

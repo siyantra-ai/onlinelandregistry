@@ -1747,7 +1747,7 @@ export default function OrderWizard() {
                       {priceCalculating || !priceBreakdown ? (
                         <div className="py-10 flex flex-col items-center justify-center space-y-4 bg-slate-50 rounded-xl border border-slate-200">
                           <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                          <p className="text-slate-505 text-sm font-semibold">Calculating official HMLR fees &amp; service VAT...</p>
+                          <p className="text-slate-505 text-sm font-semibold">Calculating fees...</p>
                         </div>
                       ) : (
                         <div className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-inner">
@@ -1956,7 +1956,7 @@ export default function OrderWizard() {
                     {priceCalculating || !priceBreakdown ? (
                       <div className="py-16 flex flex-col items-center justify-center space-y-4">
                         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                        <p className="text-slate-505 text-sm font-semibold">Calculating official HMLR fees &amp; service VAT...</p>
+                        <p className="text-slate-505 text-sm font-semibold">Calculating fees...</p>
                       </div>
                     ) : (
                       <>
