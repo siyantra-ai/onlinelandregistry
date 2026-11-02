@@ -4,7 +4,7 @@
   "framework": null,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/((?!_next|favicon\\.svg|opengraph\\.jpg|robots\\.txt).*)", "destination": "/index.html" }
+    { "source": "/((?!_next|favicon\\.svg|opengraph\\.jpg|robots\\.txt|google[a-z0-9]+\\.html|sitemap\\.xml).*)", "destination": "/index.html" }
   ],
   "headers": [
     {
